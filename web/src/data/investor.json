@@ -1,0 +1,18 @@
+[
+	{
+		"investorCode" : "RI",
+		"investorName" : "Retailer Investor"
+	},
+	{
+		"investorCode" : "FI",
+		"investorName" : "Foreign Investor(s)"
+	},
+	{
+		"investorCode" : "IT",
+		"investorName" : "Investment Trust"
+	},
+	{
+		"investorCode" : "D",
+		"investorName" : "Dealer"
+	}
+]
