@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, FormControl, Select, InputLabel, MenuItem, Grid} from '@material-ui/core'
+import { Paper, FormControl, Select, InputLabel, MenuItem, Grid, Box} from '@material-ui/core'
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import EconomicDataChart from './EconomicDataChart';
@@ -14,8 +14,8 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     minWidth: 120
   },
-  fixedHeight: {
-    height: 110,
+  fixedInputSkeletonHeight: {
+    height: 65,
   },
   fixedChartHeight: {
     height: 550,
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 const EconomicData = () => {
   const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
   const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
   const [economicData, setEconomicData] = useState([]);
@@ -116,19 +116,21 @@ const EconomicData = () => {
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item md={12}>
-          {economicData.length > 0?
-            <Paper>
-              <CountrySelect />
-              <EconomicDataSelect />
-            </Paper>:<Skeleton variant="text" className={fixedHeightPaper}/>
-          }
+          <Paper>
+            {economicData.length > 0?
+              <Box>
+                <CountrySelect />
+                <EconomicDataSelect />
+              </Box>
+            :<Skeleton variant="text" className={fixedInputSkeletonHeight}/>}
+          </Paper>
         </Grid>
         <Grid item md={12}>
-          {units.length > 0 && dataset.length > 0 ?
-            <Paper className={fixedChartHeightPaper}>
+          <Paper className={fixedChartHeightPaper}>
+            {units.length > 0 && dataset.length > 0 ?
               <EconomicDataChart units={units} data={dataset} />
-            </Paper>
-          :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+            :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+          </Paper>
         </Grid>
       </Grid>
     </React.Fragment>

@@ -17,8 +17,8 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(1),
         minWidth: 200
     },
-    fixedHeight: {
-        height: 400
+    fixedInputSkeletonHeight: {
+        height: 65,
     },
     fixedChartHeight: {
         height: 450,
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 
 const StockChart = () => {
     const classes = useStyles();
-    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
     const [ stockCode, setStockCode ] = useState("2330");
@@ -98,21 +98,21 @@ const StockChart = () => {
         <React.Fragment>
             <Grid container spacing={3}>
                 <Grid item md={12}>
-                    {stocks.length > 0?
-                        <Paper>
+                    <Paper>
+                        {stocks.length > 0?
                             <StockSelect />
-                        </Paper>
-                    :<Skeleton variant="text" className={fixedHeightPaper} />}
+                        :<Skeleton variant="text" className={fixedInputSkeletonHeight} />}
+                    </Paper>
                 </Grid>
                 <Grid item md={12}>
-                    {dataset.length > 0 ?
-                        <Paper className={fixedChartHeightPaper}>
+                    <Paper className={fixedChartHeightPaper}>
+                        {dataset.length > 0 ?
                             <CandlestickChart dataset={dataset.map((data) => {
                                 data.date = new Date(data.date);
                                 return data;
                             })} />
-                        </Paper>
-                    :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+                        :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+                    </Paper>
                 </Grid>
             </Grid>
         </React.Fragment>);

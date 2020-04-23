@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Paper, FormControl, Select, InputLabel, MenuItem } from '@material-ui/core';
+import { Grid, Paper, FormControl, Select, InputLabel, MenuItem ,Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import FuturesChipChart from './FuturesChipChart';
@@ -14,8 +14,8 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(1),
         minWidth: 200
     },
-    fixedHeight: {
-        height: 110,
+    fixedInputSkeletonHeight: {
+        height: 65,
     },
     fixedChartHeight: {
         height: 450,
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 const FuturesChip = () => {
     const classes = useStyles();
-    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
     const [investorCode, setInvestorCode] = useState('RI');
@@ -171,19 +171,21 @@ const FuturesChip = () => {
         <React.Fragment>
             <Grid container spacing={3}>
                 <Grid item md={12}>
+                    <Paper>
                     {futures.length > 0?
-                        <Paper>
+                        <Box>
                             <InvestorSelect />
                             <FuturesSelect />
-                        </Paper>
-                    :<Skeleton variant="text" className={fixedHeightPaper} />}
+                        </Box>
+                    :<Skeleton variant="text" className={fixedInputSkeletonHeight} />}
+                    </Paper>
                 </Grid>
                 <Grid item md={12}>
-                    {dataset.length > 0 ?
-                        <Paper className={fixedChartHeightPaper}>
+                    <Paper className={fixedChartHeightPaper}>
+                        {dataset.length > 0 ?
                             <FuturesChipChart data={dataset} />
-                        </Paper>
-                    :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+                        :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+                    </Paper>
                 </Grid>
             </Grid>
         </React.Fragment>);
