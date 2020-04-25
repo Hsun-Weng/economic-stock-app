@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
+import { Grid, Paper, FormControl, Select, InputLabel, MenuItem, Box} from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab';
 
 import CandlestickChart from './CandlestickChart';
@@ -21,7 +16,7 @@ const useStyles = makeStyles(theme => ({
         height: 65,
     },
     fixedChartHeight: {
-        height: 450,
+        height: 900,
     },
     paper: {
         padding: theme.spacing(2),
@@ -36,7 +31,9 @@ const StockChart = () => {
     const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
+    const [ categoryCode, setCategoryCode ] = useState("024");
     const [ stockCode, setStockCode ] = useState("2330");
+    const [ categories, setCategories ] = useState([]);
     const [ stocks, setStocks ] = useState([]);
     const [ dataset, setDataset ] = useState([]);
 
@@ -44,11 +41,19 @@ const StockChart = () => {
     const [ startDate, setStartDate ] = useState(new Date(Date.now() - 120 * 24 * 60 * 60 * 1000));
     const [ endDate, setEndDate ] = useState(new Date());
 
+    const fetchCategories = async() => {
+        const res = await fetch(`/api/stock/taiwan/categories`)
+        res.json()
+            .then(res => res.data)
+            .then(data => setCategories(data))
+            .catch(err => console.log(err));
+    }
+
     /**
-     * 所有期貨代號
+     * 所有證券代號
      */
-    const fetchStocks = async() => {
-        const res = await fetch(`/api/stock/taiwan`);
+    const fetchStocks = async( category ) => {
+        const res = await fetch(`/api/stock/taiwan/category/${category}/stocks`);
         res.json()
             .then(res => res.data)
             .then(data => setStocks(data))
@@ -65,21 +70,30 @@ const StockChart = () => {
             .catch(err => console.log(err));
     }
 
-    const StockSelect = () => {
-        if (stocks.length > 0) {
-            return (
-                <FormControl className={classes.formControl}>
-                    <InputLabel>Stock</InputLabel>
-                    <Select
-                        value={stockCode}
-                        onChange={handleChangeStock}>
-                        {stocks.map((prop, key) => <MenuItem key={key} value={prop.stockCode}>{prop.stockCode} {prop.stockName}</MenuItem>)}
-                    </Select>
-                </FormControl>
-            )
-        } else{
-            return null;
-        }
+    const CategorySelect = () => (
+        <FormControl className={classes.formControl}>
+            <InputLabel>Category</InputLabel>
+            <Select
+                value={categoryCode}
+                onChange={handleChangeCategory}>
+                {categories.map((prop, key) => <MenuItem key={key} value={prop.categoryCode}>{prop.categoryName}</MenuItem>)}
+            </Select>
+        </FormControl>
+    )
+
+    const StockSelect = () => (
+        <FormControl className={classes.formControl}>
+            <InputLabel>Stock</InputLabel>
+            <Select
+                value={stockCode}
+                onChange={handleChangeStock}>
+                {stocks.map((prop, key) => <MenuItem key={key} value={prop.stockCode}>{prop.stockCode} {prop.stockName}</MenuItem>)}
+            </Select>
+        </FormControl>
+    )
+
+    const handleChangeCategory = event => {
+        setCategoryCode(event.target.value);
     }
 
     const handleChangeStock = event => {
@@ -87,8 +101,12 @@ const StockChart = () => {
     }
 
     useEffect(() => {
-        fetchStocks();
+        fetchCategories();
     }, [])
+
+    useEffect(() => {
+        fetchStocks(categoryCode);
+    }, [ categoryCode ])
 
     useEffect(() => {
         fetchStockData(stockCode, startDate, endDate);
@@ -99,8 +117,11 @@ const StockChart = () => {
             <Grid container spacing={3}>
                 <Grid item md={12}>
                     <Paper>
-                        {stocks.length > 0?
-                            <StockSelect />
+                        {categories.length > 0 && stocks.length > 0?
+                            <Box>
+                                <CategorySelect />
+                                <StockSelect />
+                            </Box>
                         :<Skeleton variant="text" className={fixedInputSkeletonHeight} />}
                     </Paper>
                 </Grid>
