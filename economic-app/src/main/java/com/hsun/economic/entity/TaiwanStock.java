@@ -1,6 +1,8 @@
 package com.hsun.economic.entity;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.persistence.*;
 
 import lombok.Data;
@@ -27,4 +29,8 @@ public class TaiwanStock implements Serializable {
 
 	@Column(name="stock_name")
 	private String stockName;
+	
+	@OneToMany(cascade=CascadeType.DETACH)
+    @JoinColumn(name="stock_id", referencedColumnName="stock_id")
+    private List<CategoryStock> categoryStock;
 }
