@@ -6,9 +6,10 @@ import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 import { sma, rsi } from "react-stockcharts/lib/indicator";
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { OHLCTooltip, MovingAverageTooltip, RSITooltip } from "react-stockcharts/lib/tooltip";
-import { CrossHairCursor, MouseCoordinateY, CurrentCoordinate } from "react-stockcharts/lib/coordinates";
+import { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } from "react-stockcharts/lib/coordinates";
 
 import { last } from "react-stockcharts/lib/utils";
 
@@ -138,6 +139,10 @@ const CandlestickChart = ({ dataset }) => {
                         origin={[40, 15]}
 						yAccessor={d => d.rsi10}
 						options={rsi10.options()} />
+                    <MouseCoordinateX
+						at="bottom"
+						orient="bottom"
+						displayFormat={timeFormat("%Y-%m-%d")} />
 				</Chart>
                 <CrossHairCursor />
         </ChartCanvas>);

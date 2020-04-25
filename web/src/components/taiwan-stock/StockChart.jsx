@@ -127,12 +127,14 @@ const StockChart = () => {
                 </Grid>
                 <Grid item md={12}>
                     <Paper className={fixedChartHeightPaper}>
-                        {dataset.length > 0 ?
-                            <CandlestickChart dataset={dataset.map((data) => {
-                                data.date = new Date(data.date);
-                                return data;
-                            })} />
-                        :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+                        <Box display="flex" justifyContent="center">
+                            {dataset.length > 0 ?
+                                <CandlestickChart dataset={dataset.map((data) => {
+                                    data.date = new Date(data.date);
+                                    return data;
+                                })} />
+                            :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+                        </Box>
                     </Paper>
                 </Grid>
             </Grid>
