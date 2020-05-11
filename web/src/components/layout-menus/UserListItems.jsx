@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation} from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
@@ -22,6 +23,10 @@ const UserListItems = () => {
   const isSelected = (routePath) => {
     return location.pathname === routePath;
   }
+
+  const dispatch = useDispatch();
+
+  
   return (
     <div>
       <ListSubheader inset>Saved reports</ListSubheader>
