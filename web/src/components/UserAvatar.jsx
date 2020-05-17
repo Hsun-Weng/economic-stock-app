@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
-import { IconButton, Badge, Menu, MenuItem } from '@material-ui/core';
+import { IconButton, Badge, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
+import LoginForm from './LoginForm';
 
 const UserAvatar = () => {
     const [ anchorEl, setAnchorEl ] = useState(null);
     const open = Boolean(anchorEl);
+    const [ loginDialogOpen, setLoginDialogOpen] = useState(false);
     const handleMenu = ( event ) => {
         setAnchorEl(event.currentTarget);
     } 
     const handleMenuClose = () => {
         setAnchorEl(null);
+    }
+    const handleLoginDialogOpen = () => {
+        handleMenuClose();
+        setLoginDialogOpen(true);
+    }
+    const handleLoginDialogClose = () => {
+        setLoginDialogOpen(false);
     }
     return (
         <div>
@@ -32,9 +41,15 @@ const UserAvatar = () => {
                 open={open}
                 onClose={handleMenuClose}
                 >
-                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-                <MenuItem onClick={handleMenuClose}>My Account</MenuItem>
+                <MenuItem onClick={handleLoginDialogOpen}>Login</MenuItem>
+                <MenuItem onClick={handleMenuClose}>Sign up</MenuItem>
             </Menu>
+            <Dialog open={loginDialogOpen} onClose={handleLoginDialogClose} >
+                <DialogTitle>Login</DialogTitle>
+                <DialogContent>
+                    <LoginForm />
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

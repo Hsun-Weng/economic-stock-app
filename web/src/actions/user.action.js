@@ -1,19 +1,19 @@
 import userConstants from '../constants/UserConstants';
-import userService from '../services/user.service';
+import { userService } from '../services';
 
 export const userActions = {
     login,
     logout,
-    regiseter,
-    getAll,
-    delete: _delet
+    // regiseter,
+    // getAll,
+    // delete: _delet
 }
 
-const login = (email, password) => {
+function login(userName, password) {
     return dispatch => {
-        dispatch(request({ email }));
+        dispatch(request({ userName }));
         
-        userService.login(email, password)
+        userService.login(userName, password)
             .then(user => {
                     dispatch(success(user));
                 },
@@ -23,18 +23,18 @@ const login = (email, password) => {
             );
     }
 
-    const request = (user) => {
+    function request(user) {
         return {type: userConstants.LOGIN_REQUEST, user};
     }
-    const success = (user) => {
+    function success(user) {
         return {type: userConstants.LOGIN_SUCCESS, user};
     }
-    const failure = (error) => {
+    function failure(error) {
         return {type: userConstants.LOGIN_FAILURE, error};
     }
 }
 
-const logout = () => {
+function logout() {
     userService.logout();
     return {type: userConstants.LOGOUT};
 }
@@ -54,9 +54,9 @@ function register(user) {
             );
     };
 
-    const request = (user) => { return { type: userConstants.REGISTER_REQUEST, user } }
-    const success = (user) => { return { type: userConstants.REGISTER_SUCCESS, user } }
-    const failure = (error) => { return { type: userConstants.REGISTER_FAILURE, error } }
+    function request (user) { return { type: userConstants.REGISTER_REQUEST, user } }
+    function success (user) { return { type: userConstants.REGISTER_SUCCESS, user } }
+    function failure (error) { return { type: userConstants.REGISTER_FAILURE, error } }
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

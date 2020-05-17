@@ -1,18 +1,20 @@
-export default userService = {
+import { authHeader } from '../helplers/authHeader';
+
+export const userService = {
     login,
     logout,
     register,
     update
 }
 
-const login = (email, password) => {
+function login(userName, password){
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ userName, password })
     };
 
-    return fetch(`/users/authenticate`, requestOptions)
+    return fetch(`/api/user/login`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -21,11 +23,11 @@ const login = (email, password) => {
     });
 }
 
-const logout = () => {
+function logout(){
     localStorage.removeItem('user');
 }
 
-const register = (user) => {
+function register(user){
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -35,7 +37,7 @@ const register = (user) => {
     return fetch(`/users/register`, requestOptions).then(handleResponse);
 }
 
-const update = (user) => {
+function update(user){
     const requestOptions = {
         method: 'PUT',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
@@ -52,7 +54,7 @@ const handleResponse = (response) => {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
                 logout();
-                location.reload(true);
+                // location.reload(true);
             }
 
             const error = (data && data.message) || response.statusText;
@@ -62,5 +64,3 @@ const handleResponse = (response) => {
         return data;
     });
 } 
-
-const hanel
