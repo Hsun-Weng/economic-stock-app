@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +24,7 @@ import com.hsun.economic.entity.User;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     
+    
     private AuthenticationManager authenticationManager;
     
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -39,7 +39,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
             
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    user.getEmail(),
+                    user.getUserName(),
                     user.getPassword(),
                     new ArrayList<>()
                     ));
@@ -54,9 +54,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             HttpServletResponse response, FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
         String token = JWT.create()
-                .withSubject(((User)authResult.getPrincipal()).getEmail())
+                .withSubject(authResult.getName())
                 .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(SecurityConstants.SECRET));
+        response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
     }
     
     

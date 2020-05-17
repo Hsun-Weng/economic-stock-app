@@ -31,11 +31,18 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
         .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
-        .anyRequest().authenticated()
+        .antMatchers("/login").permitAll()
+        .antMatchers("/user/**").authenticated()
+        .anyRequest().permitAll()
         .and()
-        .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-        .addFilter(new JWTAuthorizationFilter(authenticationManager()))
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        
+        JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter(authenticationManager());
+        jwtAuthenticationFilter.setFilterProcessesUrl("/user/login");
+        
+        http
+        .addFilter(jwtAuthenticationFilter)
+        .addFilter(new JWTAuthorizationFilter(authenticationManager()));
     }
     
     @Override

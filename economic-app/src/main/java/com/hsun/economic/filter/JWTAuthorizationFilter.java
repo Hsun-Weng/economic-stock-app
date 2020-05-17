@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,9 +18,18 @@ import org.springframework.util.StringUtils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.hsun.economic.constants.SecurityConstants;
+import com.hsun.economic.entity.User;
+import com.hsun.economic.service.UserService;
+import com.hsun.economic.util.JwtUtils;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
+    @Autowired
+    private JwtUtils jwtUtil;
+    
+    @Autowired
+    private UserService userService;
+    
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
@@ -28,15 +38,22 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response, FilterChain chain)
                     throws IOException, ServletException {
-        String header = request.getHeader(SecurityConstants.HEADER_STRING);
+        String token = request.getHeader(SecurityConstants.HEADER_STRING);
         
-        if(StringUtils.isEmpty(header) || !header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+        if(StringUtils.isEmpty(token) || !token.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
         
-        UsernamePasswordAuthenticationToken authentication = this.getAuthentication(request);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String userName =  jwtUtil.getUsernameFromToken(token);
+        if(StringUtils.isEmpty(userName) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            User user = userService.findUserByName(userName);
+            if(jwtUtil.validateToken(token, user)) {
+                UsernamePasswordAuthenticationToken authentication = this.getAuthentication(request);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
+        
         chain.doFilter(request, response);
     }
     
