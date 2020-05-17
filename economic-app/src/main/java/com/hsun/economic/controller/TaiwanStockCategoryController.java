@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.entity.TaiwanStock;
 import com.hsun.economic.entity.TaiwanStockCategory;
 import com.hsun.economic.service.TaiwanStockCategoryService;
@@ -21,8 +22,8 @@ public class TaiwanStockCategoryController {
     private TaiwanStockCategoryService service;
     
     @GetMapping("/stock/taiwan/categories")
-    public Map<String, Object> getCategories() {
-        Map<String, Object> result = new HashMap<String, Object>();
+    public ResponseBean getCategories() {
+        ResponseBean responseBean = new ResponseBean();
         List<TaiwanStockCategory> categoryList = null;
         List<Map<String, Object>> dataList = null;
         try {
@@ -35,17 +36,19 @@ public class TaiwanStockCategoryController {
                  return dataMap;
             }).collect(Collectors.toList());
              
-            result.put("data", dataList);
+            responseBean.setData(dataList);
+            responseBean.setStatus(1);
             
         }catch(Exception e) {
+            responseBean.setStatus(0);
             e.printStackTrace();
         }
-        return result;
+        return responseBean;
     }
     
     @GetMapping("/stock/taiwan/category/{categoryCode}/stocks")
-    public Map<String, Object> getCategoryByCode(@PathVariable String categoryCode) {
-        Map<String, Object> result = new HashMap<String, Object>();
+    public ResponseBean getCategoryByCode(@PathVariable String categoryCode) {
+        ResponseBean responseBean = new ResponseBean();
         List<TaiwanStockCategory> categoryList = null;
         List<Map<String, Object>> dataList = null;
         try {
@@ -62,11 +65,13 @@ public class TaiwanStockCategoryController {
                 return stockList.stream();
             }).collect(Collectors.toList());
              
-            result.put("data", dataList);
+            responseBean.setData(dataList);
+            responseBean.setStatus(1);
             
         }catch(Exception e) {
+            responseBean.setStatus(0);
             e.printStackTrace();
         }
-        return result;
+        return responseBean;
     }
 }

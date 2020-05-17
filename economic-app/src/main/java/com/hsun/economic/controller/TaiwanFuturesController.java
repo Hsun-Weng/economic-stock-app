@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.entity.TaiwanFutures;
 import com.hsun.economic.service.TaiwanFuturesService;
 
@@ -20,8 +21,8 @@ public class TaiwanFuturesController {
     private TaiwanFuturesService service;
     
     @GetMapping("/futures/taiwan")
-    public Map<String, Object> getAllTaiwanFutures() {
-        Map<String, Object> result = new HashMap<String, Object>();
+    public ResponseBean getAllTaiwanFutures() {
+        ResponseBean responseBean = new ResponseBean();
         List<TaiwanFutures> futuresList = null;
         List<Map<String, Object>> dataList = null;
         try {
@@ -34,17 +35,19 @@ public class TaiwanFuturesController {
                  return futuresMap;
             }).collect(Collectors.toList());
              
-            result.put("data", dataList);
+            responseBean.setData(dataList);
+            responseBean.setStatus(1);
             
         }catch(Exception e) {
+            responseBean.setStatus(0);
             e.printStackTrace();
         }
-        return result;
+        return responseBean;
     }
     
     @GetMapping("/futures/taiwan/{futuresCode}")
-    public Map<String, Object> getTaiwanFutures(@PathVariable String futuresCode) {
-        Map<String, Object> result = new HashMap<String, Object>();
+    public ResponseBean getTaiwanFutures(@PathVariable String futuresCode) {
+        ResponseBean responseBean = new ResponseBean();
         TaiwanFutures taiwanFutures = null;
         Map<String, Object> dataMap = null;
         try {
@@ -55,17 +58,19 @@ public class TaiwanFuturesController {
             dataMap.put("futuresName", taiwanFutures.getFuturesName());
             dataMap.put("indexCode", taiwanFutures.getTaiwanStockIndex().getIndexCode());
             
-            result.put("data", dataMap);
+            responseBean.setData(dataMap);
+            responseBean.setStatus(1);
             
         }catch(Exception e) {
+            responseBean.setStatus(0);
             e.printStackTrace();
         }
-        return result;
+        return responseBean;
     }
     
     @GetMapping("/futures/taiwan/{futuresCode}/contract")
-    public Map<String, Object> getTaiwanFuturesContractByFuturesCode(@PathVariable String futuresCode){
-        Map<String, Object> result = new HashMap<String, Object>();
+    public ResponseBean getTaiwanFuturesContractByFuturesCode(@PathVariable String futuresCode){
+        ResponseBean responseBean = new ResponseBean();
         TaiwanFutures futures = null;
         List<Map<String, Object>> dataList = null;
         try {
@@ -77,11 +82,13 @@ public class TaiwanFuturesController {
                  return dataMap;
             }).collect(Collectors.toList());
              
-            result.put("data", dataList);
+            responseBean.setData(dataList);
+            responseBean.setStatus(1);
             
         }catch(Exception e) {
+            responseBean.setStatus(0);
             e.printStackTrace();
         }
-        return result;
+        return responseBean;
     }
 }

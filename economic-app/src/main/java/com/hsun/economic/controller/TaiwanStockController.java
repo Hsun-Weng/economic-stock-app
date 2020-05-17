@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.entity.TaiwanStock;
 import com.hsun.economic.service.TaiwanStockService;
 
@@ -19,8 +20,8 @@ public class TaiwanStockController {
     private TaiwanStockService service;
     
     @GetMapping("/stock/taiwan")
-    public Map<String, Object> getAllTaiwanStocks() {
-        Map<String, Object> result = new HashMap<String, Object>();
+    public ResponseBean getAllTaiwanStocks() {
+        ResponseBean responseBean = new ResponseBean();
         List<TaiwanStock> stockList = null;
         List<Map<String, Object>> dataList = null;
         try {
@@ -33,11 +34,13 @@ public class TaiwanStockController {
                  return stockMap;
             }).collect(Collectors.toList());
              
-            result.put("data", dataList);
+            responseBean.setData(dataList);
+            responseBean.setStatus(1);
             
         }catch(Exception e) {
+            responseBean.setStatus(0);
             e.printStackTrace();
         }
-        return result;
+        return responseBean;
     }
 }

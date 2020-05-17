@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.entity.EconomicData;
 import com.hsun.economic.service.EconomicDataService;
 
@@ -20,8 +21,8 @@ public class EconomicDataController {
     private EconomicDataService service;
     
     @GetMapping("/economic/country/data")
-    public Map<String, Object> getCountryEconomicData(){
-        Map<String, Object> result = new HashMap<String, Object>();
+    public ResponseBean getCountryEconomicData(){
+        ResponseBean responseBean = new ResponseBean();
         List<EconomicData> economicDataList = null;
         List<Map<String, Object>> dataList = null;
         try {
@@ -43,17 +44,19 @@ public class EconomicDataController {
                 return resultList.stream();
             }).collect(Collectors.toList());
              
-            result.put("data", dataList);
+            responseBean.setData(dataList);
+            responseBean.setStatus(1);
             
         }catch(Exception e) {
+            responseBean.setStatus(0);
             e.printStackTrace();
         }
-        return result;
+        return responseBean;
     }
     
     @GetMapping("/economic/data")
-    public Map<String, Object> getAllEconomicData(){
-        Map<String, Object> result = new HashMap<String, Object>();
+    public ResponseBean getAllEconomicData(){
+        ResponseBean responseBean = new ResponseBean();
         List<EconomicData> economicDataList = null;
         List<Map<String, Object>> dataList = null;
         try {
@@ -68,10 +71,12 @@ public class EconomicDataController {
                 return dataMap;
             }).collect(Collectors.toList());
             
-            result.put("data", dataList);
+            responseBean.setData(dataList);
+            responseBean.setStatus(1);
         }catch(Exception e) {
+            responseBean.setStatus(0);
             e.printStackTrace();
         }
-        return result;
+        return responseBean;
     }
 }

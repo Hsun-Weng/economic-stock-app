@@ -6,9 +6,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.entity.User;
 import com.hsun.economic.service.UserService;
 
@@ -22,16 +24,18 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     
     @PostMapping("/user/signup")
-    private Map<String, Object> saveUser(@RequestBody User user){
-        Map<String, Object> result = new HashMap<String, Object>();
+    private ResponseBean saveUser(@RequestBody User user){
+        ResponseBean responseBean = new ResponseBean();
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             service.saveUser(user);
-            result.put("data", true);
+            
+            responseBean.setStatus(1);
         }catch(Exception e) {
+            responseBean.setStatus(0);
             e.printStackTrace();
         }
-        return result;
+        return responseBean;
     }
     
 }

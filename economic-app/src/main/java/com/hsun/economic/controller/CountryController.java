@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.entity.Country;
 import com.hsun.economic.service.ContryService;
 
@@ -19,8 +20,8 @@ public class CountryController {
     private ContryService service;
     
     @GetMapping("/countries")
-    public Map<String, Object> getContries() {
-        Map<String, Object> result = new HashMap<String, Object>();
+    public ResponseBean getContries() {
+        ResponseBean responseBean = new ResponseBean();
         List<Country> countryList = null;
         List<Map<String, Object>> dataList = null;
         try {
@@ -33,11 +34,13 @@ public class CountryController {
                  return countryMap;
             }).collect(Collectors.toList());
              
-            result.put("data", dataList);
+            responseBean.setData(dataList);
+            responseBean.setStatus(1);
             
         }catch(Exception e) {
+            responseBean.setStatus(1);
             e.printStackTrace();
         }
-        return result;
+        return responseBean;
     }
 }
