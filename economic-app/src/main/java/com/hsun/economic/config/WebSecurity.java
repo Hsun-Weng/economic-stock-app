@@ -16,12 +16,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.hsun.economic.filter.JWTAuthenticationFilter;
 import com.hsun.economic.filter.JWTAuthorizationFilter;
+import com.hsun.economic.handler.JWTAuthenticationFailureHandler;
 
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     
     @Autowired
     private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private JWTAuthenticationFailureHandler jwtAuthenticationFailureHandler;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -37,6 +41,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         
         JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter(authenticationManager());
         jwtAuthenticationFilter.setFilterProcessesUrl("/user/login");
+        jwtAuthenticationFilter.setAuthenticationFailureHandler(jwtAuthenticationFailureHandler);
         
         http
         .addFilter(jwtAuthenticationFilter)
