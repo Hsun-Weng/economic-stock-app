@@ -6,4 +6,5 @@ import lombok.Data;
 public class ResponseBean {
     private Integer status;
     private Object data;
+    private String message;
 }

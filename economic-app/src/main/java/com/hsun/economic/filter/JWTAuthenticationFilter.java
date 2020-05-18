@@ -1,6 +1,8 @@
 package com.hsun.economic.filter;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -17,13 +19,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.constants.SecurityConstants;
 import com.hsun.economic.entity.User;
 
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    
     
     private AuthenticationManager authenticationManager;
     
@@ -34,9 +36,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
             HttpServletResponse response) throws AuthenticationException {
-        
+        Reader inputStreamReader = null;
         try {
-            User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
+            inputStreamReader = new InputStreamReader(request.getInputStream());
+            User user = new Gson().fromJson(inputStreamReader, User.class);
+            inputStreamReader.close();
             
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     user.getUserName(),
@@ -46,6 +50,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             
         } catch(IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            if(inputStreamReader != null) {
+                try {
+                    inputStreamReader.close();
+                } catch (IOException e) {}
+            }
         }
     }
     
@@ -58,7 +68,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(SecurityConstants.SECRET));
         
-        response.getWriter().write(token);
+        ResponseBean responseBean = new ResponseBean();
+        responseBean.setData(token);
+        responseBean.setStatus(1);
+        
+        response.getWriter().write(new Gson().toJson(responseBean));
         response.getWriter().flush();
     }
     
