@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch} from 'react-redux';
 import { IconButton, Badge, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
@@ -63,7 +63,6 @@ const UserAvatar = () => {
                     /
                     <Button color="inherit">Sign Up</Button>
                     <Dialog open={loginDialogOpen} onClose={handleLoginDialogClose} >
-                        <DialogTitle>Login</DialogTitle>
                         <DialogContent>
                             <LoginForm />
                         </DialogContent>
