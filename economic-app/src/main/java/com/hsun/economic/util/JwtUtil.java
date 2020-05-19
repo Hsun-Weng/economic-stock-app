@@ -12,9 +12,9 @@ import com.hsun.economic.constants.SecurityConstants;
 import com.hsun.economic.entity.User;
 
 @Component
-public class JwtUtils {
+public class JwtUtil {
     
-    private final Algorithm ALG = Algorithm.HMAC256(SecurityConstants.SECRET);
+    private final Algorithm ALG = Algorithm.HMAC512(SecurityConstants.SECRET);
     
     public String generateToken(User user) {
         return JWT.create()
