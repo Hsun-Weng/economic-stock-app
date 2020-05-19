@@ -18,8 +18,7 @@ function login(userName, password){
         .then(handleResponse)
         .then(token => {
             localStorage.setItem('token', token);
-            return token;
-    });
+        });
 }
 
 function logout(){
@@ -46,18 +45,17 @@ function update(user) {
     return fetch(`/user/${user.id}`, requestOptions).then(handleResponse);;
 }
 
-const handleResponse = (response) => {
-    return response.text().then(text => {
-        const data = text && JSON.parse(text);
-        if (!response.ok) {
-            if (response.status === 401) {
+const handleResponse = (httpResponse) => {
+    return httpResponse.json().then(res => {
+        if (!httpResponse.ok) {
+            if (httpResponse.status === 401) {
                 logout();
             }
 
-            const error = (data && data.message) || response.statusText;
+            const error = (res.status && res.data.message);
             return Promise.reject(error);
-        }
+         }
 
-        return data;
+        return res.data;
     });
 } 
