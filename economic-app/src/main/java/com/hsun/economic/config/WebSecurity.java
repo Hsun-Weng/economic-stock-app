@@ -1,5 +1,7 @@
 package com.hsun.economic.config;
 
+import com.hsun.economic.service.UserService;
+import com.hsun.economic.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -29,6 +31,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private UserService userService;
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -39,13 +47,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         .and()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         
-        JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter(authenticationManager());
+        JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter(authenticationManager(), jwtUtil);
         jwtAuthenticationFilter.setFilterProcessesUrl("/user/login");
         jwtAuthenticationFilter.setAuthenticationFailureHandler(jwtAuthenticationFailureHandler);
         
         http
         .addFilter(jwtAuthenticationFilter)
-        .addFilter(new JWTAuthorizationFilter(authenticationManager()));
+        .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userService));
     }
     
     @Override
