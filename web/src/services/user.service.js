@@ -51,8 +51,8 @@ const handleResponse = (httpResponse) => {
             if (httpResponse.status === 401) {
                 logout();
             }
-
-            const error = (res.status && res.data.message);
+            
+            const error = res;
             return Promise.reject(error);
          }
 

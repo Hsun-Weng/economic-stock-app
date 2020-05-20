@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Grid, Box, Typography, Container, makeStyles } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
@@ -45,6 +45,7 @@ export default function LoginForm() {
   const [ password, setPassword ] = useState("");
 
   const user = useSelector(state => state.user.user);
+  const loginError = useSelector(state => state.user.error);
   const dispatch = useDispatch();
 
   const handleUserName = ( event ) => {
@@ -62,10 +63,17 @@ export default function LoginForm() {
     }
   }
 
+  useEffect(()=>{
+    console.log(loginError)
+  })
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <Alert severity="error">This is an error alert — check it out!</Alert>
+      {loginError ?
+        <Alert severity="error">{loginError.message}</Alert>
+        :<div/>
+      }
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
