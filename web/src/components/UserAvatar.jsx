@@ -3,11 +3,13 @@ import { useSelector, useDispatch} from 'react-redux';
 import { IconButton, Badge, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import LoginForm from './LoginForm';
+import SignupForm from './SignupForm';
 
 import { userActions } from '../actions';
 
 const UnLoggedInUser = () => {
     const [ loginDialogOpen, setLoginDialogOpen] = useState(false);
+    const [ signupDialogOpen, setSignupDialogOpen ] = useState(false);
 
     const handleLoginDialogOpen = () => {
         setLoginDialogOpen(true);
@@ -15,15 +17,26 @@ const UnLoggedInUser = () => {
     const handleLoginDialogClose = () => {
         setLoginDialogOpen(false);
     }
+    const handleSignupDialogOpen = () => {
+        setSignupDialogOpen(true);
+    }
+    const handleSignupDialogClose = () => {
+        setSignupDialogOpen(false);
+    }
 
     return (
         <div>
             <Button onClick={handleLoginDialogOpen} color="inherit">Login</Button>
             /
-            <Button color="inherit">Sign Up</Button>
+            <Button onClick={handleSignupDialogOpen} color="inherit">Sign Up</Button>
             <Dialog open={loginDialogOpen} onClose={handleLoginDialogClose} >
                 <DialogContent>
                     <LoginForm />
+                </DialogContent>
+            </Dialog>
+            <Dialog open={signupDialogOpen} onClose={handleSignupDialogClose} >
+                <DialogContent>
+                    <SignupForm />
                 </DialogContent>
             </Dialog>
         </div>
