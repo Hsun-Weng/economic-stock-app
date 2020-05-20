@@ -6,10 +6,33 @@ import LoginForm from './LoginForm';
 
 import { userActions } from '../actions';
 
+const UnLoggedInUser = () => {
+    const [ loginDialogOpen, setLoginDialogOpen] = useState(false);
+
+    const handleLoginDialogOpen = () => {
+        setLoginDialogOpen(true);
+    }
+    const handleLoginDialogClose = () => {
+        setLoginDialogOpen(false);
+    }
+
+    return (
+        <div>
+            <Button onClick={handleLoginDialogOpen} color="inherit">Login</Button>
+            /
+            <Button color="inherit">Sign Up</Button>
+            <Dialog open={loginDialogOpen} onClose={handleLoginDialogClose} >
+                <DialogContent>
+                    <LoginForm />
+                </DialogContent>
+            </Dialog>
+        </div>
+    )
+}
+
 const UserAvatar = () => {
     const [ anchorEl, setAnchorEl ] = useState(null);
     const open = Boolean(anchorEl);
-    const [ loginDialogOpen, setLoginDialogOpen] = useState(false);
 
     const isLoggedIn = useSelector(state => state.user.loggedIn);
     const dispatch = useDispatch();
@@ -20,13 +43,7 @@ const UserAvatar = () => {
     const handleMenuClose = () => {
         setAnchorEl(null);
     }
-    const handleLoginDialogOpen = () => {
-        handleMenuClose();
-        setLoginDialogOpen(true);
-    }
-    const handleLoginDialogClose = () => {
-        setLoginDialogOpen(false);
-    }
+    
     const logout = () =>{
         dispatch(userActions.logout());
     }
@@ -57,17 +74,7 @@ const UserAvatar = () => {
                         <MenuItem onClick={logout}>Logout</MenuItem>
                     </Menu>
                 </div>
-                :
-                <div>
-                    <Button onClick={handleLoginDialogOpen} color="inherit">Login</Button>
-                    /
-                    <Button color="inherit">Sign Up</Button>
-                    <Dialog open={loginDialogOpen} onClose={handleLoginDialogClose} >
-                        <DialogContent>
-                            <LoginForm />
-                        </DialogContent>
-                    </Dialog>
-                </div>
+                :<UnLoggedInUser />
             }
         </div>
     )
