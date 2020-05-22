@@ -1,4 +1,4 @@
-import userConstants from '../constants/UserConstants';
+import userConstants from '../constants/user.constants';
 import { userService } from '../services';
 
 export const userActions = {
