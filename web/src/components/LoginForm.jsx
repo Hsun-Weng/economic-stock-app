@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Grid, Box, Typography, Container, makeStyles } from '@material-ui/core';
+import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, CircularProgress, Box, Typography, Container, makeStyles } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
@@ -44,8 +44,9 @@ export default function LoginForm() {
   const [ userName, setUserName ] = useState("");
   const [ password, setPassword ] = useState("");
 
-  const user = useSelector(state => state.user.user);
+  const loggingIn = useSelector(state => state.user.loggingIn);
   const loginError = useSelector(state => state.user.error);
+
   const dispatch = useDispatch();
 
   const handleUserName = ( event ) => {
@@ -58,14 +59,8 @@ export default function LoginForm() {
 
   const handleSubmit = ( event ) => {
     event.preventDefault();
-    if(userName && password){
-      dispatch(userActions.login(userName, password));
-    }
+    dispatch(userActions.login(userName, password));
   }
-
-  useEffect(()=>{
-    console.log(loginError)
-  })
 
   return (
     <Container component="main" maxWidth="xs">
@@ -108,6 +103,7 @@ export default function LoginForm() {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
+          <div>
           <Button
             type="submit"
             fullWidth
@@ -115,8 +111,10 @@ export default function LoginForm() {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            {loggingIn? <CircularProgress size={24} />:
+            <Typography>Sign In</Typography>}
           </Button>
+          </div>
         </form>
       </div>
       <Box mt={8}>

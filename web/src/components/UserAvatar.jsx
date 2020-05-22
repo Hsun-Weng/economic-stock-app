@@ -3,7 +3,7 @@ import { useSelector, useDispatch} from 'react-redux';
 import { IconButton, Badge, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import LoginForm from './LoginForm';
-import SignupForm from './SignupForm';
+import SignUpForm from './SignUpForm';
 
 import { userActions } from '../actions';
 
@@ -36,7 +36,7 @@ const UnLoggedInUser = () => {
             </Dialog>
             <Dialog open={signupDialogOpen} onClose={handleSignupDialogClose} >
                 <DialogContent>
-                    <SignupForm />
+                    <SignUpForm />
                 </DialogContent>
             </Dialog>
         </div>

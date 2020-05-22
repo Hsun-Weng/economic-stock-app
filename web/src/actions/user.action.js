@@ -14,8 +14,8 @@ function login(userName, password) {
         dispatch(request({ userName }));
         
         userService.login(userName, password)
-            .then(user => {
-                    dispatch(success(user));
+            .then(() => {
+                    dispatch(success());
                 },
                 error => {
                     dispatch(failure(error));
@@ -24,10 +24,10 @@ function login(userName, password) {
     }
 
     function request(user) {
-        return {type: userConstants.LOGIN_REQUEST, user};
+        return {type: userConstants.LOGIN_REQUEST};
     }
-    function success(user) {
-        return {type: userConstants.LOGIN_SUCCESS, user};
+    function success() {
+        return {type: userConstants.LOGIN_SUCCESS};
     }
     function failure(error) {
         return {type: userConstants.LOGIN_FAILURE, error};

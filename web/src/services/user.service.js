@@ -14,6 +14,10 @@ function login(userName, password){
         body: JSON.stringify({ userName, password })
     };
 
+    if(userName.length === 0 || password.length === 0 ){
+        return Promise.reject({status: 0, message: "User Name And Password Can't Be Empty"})
+    }
+
     return fetch(`/api/user/login`, requestOptions)
         .then(handleResponse)
         .then(token => {

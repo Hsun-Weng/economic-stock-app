@@ -5,7 +5,6 @@ export const user = (state={}, action) =>{
     case userConstants.LOGIN_REQUEST:
       return {
         loggingIn: true,
-        user: action.user
       };
     case userConstants.LOGIN_SUCCESS:
       return {

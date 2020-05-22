@@ -2,7 +2,7 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Grid, Box, Typography, Container } from '@material-ui/core';
+import { Avatar, Button, CssBaseline, TextField, CircularProgress, Link, Grid, Box, Typography, Container } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 function Copyright() {
@@ -38,8 +38,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignupForm() {
+export default function SignUpForm() {
   const classes = useStyles();
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -56,11 +57,9 @@ export default function SignupForm() {
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
                 label="First Name"
                 autoFocus
               />
@@ -70,9 +69,7 @@ export default function SignupForm() {
                 variant="outlined"
                 required
                 fullWidth
-                id="lastName"
                 label="Last Name"
-                name="lastName"
                 autoComplete="lname"
               />
             </Grid>
@@ -81,10 +78,7 @@ export default function SignupForm() {
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                label="User Name"
               />
             </Grid>
             <Grid item xs={12}>
@@ -92,10 +86,8 @@ export default function SignupForm() {
                 variant="outlined"
                 required
                 fullWidth
-                name="password"
                 label="Password"
                 type="password"
-                id="password"
                 autoComplete="current-password"
               />
             </Grid>
