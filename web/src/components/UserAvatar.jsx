@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch} from 'react-redux';
-import { IconButton, Badge, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
-import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
+import { Dialog, DialogContent, Button } from '@material-ui/core';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
-
-import { userActions } from '../actions';
+import LoggedInUserAvatar from './LoggedInUserAvatar';
 
 const UnLoggedInUser = () => {
     const [ loginDialogOpen, setLoginDialogOpen] = useState(false);
@@ -44,49 +42,13 @@ const UnLoggedInUser = () => {
 }
 
 const UserAvatar = () => {
-    const [ anchorEl, setAnchorEl ] = useState(null);
-    const open = Boolean(anchorEl);
-
-    const isLoggedIn = useSelector(state => state.user.loggedIn);
     const dispatch = useDispatch();
-
-    const handleMenu = ( event ) => {
-        setAnchorEl(event.currentTarget);
-    } 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    }
-    
-    const logout = () =>{
-        dispatch(userActions.logout());
-    }
+    const isLoggedIn = useSelector(state => state.auth.loggedIn);
 
     return (
         <div>
             {isLoggedIn ? 
-                <div>
-                    <IconButton onClick={handleMenu}>
-                        <Badge badgeContent={4} color="secondary">
-                            <AccountCircleRoundedIcon />
-                        </Badge>
-                    </IconButton>
-                    <Menu 
-                        anchorEl={anchorEl}
-                        anchorOrigin={{
-                            vertical: "top",
-                            horizontal: "right"
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: "top",
-                            horizontal: "right"
-                        }}
-                        open={open}
-                        onClose={handleMenuClose}
-                        >
-                        <MenuItem onClick={logout}>Logout</MenuItem>
-                    </Menu>
-                </div>
+                <LoggedInUserAvatar />
                 :<UnLoggedInUser />
             }
         </div>

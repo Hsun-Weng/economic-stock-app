@@ -2,21 +2,18 @@ import userConstants from '../constants/user.constants';
 
 export const user = (state={}, action) =>{
   switch (action.type) {
-    case userConstants.LOGIN_REQUEST:
+    case userConstants.GET_USER_REQUEST:
       return {
-        loggingIn: true,
+        gettingUser: true,
       };
-    case userConstants.LOGIN_SUCCESS:
+    case userConstants.GET_USER_SUCCESS:
       return {
-        loggedIn: true,
         user: action.user
       };
-    case userConstants.LOGIN_FAILURE:
+    case userConstants.GET_USER_FAILURE:
       return {
         error: action.error
       };
-    case userConstants.LOGOUT:
-      return {};
     default:
       return state
   }
