@@ -4,14 +4,12 @@ import { authService } from '../services';
 export const authActions = {
     login,
     logout,
-    // regiseter,
-    // getAll,
-    // delete: _delet
+    signUp
 }
 
 function login(userName, password) {
     return dispatch => {
-        dispatch(request({ userName }));
+        dispatch(request());
         
         authService.login(userName, password)
             .then(() => {
@@ -23,7 +21,7 @@ function login(userName, password) {
             );
     }
 
-    function request(user) {
+    function request() {
         return {type: authConstants.LOGIN_REQUEST};
     }
     function success() {
@@ -39,13 +37,13 @@ function logout() {
     return {type: authConstants.LOGOUT};
 }
 
-function register(user) {
+function signUp(user) {
     return dispatch => {
         dispatch(request(user));
 
-        authService.register(user)
+        authService.signUp(user)
             .then(
-                user => { 
+                () => { 
                     dispatch(success());
                 },
                 error => {
@@ -54,28 +52,7 @@ function register(user) {
             );
     };
 
-    function request (user) { return { type: authConstants.REGISTER_REQUEST, user } }
-    function success (user) { return { type: authConstants.REGISTER_SUCCESS, user } }
-    function failure (error) { return { type: authConstants.REGISTER_FAILURE, error } }
-}
-
-// prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
-    return dispatch => {
-        dispatch(request(id));
-
-        authService.delete(id)
-            .then(
-                user => { 
-                    dispatch(success(id));
-                },
-                error => {
-                    dispatch(failure(id, error));
-                }
-            );
-    };
-
-    function request(id) { return { type: authConstants.DELETE_REQUEST, id } }
-    function success(id) { return { type: authConstants.DELETE_SUCCESS, id } }
-    function failure(id, error) { return { type: authConstants.DELETE_FAILURE, id, error } }
+    function request (user) { return { type: authConstants.SIGNUP_REQUEST } }
+    function success (user) { return { type: authConstants.SIGNUP_SUCCESS } }
+    function failure (error) { return { type: authConstants.SIGNUP_FAILURE, error } }
 }

@@ -4,8 +4,6 @@ import { userService } from '../services';
 export const userActions = {
     getUser,
 }
-
-
 function getUser() {
     return dispatch => {
         dispatch(request());

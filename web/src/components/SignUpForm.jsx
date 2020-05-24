@@ -1,9 +1,13 @@
   
-import React from 'react';
+import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Button, CssBaseline, TextField, CircularProgress, Link, Grid, Box, Typography, Container } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { authActions } from '../actions';
 
 function Copyright() {
   return (
@@ -40,11 +44,31 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUpForm() {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
+  const [ userName, setUserName ] = useState("");
+  const [ password, setPassword ] = useState("");
+  const [ firstName, setFirstName ] = useState("");
+  const [ lastName, setLastName ] = useState("");
+
+  const signUpError = useSelector(state=>state.auth.error);
+  
+  const handleSubmit = ( event ) => {
+    event.preventDefault();
+    let user = { userName: userName,
+                password: password,
+                firstName: firstName,
+                lastName: lastName}
+    dispatch(authActions.signUp(user));
+  }
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      {signUpError ?
+        <Alert severity="error">{signUpError.message}</Alert>
+        :<div/>
+      }
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
@@ -52,7 +76,7 @@ export default function SignUpForm() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -61,6 +85,8 @@ export default function SignUpForm() {
                 required
                 fullWidth
                 label="First Name"
+                value={firstName}
+                onChange={event=>setFirstName(event.target.value)}
                 autoFocus
               />
             </Grid>
@@ -70,7 +96,8 @@ export default function SignUpForm() {
                 required
                 fullWidth
                 label="Last Name"
-                autoComplete="lname"
+                value={lastName}
+                onChange={event=>setLastName(event.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -79,6 +106,8 @@ export default function SignUpForm() {
                 required
                 fullWidth
                 label="User Name"
+                value={userName}
+                onChange={event=>setUserName(event.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -88,7 +117,8 @@ export default function SignUpForm() {
                 fullWidth
                 label="Password"
                 type="password"
-                autoComplete="current-password"
+                value={password}
+                onChange={event=>setPassword(event.target.value)}
               />
             </Grid>
           </Grid>
@@ -97,8 +127,7 @@ export default function SignUpForm() {
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
-          >
+            className={classes.submit}>
             Sign Up
           </Button>
         </form>

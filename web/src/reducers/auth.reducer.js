@@ -9,7 +9,6 @@ export const auth = (state={}, action) =>{
     case authConstants.LOGIN_SUCCESS:
       return {
         loggedIn: true,
-        user: action.user
       };
     case authConstants.LOGIN_FAILURE:
       return {
@@ -17,6 +16,16 @@ export const auth = (state={}, action) =>{
       };
     case authConstants.LOGOUT:
       return {};
+    case authConstants.SIGNUP_REQUEST:
+      return {
+        signningUp: true
+      };
+    case authConstants.SIGNUP_SUCCESS:
+      return {};
+    case authConstants.SIGNUP_FAILURE:
+      return {
+        error: action.error
+      };
     default:
       return state
   }

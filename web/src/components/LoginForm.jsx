@@ -44,18 +44,10 @@ export default function LoginForm() {
   const [ userName, setUserName ] = useState("");
   const [ password, setPassword ] = useState("");
 
-  const loggingIn = useSelector(state => state.user.loggingIn);
-  const loginError = useSelector(state => state.user.error);
+  const loggingIn = useSelector(state => state.auth.loggingIn);
+  const loginError = useSelector(state => state.auth.error);
 
   const dispatch = useDispatch();
-
-  const handleUserName = ( event ) => {
-    setUserName(event.target.value);
-  }
-
-  const handlePassword = ( event ) => {
-    setPassword(event.target.value);
-  }
 
   const handleSubmit = ( event ) => {
     event.preventDefault();
@@ -76,7 +68,7 @@ export default function LoginForm() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate onSubmit={handleSubmit}>
+        <form className={classes.form} onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -85,7 +77,7 @@ export default function LoginForm() {
             label="User Name"
             name="userName"
             value={userName}
-            onChange={handleUserName}
+            onChange={event=>setUserName(event.target.value)}
             autoFocus
           />
           <TextField
@@ -97,23 +89,18 @@ export default function LoginForm() {
             label="Password"
             type="password"
             value={password}
-            onChange={handlePassword}
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            onChange={event=>setPassword(event.target.value)}
           />
           <div>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            {loggingIn? <CircularProgress size={24} />:
-            <Typography>Sign In</Typography>}
-          </Button>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}>
+              {loggingIn? <CircularProgress size={24} />:
+              <Typography>Sign In</Typography>}
+            </Button>
           </div>
         </form>
       </div>

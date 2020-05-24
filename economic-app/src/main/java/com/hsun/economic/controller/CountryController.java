@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.hsun.economic.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,8 +39,7 @@ public class CountryController {
             responseBean.setStatus(1);
             
         }catch(Exception e) {
-            responseBean.setStatus(1);
-            e.printStackTrace();
+            throw new ApiException("Error Occured");
         }
         return responseBean;
     }

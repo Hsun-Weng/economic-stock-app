@@ -20,10 +20,6 @@ function getUser(){
 const handleResponse = (httpResponse) => {
     return httpResponse.json().then(res => {
         if (!httpResponse.ok) {
-            // if (httpResponse.status === 401) {
-            //     logout();
-            // }
-            
             const error = res;
             return Promise.reject(error);
          }

@@ -3,8 +3,7 @@ import { authHeader } from '../helplers/authHeader';
 export const authService = {
     login,
     logout,
-    register,
-    update
+    signUp,
 }
 
 function login(userName, password){
@@ -13,10 +12,6 @@ function login(userName, password){
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userName, password })
     };
-
-    if(userName.length === 0 || password.length === 0 ){
-        return Promise.reject({status: 0, message: "User Name And Password Can't Be Empty"})
-    }
 
     return fetch(`/api/user/login`, requestOptions)
         .then(handleResponse)
@@ -29,24 +24,15 @@ function logout(){
     localStorage.removeItem('token');
 }
 
-function register(user){
+function signUp(user){
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user)
     };
 
-    return fetch(`/user/register`, requestOptions).then(handleResponse);
-}
-
-function update(user) {
-    const requestOptions = {
-        method: 'PUT',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(user)
-    };
-
-    return fetch(`/user/${user.id}`, requestOptions).then(handleResponse);;
+    return fetch(`/api/user/signup`, requestOptions)
+        .then(handleResponse);
 }
 
 const handleResponse = (httpResponse) => {
