@@ -11,13 +11,17 @@ import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import rootReducer from './reducers';
 
+import { SnackbarProvider } from 'notistack';
+
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
-      <MainLayout />
-    </Router>
+    <SnackbarProvider>
+      <Router>
+        <MainLayout />
+      </Router>
+    </SnackbarProvider>
   </Provider>,
   document.getElementById('root'));
 

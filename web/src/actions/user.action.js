@@ -1,5 +1,6 @@
 import userConstants from '../constants/user.constants';
 import { userService } from '../services';
+import { notificationActions } from './notification.action';
 
 export const userActions = {
     getUser,
@@ -11,6 +12,16 @@ function getUser() {
         userService.getUser()
                 .then(user=>{
                     dispatch(success(user));
+                    dispatch(notificationActions.enqueueNotification({
+                        message: 'Login Success',
+                        options: {
+                            key: new Date().getTime() + Math.random(),
+                            variant: 'warning',
+                            // action: key => (
+                            //     <Button onClick={() => closeSnackbar(key)}>dismiss me</Button>
+                            // ),
+                        },
+                    }))
                 },
                 error=>{
                     dispatch(failure(error));

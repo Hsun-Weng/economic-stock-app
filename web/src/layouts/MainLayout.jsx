@@ -21,6 +21,7 @@ import MainListItems from '../components/layout-menus/MainListItems';
 import UserListItems from '../components/layout-menus/UserListItems';
 import RouteComponent from '../Routes';
 import UserAvator from '../components/UserAvatar';
+import Notification from '../components/Notification';
 
 import {Switch} from 'react-router-dom'
 
@@ -148,6 +149,7 @@ export default function Dashboard() {
   return (
     <div  className={classes.root}>
       <ThemeProvider theme={theme}>
+        <Notification />
         <CssBaseline />
           <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
           <Toolbar className={classes.toolbar}>
