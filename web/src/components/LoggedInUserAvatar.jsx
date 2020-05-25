@@ -3,7 +3,7 @@ import { useSelector, useDispatch} from 'react-redux';
 import { IconButton, Badge, Menu, MenuItem, Typography } from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 
-import { authActions, userActions } from '../actions';
+import { userAction } from '../actions';
 
 const LoggedInUserAvatar = () => {
     const dispatch = useDispatch();
@@ -19,12 +19,8 @@ const LoggedInUserAvatar = () => {
         setAnchorEl(null);
     }
     const logout = () => {
-        dispatch(authActions.logout());
+        dispatch(userAction.logout());
     }
-
-    useEffect(()=>{
-        dispatch(userActions.getUser());
-    }, [])
 
     return (
         <div>

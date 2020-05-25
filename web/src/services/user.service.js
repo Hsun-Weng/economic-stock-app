@@ -2,6 +2,9 @@ import { authHeader } from '../helplers/authHeader';
 
 export const userService = {
     getUser,
+    login,
+    signUp,
+    logout
 }
 
 function getUser(){
@@ -15,6 +18,35 @@ function getUser(){
         .then(user => {
             return user;
         });
+}
+
+function login(userName, password){
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userName, password })
+    };
+
+    return fetch(`/api/user/login`, requestOptions)
+        .then(handleResponse)
+        .then(token => {
+            localStorage.setItem('token', token);
+        });
+}
+
+function logout(){
+    localStorage.removeItem('token');
+}
+
+function signUp(user){
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user)
+    };
+
+    return fetch(`/api/user/signup`, requestOptions)
+        .then(handleResponse);
 }
 
 const handleResponse = (httpResponse) => {

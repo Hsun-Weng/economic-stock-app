@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch} from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Dialog, DialogContent, Button } from '@material-ui/core';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
@@ -42,12 +42,11 @@ const UnLoggedInUser = () => {
 }
 
 const UserAvatar = () => {
-    const dispatch = useDispatch();
-    const isLoggedIn = useSelector(state => state.auth.loggedIn);
+    const user = useSelector(state => state.user.user);
 
     return (
         <div>
-            {isLoggedIn ? 
+            {user ? 
                 <LoggedInUserAvatar />
                 :<UnLoggedInUser />
             }

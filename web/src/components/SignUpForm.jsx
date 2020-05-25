@@ -7,7 +7,7 @@ import { Alert } from '@material-ui/lab';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { authActions } from '../actions';
+import { userAction } from '../actions';
 
 function Copyright() {
   return (
@@ -51,7 +51,7 @@ export default function SignUpForm() {
   const [ firstName, setFirstName ] = useState("");
   const [ lastName, setLastName ] = useState("");
 
-  const signUpError = useSelector(state=>state.auth.error);
+  const signUpError = useSelector(state=>state.signUp.error);
   
   const handleSubmit = ( event ) => {
     event.preventDefault();
@@ -59,7 +59,7 @@ export default function SignUpForm() {
                 password: password,
                 firstName: firstName,
                 lastName: lastName}
-    dispatch(authActions.signUp(user));
+    dispatch(userAction.signUp(user));
   }
 
   return (

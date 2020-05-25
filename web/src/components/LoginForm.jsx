@@ -4,7 +4,7 @@ import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Lin
 import Alert from '@material-ui/lab/Alert';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
-import { authActions } from '../actions';
+import { userAction } from '../actions';
 
 function Copyright() {
   return (
@@ -44,14 +44,14 @@ export default function LoginForm() {
   const [ userName, setUserName ] = useState("");
   const [ password, setPassword ] = useState("");
 
-  const loggingIn = useSelector(state => state.auth.loggingIn);
-  const loginError = useSelector(state => state.auth.error);
+  const loggingIn = useSelector(state => state.login.loggingIn);
+  const loginError = useSelector(state => state.login.error);
 
   const dispatch = useDispatch();
 
   const handleSubmit = ( event ) => {
     event.preventDefault();
-    dispatch(authActions.login(userName, password));
+    dispatch(userAction.login(userName, password));
   }
 
   return (
