@@ -8,7 +8,6 @@ export const notificationActions = {
 
 function enqueueNotification(notification) {
     const key = notification.options && notification.options.key;
-    console.log(notification)
     return {
         type: notificationConstants.NOTIFICATION_ENQUEUE,
         notification: {

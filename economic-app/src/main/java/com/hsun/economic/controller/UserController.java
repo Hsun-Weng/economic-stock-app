@@ -1,7 +1,7 @@
 package com.hsun.economic.controller;
 
-import com.hsun.economic.exception.ApiException;
-import org.hibernate.exception.ConstraintViolationException;
+import com.hsun.economic.exception.ApiClientException;
+import com.hsun.economic.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
@@ -15,7 +15,6 @@ import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.entity.User;
 import com.hsun.economic.service.UserService;
 
-import javax.transaction.TransactionalException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,9 +42,8 @@ public class UserController {
 
             responseBean.setData(dataMap);
 
-        }catch(Exception e){
-            responseBean.setStatus(0);
-            e.printStackTrace();
+        }catch(Exception e) {
+            throw new ApiServerException();
         }
         return responseBean;
     }
@@ -56,12 +54,10 @@ public class UserController {
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             service.saveUser(user);
-            
-            responseBean.setStatus(1);
         }catch(DataIntegrityViolationException e){
-            throw new ApiException("Duplicate User Name");
+            throw new ApiClientException("Duplicate User Name");
         }catch(Exception e) {
-            throw new ApiException("Error Ocurred");
+            throw new ApiServerException();
         }
         return responseBean;
     }

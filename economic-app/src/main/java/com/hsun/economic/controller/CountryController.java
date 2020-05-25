@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.hsun.economic.exception.ApiException;
+import com.hsun.economic.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,10 +36,9 @@ public class CountryController {
             }).collect(Collectors.toList());
              
             responseBean.setData(dataList);
-            responseBean.setStatus(1);
-            
+
         }catch(Exception e) {
-            throw new ApiException("Error Occured");
+            throw new ApiServerException();
         }
         return responseBean;
     }

@@ -29,9 +29,7 @@ const LoggedInUserAvatar = () => {
     return (
         <div>
             <IconButton onClick={handleMenu} color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                    <AccountCircleRoundedIcon />
-                </Badge>
+                <AccountCircleRoundedIcon />
                 <Typography>{user && user.firstName}</Typography>
             </IconButton>
             <Menu 

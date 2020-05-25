@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { IconButton } from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
 import { useSnackbar } from 'notistack';
 import { notificationActions } from '../actions';
 
@@ -33,6 +35,12 @@ const Notification = () => {
             enqueueSnackbar(message, {
                 key,
                 ...options,
+                action: key => (
+                    <IconButton onClick={() => closeSnackbar(key)} color="inherit">
+                        <ClearIcon />
+                    </IconButton>
+                ),
+                anchorOrigin: {horizontal: 'right', vertical: 'bottom'},
                 onClose: (event, reason, myKey) => {
                     if (options.onClose) {
                         options.onClose(event, reason, myKey);
