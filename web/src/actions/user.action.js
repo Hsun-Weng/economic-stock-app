@@ -16,10 +16,7 @@ function getUser() {
                         message: 'Login Success',
                         options: {
                             key: new Date().getTime() + Math.random(),
-                            variant: 'warning',
-                            // action: key => (
-                            //     <Button onClick={() => closeSnackbar(key)}>dismiss me</Button>
-                            // ),
+                            variant: 'success',
                         },
                     }))
                 },
