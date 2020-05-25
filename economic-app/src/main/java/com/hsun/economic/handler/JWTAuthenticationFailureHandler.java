@@ -24,14 +24,7 @@ public class JWTAuthenticationFailureHandler implements AuthenticationFailureHan
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
-        ResponseBean responseBean = new ResponseBean();
-        
-        responseBean.setStatus(0);
-        responseBean.setMessage("Please confirm User Name or Password");
-
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.getWriter().write(gson.toJson(responseBean));
-        response.getWriter().flush();;
+        response.sendError(HttpStatus.UNAUTHORIZED.value(), "User Name or Password incorrect");
     }
 
 }

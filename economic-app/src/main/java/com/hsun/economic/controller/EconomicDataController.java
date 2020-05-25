@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.hsun.economic.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,11 +46,9 @@ public class EconomicDataController {
             }).collect(Collectors.toList());
              
             responseBean.setData(dataList);
-            responseBean.setStatus(1);
-            
+
         }catch(Exception e) {
-            responseBean.setStatus(0);
-            e.printStackTrace();
+            throw new ApiServerException();
         }
         return responseBean;
     }
@@ -72,10 +71,8 @@ public class EconomicDataController {
             }).collect(Collectors.toList());
             
             responseBean.setData(dataList);
-            responseBean.setStatus(1);
         }catch(Exception e) {
-            responseBean.setStatus(0);
-            e.printStackTrace();
+            throw new ApiServerException();
         }
         return responseBean;
     }

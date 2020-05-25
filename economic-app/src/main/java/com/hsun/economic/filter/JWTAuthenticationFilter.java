@@ -69,8 +69,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         
         ResponseBean responseBean = new ResponseBean();
         responseBean.setData(token);
-        responseBean.setStatus(1);
-        
+
         response.getWriter().write(new Gson().toJson(responseBean));
         response.getWriter().flush();
     }
