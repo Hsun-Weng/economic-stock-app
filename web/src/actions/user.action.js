@@ -87,6 +87,13 @@ function signUp(user) {
             .then(
                 () => { 
                     dispatch(success());
+                    dispatch(notificationActions.enqueueNotification({
+                        message: `Sign Up Success, Now you can login as ${user.userName}`,
+                        options: {
+                            key: new Date().getTime() + Math.random(),
+                            variant: 'success',
+                        },
+                    }))
                 },
                 error => {
                     dispatch(failure(error));
