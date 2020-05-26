@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Dialog, DialogContent, Button } from '@material-ui/core';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 import LoggedInUserAvatar from './LoggedInUserAvatar';
+import { userAction } from '../actions';
 
 const UnLoggedInUser = () => {
     const [ loginDialogOpen, setLoginDialogOpen] = useState(false);
@@ -42,7 +43,12 @@ const UnLoggedInUser = () => {
 }
 
 const UserAvatar = () => {
+    const dispatch = useDispatch();
     const user = useSelector(state => state.user.user);
+    
+    useEffect(()=>{
+        dispatch(userAction.getUser())
+    }, []);
 
     return (
         <div>

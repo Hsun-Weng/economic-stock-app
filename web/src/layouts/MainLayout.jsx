@@ -20,7 +20,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MainListItems from '../components/layout-menus/MainListItems';
 import UserListItems from '../components/layout-menus/UserListItems';
 import RouteComponent from '../Routes';
-import UserAvator from '../components/UserAvatar';
+import UserAvatar from '../components/UserAvatar';
 import Notification from '../components/Notification';
 
 import {Switch} from 'react-router-dom'
@@ -168,7 +168,7 @@ export default function Dashboard() {
             <FormControlLabel
               control={<SwitchButton size="small" checked={false} checked={isDarkMode} color="default" onChange={handleDarkMode}/>}
             />
-            <UserAvator />
+            <UserAvatar />
           </Toolbar>
         </AppBar>
         <Drawer

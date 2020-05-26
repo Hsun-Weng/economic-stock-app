@@ -11,8 +11,9 @@ export const userAction = {
 function getUser() {
     return dispatch => {
         dispatch(request());
-        
-        userService.getUser()
+
+        if(localStorage.getItem('token')){
+            userService.getUser()
                 .then(user=>{
                     dispatch(success(user));
                     dispatch(notificationActions.enqueueNotification({
@@ -26,6 +27,9 @@ function getUser() {
                 error=>{
                     dispatch(failure(error));
                 })
+        }else{
+            dispatch(clearUser());
+        }
     };
 
     function request() { return { type: userConstants.GET_USER_REQUEST } }
