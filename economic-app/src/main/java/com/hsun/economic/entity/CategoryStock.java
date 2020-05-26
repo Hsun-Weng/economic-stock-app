@@ -6,10 +6,9 @@ import javax.persistence.*;
 
 import lombok.Data;
 
-
 /**
  * The persistent class for the economic_data database table.
- * 
+ *
  */
 @Entity
 @Data
@@ -20,10 +19,11 @@ public class CategoryStock implements Serializable {
 
 	@EmbeddedId
 	private CategoryStockPK id;
-	
+
 	@ManyToOne
-    @MapsId("stockId")
-    @JoinColumn(name="stock_id", referencedColumnName="stock_id")
+	@MapsId("stockId")
+	@JoinColumn(name="stock_id", referencedColumnName="stock_id")
 	private TaiwanStock taiwanStock;
-	
+
 }
+

@@ -1,6 +1,7 @@
 package com.hsun.economic.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -33,4 +34,8 @@ public class User implements Serializable {
 
 	@Column(name="last_name")
 	private String lastName;
+
+	@OneToMany(cascade=CascadeType.DETACH)
+	@JoinColumn(name="user_id")
+	private List<UserPortfolio> userPortfolioList;
 }
