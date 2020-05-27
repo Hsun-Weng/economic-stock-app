@@ -22,4 +22,10 @@ public class PortfolioProduct implements Serializable {
 
     @Column(name="product_id")
     private Integer productId;
+
+    @Column(name="sort")
+    private Integer sort;
+
+    @Column(name="product_type")
+    private Integer product_type;
 }
