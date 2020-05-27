@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * The persistent class for the economic_data database table.
@@ -27,4 +28,7 @@ public class UserPortfolio implements Serializable {
     @Column(name="user_id")
     private Integer userId;
 
+    @OneToMany(cascade=CascadeType.DETACH)
+    @JoinColumn(name="portfolio_id")
+    private List<PortfolioProduct> portfolioProductList;
 }
