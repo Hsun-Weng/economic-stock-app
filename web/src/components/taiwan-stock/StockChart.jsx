@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { Grid, Paper, FormControl, Select, InputLabel, MenuItem, Box} from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab';
 
+import { stockAction } from '../../actions'
 import CandlestickChart from './CandlestickChart';
 
 const useStyles = makeStyles(theme => ({
@@ -31,44 +33,20 @@ const StockChart = () => {
     const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
+    const dispatch = useDispatch();
+    const categories = useSelector(state=>state.stock_categories.data);
+    const stocks = useSelector(state=>state.category_stocks.data);
+    const stockPrices = useSelector(state=>state.stock_prices.data);
+    
     const [ categoryCode, setCategoryCode ] = useState("024");
     const [ stockCode, setStockCode ] = useState("2330");
-    const [ categories, setCategories ] = useState([]);
-    const [ stocks, setStocks ] = useState([]);
     const [ dataset, setDataset ] = useState([]);
 
     // 預設30天前
     const [ startDate, setStartDate ] = useState(new Date(Date.now() - 120 * 24 * 60 * 60 * 1000));
     const [ endDate, setEndDate ] = useState(new Date());
 
-    const fetchCategories = async() => {
-        const res = await fetch(`/api/stock/taiwan/categories`)
-        res.json()
-            .then(res => res.data)
-            .then(data => setCategories(data))
-            .catch(err => console.log(err));
-    }
-
-    /**
-     * 所有證券代號
-     */
-    const fetchStocks = async( category ) => {
-        const res = await fetch(`/api/stock/taiwan/category/${category}/stocks`);
-        res.json()
-            .then(res => res.data)
-            .then(data => setStocks(data))
-            .catch(err => console.log(err));
-    };
-
-    const fetchStockData = async(stock, start, end) => {
-        let formatStart = start.toISOString().slice(0,10)
-        let formatEnd = end.toISOString().slice(0,10)
-        const res = await fetch(`/data/stock/taiwan/${stock}?startDate=${formatStart}&endDate=${formatEnd}`);
-        res.json()
-            .then(res => res.data)
-            .then(data => setDataset(data))
-            .catch(err => console.log(err));
-    }
+    const formatDate = date => date.toISOString().slice(0,10);
 
     const CategorySelect = () => (
         <FormControl className={classes.formControl}>
@@ -101,16 +79,16 @@ const StockChart = () => {
     }
 
     useEffect(() => {
-        fetchCategories();
+        dispatch(stockAction.getCategories());
     }, [])
 
-    useEffect(() => {
-        fetchStocks(categoryCode);
+    useEffect(() => { 
+        dispatch(stockAction.getCategoryStocks(categoryCode));
     }, [ categoryCode ])
 
     useEffect(() => {
-        fetchStockData(stockCode, startDate, endDate);
-    }, [ stockCode, startDate, endDate ])
+        dispatch(stockAction.getStockPrices(stockCode, formatDate(startDate), formatDate(endDate)))
+    }, [ stockCode, startDate, endDate])
 
     return (
         <React.Fragment>
@@ -128,8 +106,8 @@ const StockChart = () => {
                 <Grid item md={12}>
                     <Paper className={fixedChartHeightPaper}>
                         <Box display="flex" justifyContent="center">
-                            {dataset.length > 0 ?
-                                <CandlestickChart dataset={dataset.map((data) => {
+                            {stockPrices.length > 0 ?
+                                <CandlestickChart dataset={stockPrices.map((data) => {
                                     data.date = new Date(data.date);
                                     return data;
                                 })} />
