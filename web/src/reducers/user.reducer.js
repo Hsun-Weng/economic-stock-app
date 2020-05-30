@@ -1,6 +1,6 @@
 import userConstants from '../constants/user.constants';
 
-export const user = (state={}, action) =>{
+export const user = (state={user: null}, action) =>{
   switch (action.type) {
     case userConstants.GET_USER_REQUEST:
       return {
@@ -42,16 +42,20 @@ export const login = (state={}, action) => {
   }
 }
 
-export const signUp = (state={}, action) => {
+export const signUp = (state={result: false}, action) => {
   switch (action.type) {
     case userConstants.SIGNUP_REQUEST:
       return {
+        result: false,
         signningUp: true
       };
     case userConstants.SIGNUP_SUCCESS:
-      return {};
+      return { 
+        result: true,
+      };
     case userConstants.SIGNUP_FAILURE:
       return {
+        result: false,
         error: action.error
       };
     default:

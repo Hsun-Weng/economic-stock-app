@@ -16,13 +16,6 @@ function getUser() {
             userService.getUser()
                 .then(user=>{
                     dispatch(success(user));
-                    dispatch(notificationActions.enqueueNotification({
-                        message: 'Login Success',
-                        options: {
-                            key: new Date().getTime() + Math.random(),
-                            variant: 'success',
-                        },
-                    }))
                 },
                 error=>{
                     dispatch(failure(error));
@@ -101,7 +94,7 @@ function signUp(user) {
             );
     };
 
-    function request (user) { return { type: userConstants.SIGNUP_REQUEST } }
-    function success (user) { return { type: userConstants.SIGNUP_SUCCESS } }
+    function request () { return { type: userConstants.SIGNUP_REQUEST } }
+    function success () { return { type: userConstants.SIGNUP_SUCCESS } }
     function failure (error) { return { type: userConstants.SIGNUP_FAILURE, error } }
 }
