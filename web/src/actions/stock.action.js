@@ -4,7 +4,8 @@ import { stockService } from '../services';
 export const stockAction = {
     getCategories,
     getCategoryStocks,
-    getStockPrices
+    getStockPrices,
+    getStockIndex
 }
 
 function getCategories() {
@@ -59,4 +60,22 @@ function getStockPrices(stockCode, startDate, endDate) {
     function request() { return { type: stockConstants.GET_STOCK_PRICES_REQUEST } }
     function success(data) { return { type: stockConstants.GET_STOCK_PRICES_SUCCESS, data } }
     function failure(error) { return { type: stockConstants.GET_STOCK_PRICES_FAILURE, error } }
+}
+
+function getStockIndex(indexCode, startDate, endDate) {
+    return dispatch => {
+        dispatch(request());
+
+        stockService.getStockIndex(indexCode, startDate, endDate)
+            .then(data=>{
+                dispatch(success(data));
+            },
+            error=>{
+                dispatch(failure(error));
+            })
+    };
+
+    function request() { return { type: stockConstants.GET_STOCK_INDEX_REQUEST } }
+    function success(data) { return { type: stockConstants.GET_STOCK_INDEX_SUCCESS, data } }
+    function failure(error) { return { type: stockConstants.GET_STOCK_INDEX_FAILURE, error } }
 }

@@ -1,19 +1,18 @@
 package com.hsun.economic.controller;
 
 import com.hsun.economic.bean.ResponseBean;
+import com.hsun.economic.entity.PortfolioProduct;
 import com.hsun.economic.entity.User;
 import com.hsun.economic.entity.UserPortfolio;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.service.PortfolioProductService;
+import com.hsun.economic.service.UserPortfolioService;
 import com.hsun.economic.service.UserService;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,13 @@ import java.util.stream.Collectors;
 public class UserPortfolioController {
 
     @Autowired
+    private UserPortfolioService service;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
+    private PortfolioProductService portfolioProductService;
 
     @GetMapping("/portfolio")
     public ResponseBean getPortfolioByUser(Authentication authentication){
@@ -48,30 +53,24 @@ public class UserPortfolioController {
     }
 
     @GetMapping("/portfolio/{portfolioId}")
-    public ResponseBean getPortfolioById(Authentication authentication, @PathVariable Integer portfolioId){
+    public ResponseBean getPortfolioProductListById(Authentication authentication, @PathVariable Integer portfolioId){
         ResponseBean responseBean = new ResponseBean();
         User user = null;
-        List<UserPortfolio> userPortfolioList = null;
-        List<Map<String, Object>> result = null;
+        List<Map<String, Object>> userProfolioProductList = null;
         try{
             user = userService.findUserByName(authentication.getName());
 
-            userPortfolioList = user.getUserPortfolioList().stream()
+            userProfolioProductList = user.getUserPortfolioList().stream()
                     .filter((data)->data.getPortfolioId().equals(portfolioId))
-                    .collect(Collectors.toList());
-
-            if(userPortfolioList.size() < 1){
-                throw new ApiClientException("Can't found portfolio.");
-            }
-
-            result = userPortfolioList.get(0).getPortfolioProductList()
+                    .collect(Collectors.toList())
+                    .get(0).getPortfolioProductList()
                     .stream().map((data)->{
                         Map<String, Object> dataMap = new HashMap<String, Object>();
-                        
+
                         return dataMap;
                     }).collect(Collectors.toList());
 
-            responseBean.setData(result);
+            responseBean.setData(userProfolioProductList);
 
         }catch(ApiClientException e){
             throw e;
@@ -80,5 +79,32 @@ public class UserPortfolioController {
         }
         return responseBean;
     }
-    
+
+    @PostMapping("/portfolio")
+    public ResponseBean addPortfolio(Authentication authentication, @RequestBody UserPortfolio userPortfolio) {
+        ResponseBean responseBean = new ResponseBean();
+        try{
+            service.addPortfolio(authentication.getName(), userPortfolio);
+        }catch(ApiClientException e){
+            throw e;
+        }catch(Exception e){
+            throw new ApiServerException();
+        }
+        return responseBean;
+    }
+
+    @PutMapping("/portfolio/{portfolioId}/products")
+    public ResponseBean updatePortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
+            , @RequestBody List<PortfolioProduct> portfolioProductList){
+        ResponseBean responseBean = new ResponseBean();
+        try{
+            portfolioProductService.savePortfolioProducts(authentication.getName()
+                    , portfolioId, portfolioProductList);
+        }catch(ApiClientException e){
+            throw e;
+        }catch(Exception e){
+            throw new ApiServerException();
+        }
+        return responseBean;
+    }
 }

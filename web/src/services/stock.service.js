@@ -2,7 +2,8 @@
 export const stockService = {
     getCategories,
     getCategoryStocks,
-    getStockPrices
+    getStockPrices,
+    getStockIndex
 }
 
 function getCategories(){
@@ -32,6 +33,16 @@ function getStockPrices(stockCode, startDate, endDate){
     };
 
     return fetch(`/data/stock/taiwan/${stockCode}?startDate=${startDate}&endDate=${endDate}`, requestOptions)
+        .then(handleResponse)
+}
+
+function getStockIndex(indexCode, startDate, endDate) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    };
+
+    return fetch(`/data/stock/taiwan/index/${indexCode}?startDate=${startDate}&endDate=${endDate}`, requestOptions)
         .then(handleResponse)
 }
 

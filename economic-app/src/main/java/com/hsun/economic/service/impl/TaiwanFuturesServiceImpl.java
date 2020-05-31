@@ -22,7 +22,7 @@ public class TaiwanFuturesServiceImpl implements TaiwanFuturesService {
 
     @Override
     public TaiwanFutures getTaiwanFuturesByFuturesCode(String futuresCode) {
-        return repository.findByFuturesCode(futuresCode);
+        return repository.findByFuturesCode(futuresCode).orElse(null);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.hsun.economic.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,5 +28,6 @@ public class PortfolioProduct implements Serializable {
     private Integer sort;
 
     @Column(name="product_type")
-    private Integer product_type;
+    private Integer productType;
+
 }

@@ -22,7 +22,7 @@ public class TaiwanFuturesController {
     private TaiwanFuturesService service;
     
     @GetMapping("/futures/taiwan")
-    public ResponseBean getAllTaiwanFutures() {
+    public ResponseBean getTaiwanFutures() {
         ResponseBean responseBean = new ResponseBean();
         List<TaiwanFutures> futuresList = null;
         List<Map<String, Object>> dataList = null;
@@ -33,31 +33,11 @@ public class TaiwanFuturesController {
                  Map<String, Object> futuresMap = new HashMap<String, Object>();
                  futuresMap.put("futuresCode", futures.getFuturesCode());
                  futuresMap.put("futuresName", futures.getFuturesName());
+                 futuresMap.put("indexCode", futures.getTaiwanStockIndex().getIndexCode());
                  return futuresMap;
             }).collect(Collectors.toList());
              
             responseBean.setData(dataList);
-
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
-    }
-    
-    @GetMapping("/futures/taiwan/{futuresCode}")
-    public ResponseBean getTaiwanFutures(@PathVariable String futuresCode) {
-        ResponseBean responseBean = new ResponseBean();
-        TaiwanFutures taiwanFutures = null;
-        Map<String, Object> dataMap = null;
-        try {
-            taiwanFutures = service.getTaiwanFuturesByFuturesCode(futuresCode);
-            
-            dataMap = new HashMap<String, Object>();
-            dataMap.put("futuresCode", taiwanFutures.getFuturesCode());
-            dataMap.put("futuresName", taiwanFutures.getFuturesName());
-            dataMap.put("indexCode", taiwanFutures.getTaiwanStockIndex().getIndexCode());
-            
-            responseBean.setData(dataMap);
 
         }catch(Exception e) {
             throw new ApiServerException();

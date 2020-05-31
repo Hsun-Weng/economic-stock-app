@@ -26,13 +26,26 @@ export const category_stocks = (state={data: []}, action) => {
     }
 }
 
-export const stock_prices = (state={data: []}, action) => {
+export const stock_prices = (state={loading: false, data: []}, action) => {
     switch(action.type) {
         case stockConstants.GET_STOCK_PRICES_REQUEST: 
             return { loading: true, data: [] };
         case stockConstants.GET_STOCK_PRICES_SUCCESS:
             return { data: action.data };
         case stockConstants.GET_STOCK_PRICES_FAILURE:
+            return { error: action.error };
+        default: 
+            return state;
+    }
+}
+
+export const stock_index = (state={data: []}, action) => {
+    switch(action.type) {
+        case stockConstants.GET_STOCK_INDEX_REQUEST: 
+            return { loading: true, data: [] };
+        case stockConstants.GET_STOCK_INDEX_SUCCESS:
+            return { data: action.data };
+        case stockConstants.GET_STOCK_INDEX_FAILURE:
             return { error: action.error };
         default: 
             return state;

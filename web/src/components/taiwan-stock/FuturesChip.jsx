@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
+import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Paper, FormControl, Select, InputLabel, MenuItem ,Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import FuturesChipChart from './FuturesChipChart';
+
+import { futuresAction } from '../../actions/futures.action';
+import { stockAction } from '../../actions/stock.action';
 
 import investor from '../../data/investor.json'
 
@@ -33,75 +37,22 @@ const FuturesChip = () => {
     const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
+    const dispatch = useDispatch();
+    const futures = useSelector(state=>state.futures.data);
+    const indexDataset = useSelector(state=>state.stock_index.data);
+    const futuresChipDataset = useSelector(state=>state.futures_chip.data);
+
     const [investorCode, setInvestorCode] = useState('RI');
     const [futuresCode, setFuturesCode] = useState("MTX");
-    const [futures, setFutures] = useState([]);
     const [indexCode, setIndexCode] = useState('TAIEX');
 
     // 預設30天前
     const [ startDate, setStartDate ] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
     const [ endDate, setEndDate ] = useState(new Date());
 
-    // 資料集
-    const [indexDataset, setIndexDataset] = useState([]);
-    const [futuresChipDataset, setFuturesChipDataset] = useState([]);
     const [dataset, setDataset] = useState([]);
 
-    /**
-     * 所有期貨代號
-     */
-    const fetchFutures = async() => {
-        const res = await fetch(`/api/futures/taiwan`);
-        res.json()
-            .then(res => res.data)
-            .then(data => setFutures(data))
-            .catch(err => console.log(err));
-    };
-
-    /**
-     * 取得期貨對應現貨代號
-     */
-    const fetchFuturesIndexCode = async( futures ) => {
-        const res = await fetch(`/api/futures/taiwan/${futures}`);
-        res.json()
-            .then(res => res.data)
-            .then(data => setIndexCode(data.indexCode))
-            .catch(err => console.log(err));
-    };
-
-    /**
-     * 現貨指數
-     */
-    const fetchStockIndex = async ( index, start, end ) => {
-        let formatStart = start.toISOString().slice(0,10)
-        let formatEnd = end.toISOString().slice(0,10)
-        const res = await fetch(`/data/stock/taiwan/index/${index}?startDate=${formatStart}&endDate=${formatEnd}`);
-        res.json()
-            .then(res => res.data)
-            .then(data => setIndexDataset(data))
-            .catch(err => console.log(err));
-    };
-
-    /**
-     * 取得日期區間內期貨籌碼
-     */
-    const fetchFuturesChip = async( futures, investor, start, end ) => {
-        let formatStart = start.toISOString().slice(0,10)
-        let formatEnd = end.toISOString().slice(0,10)
-        const res = await fetch(`/data/futures/taiwan/${futures}/chip?investorCode=${investor}&startDate=${formatStart}&endDate=${formatEnd}`);
-        res.json()
-            .then(res => res.data)
-            .then(data => {
-                return data.map((investorChipData)=>{
-                    let chipData = investorChipData.investorChip.pop();
-                    chipData.openInterestNetLot = chipData.openInterestLongLot - chipData.openInterestShortLot;
-                    let percent = Math.round(( chipData.openInterestNetLot / investorChipData.openInterestLot ) * 100);
-                    return {...investorChipData, ...chipData, "percent": percent};
-                })
-            })
-            .then(data => setFuturesChipDataset(data))
-            .catch(err => console.log(err));
-    }
+    const formatDate = date => date.toISOString().slice(0,10);
 
     const handleChangeInvestor = event => {
         setInvestorCode(event.target.value);
@@ -109,6 +60,7 @@ const FuturesChip = () => {
 
     const handleChangeFutures = event => {
         setFuturesCode(event.target.value);
+        setIndexCode(futures.find(data=>data.futuresCode===event.target.value).indexCode);
     }
 
     const InvestorSelect = () => (
@@ -148,19 +100,15 @@ const FuturesChip = () => {
     }
 
     useEffect(() => {
-        fetchFutures();
+        dispatch(futuresAction.getFutures());
     }, [])
 
     useEffect(() => {
-        fetchFuturesIndexCode(futuresCode);
-    }, [ futuresCode ])
-
-    useEffect(() => {
-        fetchFuturesChip(futuresCode, investorCode, startDate, endDate);
+        dispatch(futuresAction.getFuturesChip(futuresCode, investorCode, formatDate(startDate), formatDate(endDate)))
     }, [ futuresCode, investorCode, startDate, endDate ])
 
     useEffect(() => {
-        fetchStockIndex(indexCode, startDate, endDate);
+        dispatch(stockAction.getStockIndex(indexCode, formatDate(startDate), formatDate(endDate)));
     }, [ indexCode, startDate, endDate ])
 
     useEffect(()=>{

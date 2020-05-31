@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.hsun.economic.entity.TaiwanFutures;
 
+import java.util.Optional;
+
 public interface TaiwanFuturesRepository extends JpaRepository<TaiwanFutures, Integer>{
 
     @Query("SELECT tf FROM TaiwanFutures tf WHERE tf.futuresCode= ?1")
-    TaiwanFutures findByFuturesCode(String futuresCode);
+    Optional<TaiwanFutures> findByFuturesCode(String futuresCode);
 }
