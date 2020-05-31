@@ -3,6 +3,7 @@ import { user, login, signUp } from './user.reducer';
 import { notification } from './notification.reducer';
 import { stock_categories, category_stocks, stock_prices, stock_index } from './stock.reducer';
 import { futures, futures_chip } from './futures.reducer';
+import { portfolio } from './portfolio.reducer';
 
 const rootReducer = combineReducers({
     user,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
     futures,
     stock_index,
     futures_chip,
+    portfolio,
     notification
 });
 
