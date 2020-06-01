@@ -18,12 +18,17 @@ function getPortfolio(){
 function addPortfolio(portfolio){
     const requestOptions = {
         method: 'POST',
-        headers: { ...authHeader, 'Content-Type': 'application/json' },
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
         body: JSON.stringify(portfolio)
     };
 
     return fetch(`/api/portfolio`, requestOptions)
-        .then(handleResponse)
+        .then((httpResponse) => {
+            if (!httpResponse.ok) {
+                const error = httpResponse;
+                return Promise.reject(error);
+            }
+        })
 }
 
 
