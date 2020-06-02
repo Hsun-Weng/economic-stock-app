@@ -45,16 +45,6 @@ const Portfolio = () => {
     const [ portfolioId, setPortfolioId ] = useState(0);
     const [ addPorftolioName, setAddPortfolioName ] = useState("");
 
-    const PortfolioSelect = () => (
-        <FormControl className={classes.formControl}>
-          <InputLabel>Portfolio</InputLabel>
-          <Select
-            value={portfolioId}
-            onChange={event=>setPortfolioId(event.target.value)}>
-              {portfolio.map((prop, key)=><MenuItem key={key} value={prop.portoflioId}>{prop.portfolioName}</MenuItem>)}
-          </Select>
-        </FormControl>
-    )
 
     const addPortfolio = () => {
         let portfolio = { portfolioName: addPorftolioName}
@@ -71,7 +61,14 @@ const Portfolio = () => {
                 <Grid item md={12}>
                     <Paper>
                         <Box>
-                            <PortfolioSelect />
+                             <FormControl className={classes.formControl}>
+                                <InputLabel>Portfolio</InputLabel>
+                                <Select
+                                    value={portfolioId}
+                                    onChange={event=>setPortfolioId(event.target.value)}>
+                                    {portfolio.map((prop, key)=><MenuItem key={key} value={prop.portfolioId}>{prop.portfolioName}</MenuItem>)}
+                                </Select>
+                            </FormControl>
                             <IconButton color="secondary" className={classes.button}>
                                 <DeleteIcon />
                             </IconButton>
@@ -93,7 +90,13 @@ const Portfolio = () => {
                     <Paper className={fixedChartHeightPaper}>
                         <Box display="flex" justifyContent="center">
                             <Table>
-
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>
+                                            Test
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
                             </Table>
                         </Box>
                     </Paper>
