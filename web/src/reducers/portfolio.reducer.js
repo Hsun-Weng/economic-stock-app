@@ -12,3 +12,16 @@ export const portfolio = (state={data: []}, action) => {
             return state;
     }
 }
+
+export const add_portfolio = (state={data: []}, action) => {
+    switch(action.type) {
+        case portfolioConstants.ADD_PORTFOLIO_REQUEST: 
+            return { loading: true };
+        case portfolioConstants.ADD_PORTFOLIO_SUCCESS:
+            return {};
+        case portfolioConstants.ADD_PORTFOLIO_FAILURE:
+            return { error: action.error };
+        default: 
+            return state;
+    }
+}

@@ -8,14 +8,14 @@ import { Skeleton } from '@material-ui/lab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
-import {  } from '../actions/'
+import { portfolioAction } from '../actions/'
 
 const useStyles = makeStyles(theme => ({
     formControl: {
         margin: theme.spacing(1),
         minWidth: 200
     },
-    deleteButton: {
+    button: {
         margin: theme.spacing(1)
     },
     fixedInputSkeletonHeight: {
@@ -56,17 +56,14 @@ const Portfolio = () => {
         </FormControl>
     )
 
-    const AddPorfolio = () => (
-        <FormControl className={classes.formControl}>
-          <TextField
-            fullWidth
-            label="Portfolio Name"
-            name="portfolioName"
-            value={addPorftolioName}
-            onChange={event=>setAddPortfolioName(event.target.value)}
-          />
-        </FormControl>
-    )
+    const addPortfolio = () => {
+        let portfolio = { portfolioName: addPorftolioName}
+        dispatch(portfolioAction.addPortfolio(portfolio))
+    }
+
+    useEffect(()=> {
+        dispatch(portfolioAction.getPortfolio());
+    }, [])
 
     return (
         <React.Fragment>
@@ -75,11 +72,17 @@ const Portfolio = () => {
                     <Paper>
                         <Box>
                             <PortfolioSelect />
-                            <IconButton color="secondary" className={classes.deleteButton}>
+                            <IconButton color="secondary" className={classes.button}>
                                 <DeleteIcon />
                             </IconButton>
-                            <AddPorfolio />
-                            <IconButton color="primary" className={classes.deleteButton}>
+                            <TextField
+                                className={classes.formControl}
+                                label="Portfolio Name"
+                                name="portfolioName"
+                                value={addPorftolioName}
+                                onChange={event=>setAddPortfolioName(event.target.value)}
+                            />
+                            <IconButton color="primary" className={classes.button} onClick={addPortfolio}>
                                 <AddIcon />
                             </IconButton>
                         </Box>
