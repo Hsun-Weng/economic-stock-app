@@ -25,3 +25,16 @@ export const add_portfolio = (state={data: []}, action) => {
             return state;
     }
 }
+
+export const portfolio_products = (state={data: []}, action) => {
+    switch(action.type) {
+        case portfolioConstants.GET_PORTFOLIO_PRODUCTS_REQUEST: 
+            return { loading: true, data: [] };
+        case portfolioConstants.GET_PORTFOLIO_PRODUCTS_SUCCESS:
+            return { data: action.data };
+        case portfolioConstants.GET_PORTFOLIO_PRODUCTS_FAILURE:
+            return { error: action.error };
+        default: 
+            return state;
+    }
+}

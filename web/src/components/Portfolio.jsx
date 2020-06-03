@@ -39,17 +39,51 @@ const Portfolio = () => {
 
     const dispatch = useDispatch();
     const portfolio = useSelector(state=>state.portfolio.data);
+    const portfolioProducts = useSelector(state=>state.portfolio_products.data);
     
     const formatDate = date => date.toISOString().slice(0,10);
 
     const [ portfolioId, setPortfolioId ] = useState(0);
     const [ addPorftolioName, setAddPortfolioName ] = useState("");
 
-
     const addPortfolio = () => {
         let portfolio = { portfolioName: addPorftolioName}
         dispatch(portfolioAction.addPortfolio(portfolio))
     }
+
+    const PortfolioHeading = () => (
+        <TableHead>
+            <TableRow>
+                <TableCell>
+                    Product Code 
+                </TableCell>
+                <TableCell>
+                    Last
+                </TableCell>
+                <TableCell>
+                    Open
+                </TableCell>
+                <TableCell>
+                    High
+                </TableCell>
+                <TableCell>
+                    Low
+                </TableCell>
+                <TableCell>
+                    Chg
+                </TableCell>
+                <TableCell>
+                    Chg %
+                </TableCell>
+                <TableCell>
+                    Vol
+                </TableCell>
+                <TableCell>
+                    Time
+                </TableCell>
+            </TableRow>
+        </TableHead>
+    );
 
     useEffect(()=> {
         dispatch(portfolioAction.getPortfolio());
@@ -90,13 +124,7 @@ const Portfolio = () => {
                     <Paper className={fixedChartHeightPaper}>
                         <Box display="flex" justifyContent="center">
                             <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>
-                                            Test
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
+                                <PortfolioHeading />
                             </Table>
                         </Box>
                     </Paper>

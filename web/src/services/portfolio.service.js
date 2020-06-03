@@ -2,7 +2,8 @@ import { authHeader } from '../helplers/authHeader';
 
 export const portfolioService = {
     getPortfolio,
-    addPortfolio
+    addPortfolio,
+    getPortfolioProducts
 }
 
 function getPortfolio(){
@@ -31,7 +32,15 @@ function addPortfolio(portfolio){
         })
 }
 
+function getPortfolioProducts() {
+    const requestOptions = {
+        method: 'GET',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+    };
 
+    return fetch(`/portfolio/{portfolioId}/products`, requestOptions)
+        .then(handleResponse)
+}
 
 const handleResponse = (httpResponse) => {
     return httpResponse.json().then(res => {

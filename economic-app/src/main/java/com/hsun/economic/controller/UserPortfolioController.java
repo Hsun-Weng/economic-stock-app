@@ -31,7 +31,7 @@ public class UserPortfolioController {
     private PortfolioProductService portfolioProductService;
 
     @GetMapping("/portfolio")
-    public ResponseBean getPortfolioByUser(Authentication authentication){
+    public ResponseBean getPortfolioProductByPortfolioId(Authentication authentication){
         ResponseBean responseBean = new ResponseBean();
         User user = null;
         List<Map<String, Object>> dataList = null;
@@ -52,7 +52,7 @@ public class UserPortfolioController {
         return responseBean;
     }
 
-    @GetMapping("/portfolio/{portfolioId}")
+    @GetMapping("/portfolio/{portfolioId}/products")
     public ResponseBean getPortfolioProductListById(Authentication authentication, @PathVariable Integer portfolioId){
         ResponseBean responseBean = new ResponseBean();
         User user = null;

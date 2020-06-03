@@ -3,7 +3,8 @@ import { portfolioService } from '../services';
 
 export const portfolioAction = {
     getPortfolio,
-    addPortfolio
+    addPortfolio,
+    getPortfolioProducts
 }
 
 function getPortfolio() {
@@ -41,4 +42,22 @@ function addPortfolio(portfolio) {
     function request() { return { type: portfolioConstants.ADD_PORTFOLIO_REQUEST } }
     function success() { return { type: portfolioConstants.ADD_PORTFOLIO_SUCCESS } }
     function failure(error) { return { type: portfolioConstants.ADD_PORTFOLIO_FAILURE, error } }
+}
+
+function getPortfolioProducts() {
+    return dispatch => {
+        dispatch(request());
+
+        portfolioService.getPortfolioProducts()
+            .then(data=>{
+                dispatch(success(data));
+            },
+            error=>{
+                dispatch(failure(error));
+            })
+    };
+
+    function request() { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCTS_REQUEST } }
+    function success(data) { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCTS_SUCCESS, data } }
+    function failure(error) { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCTS_FAILURE, error } }
 }
