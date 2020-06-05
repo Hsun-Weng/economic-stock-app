@@ -34,9 +34,9 @@ const StockChart = () => {
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
     const dispatch = useDispatch();
-    const categories = useSelector(state=>state.stock_categories.data);
-    const stocks = useSelector(state=>state.category_stocks.data);
-    const stockPrices = useSelector(state=>state.stock_prices.data);
+    const categories = useSelector(state=>state.stock.categories.data);
+    const stocks = useSelector(state=>state.stock.categoryStocks.data);
+    const stockPrices = useSelector(state=>state.stock.price.data);
     
     const [ categoryCode, setCategoryCode ] = useState("024");
     const [ stockCode, setStockCode ] = useState("2330");

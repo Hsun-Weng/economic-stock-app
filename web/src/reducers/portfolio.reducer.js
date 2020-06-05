@@ -1,40 +1,55 @@
 import portfolioConstants from '../constants/portfolio.constants';
 
-export const portfolio = (state={data: []}, action) => {
+const initState = {
+    error: null,
+    portfolios: {loading: false, data: []},
+    products: {loading: false, data: []},
+    addPortfolio: {loading: false}
+}
+
+export const portfolio = (state=initState, action) => {
     switch(action.type) {
+        // portoflios
         case portfolioConstants.GET_PORTFOLIO_REQUEST: 
-            return { loading: true, data: [] };
+            return {...state,
+                portfolios: {loading: true, data: []}
+            };
         case portfolioConstants.GET_PORTFOLIO_SUCCESS:
-            return { data: action.data };
+            return {...state,
+                portfolios: {loading: false, data: action.data}
+            };
         case portfolioConstants.GET_PORTFOLIO_FAILURE:
-            return { error: action.error };
-        default: 
-            return state;
-    }
-}
-
-export const add_portfolio = (state={data: []}, action) => {
-    switch(action.type) {
-        case portfolioConstants.ADD_PORTFOLIO_REQUEST: 
-            return { loading: true };
-        case portfolioConstants.ADD_PORTFOLIO_SUCCESS:
-            return {};
-        case portfolioConstants.ADD_PORTFOLIO_FAILURE:
-            return { error: action.error };
-        default: 
-            return state;
-    }
-}
-
-export const portfolio_products = (state={data: []}, action) => {
-    switch(action.type) {
-        case portfolioConstants.GET_PORTFOLIO_PRODUCTS_REQUEST: 
-            return { loading: true, data: [] };
+            return {...state,
+                error: action.error
+            };
+        // products
+        case portfolioConstants.GET_PORTFOLIO_PRODUCTS_REQUEST:
+            return {...state,
+                products: {loading: true, data: []}
+            }
         case portfolioConstants.GET_PORTFOLIO_PRODUCTS_SUCCESS:
-            return { data: action.data };
+            return {...state,
+                products: {loading: false, data: action.data}
+            };
         case portfolioConstants.GET_PORTFOLIO_PRODUCTS_FAILURE:
-            return { error: action.error };
-        default: 
+            return {...state,
+                error: action.error
+            };
+        // Add portfolio
+        case portfolioConstants.ADD_PORTFOLIO_REQUEST: 
+            return {...state,
+                addPortfolio:{ loading: true }
+            };
+        case portfolioConstants.ADD_PORTFOLIO_SUCCESS:
+            return {...state,
+                addPortfolio:{ loading: false }
+            };
+        case portfolioConstants.ADD_PORTFOLIO_FAILURE:
+            return {...state,
+                error: action.error
+            };
+
+        default:
             return state;
     }
 }

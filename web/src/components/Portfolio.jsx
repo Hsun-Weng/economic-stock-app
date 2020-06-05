@@ -38,8 +38,8 @@ const Portfolio = () => {
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
     const dispatch = useDispatch();
-    const portfolio = useSelector(state=>state.portfolio.data);
-    const portfolioProducts = useSelector(state=>state.portfolio_products.data);
+    const portfolio = useSelector(state=>state.portfolio.portfolios.data);
+    const portfolioProducts = useSelector(state=>state.portfolio.products.data);
     
     const formatDate = date => date.toISOString().slice(0,10);
 
