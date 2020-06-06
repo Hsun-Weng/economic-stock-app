@@ -107,4 +107,18 @@ public class UserPortfolioController {
         }
         return responseBean;
     }
+
+    @PostMapping("/portfolio/{portfolioId}/product")
+    public ResponseBean addPorfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
+            , @RequestBody PortfolioProduct portfolioProduct) {
+        ResponseBean responseBean = new ResponseBean();
+        try{
+            service.addPortfolioProduct(authentication.getName(), portfolioProduct);
+        }catch(ApiClientException e){
+            throw e;
+        }catch(Exception e){
+            throw new ApiServerException();
+        }
+        return responseBean;
+    }
 }
