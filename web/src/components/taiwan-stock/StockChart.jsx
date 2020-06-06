@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { Grid, Paper, FormControl, Select, InputLabel, MenuItem, Box} from '@material-ui/core'
+import { Grid, Paper, FormControl, Select, InputLabel, MenuItem, Box, IconButton, Menu } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab';
+import AddIcon from '@material-ui/icons/Add';
 
-import { stockAction } from '../../actions'
+import { stockAction, portfolioAction } from '../../actions'
 import CandlestickChart from './CandlestickChart';
 
 const useStyles = makeStyles(theme => ({
@@ -19,6 +20,9 @@ const useStyles = makeStyles(theme => ({
     },
     fixedChartHeight: {
         height: 900,
+    },
+    button: {
+        margin: theme.spacing(1)
     },
     paper: {
         padding: theme.spacing(2),
@@ -37,10 +41,13 @@ const StockChart = () => {
     const categories = useSelector(state=>state.stock.categories.data);
     const stocks = useSelector(state=>state.stock.categoryStocks.data);
     const stockPrices = useSelector(state=>state.stock.price.data);
+    const portfolios = useSelector(state => state.portfolio.portfolios.data);
     
     const [ categoryCode, setCategoryCode ] = useState("024");
     const [ stockCode, setStockCode ] = useState("2330");
-    const [ dataset, setDataset ] = useState([]);
+
+    const [ anchorEl, setAnchorEl ] = useState(null);
+    const open = Boolean(anchorEl);
 
     // 預設30天前
     const [ startDate, setStartDate ] = useState(new Date(Date.now() - 120 * 24 * 60 * 60 * 1000));
@@ -78,8 +85,45 @@ const StockChart = () => {
         setStockCode(event.target.value);
     }
 
+    const handleMenu = ( event ) => {
+        setAnchorEl(event.currentTarget);
+    }
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    }
+
+    const addPortfolioProduct = ( portfolioId ) => {
+        let portfolioProduct = {
+            portfolioId: portfolioId,
+            productType: 1,
+            productCode: stockCode
+        }
+        dispatch(portfolioAction.addPortfolioProduct(portfolioProduct));
+    }
+
+    const PortfolioSelect = () => (
+        <Menu 
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: "top",
+                horizontal: "right"
+            }}
+            keepMounted
+            transformOrigin={{
+                vertical: "top",
+                horizontal: "right"
+            }}
+            open={open}
+            onClose={handleMenuClose}
+            >
+            {portfolios.map((prop, key)=>
+                <MenuItem key={key} onClick={event=>addPortfolioProduct(prop.portfolioId)}>{prop.portfolioName}</MenuItem>
+            )}
+        </Menu>)
+
     useEffect(() => {
         dispatch(stockAction.getCategories());
+        dispatch(portfolioAction.getPortfolio());
     }, [])
 
     useEffect(() => { 
@@ -99,6 +143,10 @@ const StockChart = () => {
                             <Box>
                                 <CategorySelect />
                                 <StockSelect />
+                                <IconButton color="primary" className={classes.button} onClick={handleMenu}>
+                                    <AddIcon />
+                                </IconButton>
+                                <PortfolioSelect />
                             </Box>
                         :<Skeleton variant="text" className={fixedInputSkeletonHeight} />}
                     </Paper>

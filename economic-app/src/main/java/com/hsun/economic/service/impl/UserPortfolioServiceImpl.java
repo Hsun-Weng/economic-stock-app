@@ -5,6 +5,7 @@ import com.hsun.economic.entity.User;
 import com.hsun.economic.entity.UserPortfolio;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.repository.PortfolioProductRepository;
+import com.hsun.economic.repository.TaiwanStockRepository;
 import com.hsun.economic.repository.UserPortfolioRepository;
 import com.hsun.economic.repository.UserRepository;
 import com.hsun.economic.service.UserPortfolioService;
@@ -23,6 +24,9 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Autowired
     private PortfolioProductRepository portfolioProductRepository;
 
+    @Autowired
+    private TaiwanStockRepository stockRepository;
+
     @Override
     public void addPortfolio(String userName, UserPortfolio userPortfolio) {
         User user = userRepository.findByName(userName).orElseThrow(()->new ApiClientException("User not found."));
@@ -33,7 +37,23 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Override
     public void addPortfolioProduct(String userName, PortfolioProduct portfolioProduct) {
         User user = userRepository.findByName(userName).orElseThrow(()->new ApiClientException("User not found."));
-        UserPortfolio userPortfolio = repository.findById(portfolioProduct.getPortfolioId()).orElseThrow(()->new ApiClientException("Portfolio not found."));
+        UserPortfolio userPortfolio = repository.findById(portfolioProduct.getPortfolioId())
+                .orElseThrow(()->new ApiClientException("Portfolio not found."));
+        Integer productId = null;
+        switch(portfolioProduct.getProductType()){
+            case 0: //index
+                break;
+            case 1: //stock
+                productId = stockRepository.findByStockCode(portfolioProduct.getProductCode())
+                        .orElseThrow(()->new ApiClientException("Stock not found.")).getStockId();
+                break;
+            case 3: //futures
+                break;
+            default:
+                throw new ApiClientException("Can't add this product.");
+        }
+        portfolioProduct.setPortfolioId(userPortfolio.getPortfolioId());
+        portfolioProduct.setProductId(productId);
         Integer maxSort = userPortfolio.getPortfolioProductList()
                 .stream()
                 .mapToInt(PortfolioProduct::getSort).sum();

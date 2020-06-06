@@ -3,7 +3,8 @@ import { authHeader } from '../helplers/authHeader';
 export const portfolioService = {
     getPortfolio,
     addPortfolio,
-    getPortfolioProducts
+    getPortfolioProducts,
+    addPortfolioProduct
 }
 
 function getPortfolio(){
@@ -24,6 +25,22 @@ function addPortfolio(portfolio){
     };
 
     return fetch(`/api/portfolio`, requestOptions)
+        .then((httpResponse) => {
+            if (!httpResponse.ok) {
+                const error = httpResponse;
+                return Promise.reject(error);
+            }
+        })
+}
+
+function addPortfolioProduct(portfolioProduct) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(portfolioProduct)
+    };
+
+    return fetch(`/api/portfolio/product`, requestOptions)
         .then((httpResponse) => {
             if (!httpResponse.ok) {
                 const error = httpResponse;

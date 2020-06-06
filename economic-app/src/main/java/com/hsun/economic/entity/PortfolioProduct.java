@@ -30,4 +30,6 @@ public class PortfolioProduct implements Serializable {
     @Column(name="product_type")
     private Integer productType;
 
+    @Transient
+    private String productCode;
 }

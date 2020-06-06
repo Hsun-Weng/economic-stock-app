@@ -108,9 +108,8 @@ public class UserPortfolioController {
         return responseBean;
     }
 
-    @PostMapping("/portfolio/{portfolioId}/product")
-    public ResponseBean addPorfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
-            , @RequestBody PortfolioProduct portfolioProduct) {
+    @PostMapping("/portfolio/product")
+    public ResponseBean addPortfolioProduct(Authentication authentication, @RequestBody PortfolioProduct portfolioProduct) {
         ResponseBean responseBean = new ResponseBean();
         try{
             service.addPortfolioProduct(authentication.getName(), portfolioProduct);
