@@ -13,6 +13,7 @@ const rootReducer = combineReducers({
     stock,
     futures,
     portfolio,
+    economic,
     notification
 });
 

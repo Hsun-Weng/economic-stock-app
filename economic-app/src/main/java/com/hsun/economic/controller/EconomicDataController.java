@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.hsun.economic.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hsun.economic.bean.ResponseBean;
@@ -20,58 +21,30 @@ public class EconomicDataController {
     
     @Autowired
     private EconomicDataService service;
-    
-    @GetMapping("/economic/country/data")
-    public ResponseBean getCountryEconomicData(){
-        ResponseBean responseBean = new ResponseBean();
-        List<EconomicData> economicDataList = null;
-        List<Map<String, Object>> dataList = null;
-        try {
-            economicDataList = service.getAllEconomicData();
-            
-            dataList = economicDataList.stream().flatMap((data)->{
-                List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
-                
-                data.getCountryEconomicData()
-                .stream()
-                .forEach((countryEconomicData) -> {
-                    Map<String, Object> dataMap = new HashMap<String, Object>();
-                    dataMap.put("dataId", data.getDataId());
-                    dataMap.put("dataName", data.getDataName());
-                    dataMap.put("countryCode", countryEconomicData.getCountry().getCountryCode());
-                    resultList.add(dataMap);
-                });
-                 
-                return resultList.stream();
-            }).collect(Collectors.toList());
-             
-            responseBean.setData(dataList);
 
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
-    }
-    
-    @GetMapping("/economic/data")
-    public ResponseBean getAllEconomicData(){
+    @GetMapping("/economic/{countryCode}/data")
+    public ResponseBean getEconomicDataByCountry(@PathVariable String countryCode){
         ResponseBean responseBean = new ResponseBean();
         List<EconomicData> economicDataList = null;
         List<Map<String, Object>> dataList = null;
-        try {
+        try{
             economicDataList = service.getAllEconomicData();
-            
-            dataList = economicDataList.stream().map((data)->{
+
+            dataList = economicDataList.stream().filter((data)->{
+                return data.getCountryEconomicData().stream().filter((relData)->
+                        relData.getCountry().getCountryCode().equals(countryCode)).findAny().isPresent();
+            }).map((data)->{
                 Map<String, Object> dataMap = new HashMap<String, Object>();
-                
+
                 dataMap.put("dataId", data.getDataId());
                 dataMap.put("dataName", data.getDataName());
-                
+
                 return dataMap;
             }).collect(Collectors.toList());
-            
+
             responseBean.setData(dataList);
-        }catch(Exception e) {
+
+        } catch(Exception e) {
             throw new ApiServerException();
         }
         return responseBean;

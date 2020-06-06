@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -7,6 +8,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 
 import EconomicDataChart from './EconomicDataChart';
 
+import { economicAction } from '../actions';
 import countries from '../data/country';
 
 const useStyles = makeStyles(theme => ({
@@ -33,11 +35,13 @@ const EconomicData = () => {
   const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
   const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
-  const [economicData, setEconomicData] = useState([]);
+  const dispatch = useDispatch();
+  const economicData = useSelector(state=>state.economic.data.data);
+  const dataset = useSelector(state=>state.economic.value.data);
+
   const [countryCode, setCountryCode] = useState("USA");
   const [dataId, setDataId] = useState(1);
   const [units, setUnits] = useState([]);
-  const [dataset, setDataset] = useState([]);
 
   const handleChangeCountry = event => {
     setCountryCode(event.target.value);
@@ -45,14 +49,6 @@ const EconomicData = () => {
 
   const handleChangeEconomicData = event => {
     setDataId(event.target.value);
-  };
-
-  const fetchEconomicData = async () => {
-    const res = await fetch("/api/economic/country/data");
-    res.json()
-      .then(res => res.data)
-      .then(data => setEconomicData(data))
-      .catch(err=>console.log)
   };
 
   /**
@@ -66,18 +62,6 @@ const EconomicData = () => {
       .catch(err=>console.log(err));
   }
   
-
-  /**
-   * 取得數據
-   */
-  const fetchEconomicDataset = async (country, data) =>{
-    const res = await fetch(`/data/economic/data/${country}/${data}`);
-    res.json()
-      .then(res => res.data)
-      .then(data => setDataset(data))
-      .catch(err=>console.log(err));
-  }
-
   const CountrySelect = () => (
     <FormControl className={classes.formControl}>
       <InputLabel>Country</InputLabel>
@@ -101,15 +85,15 @@ const EconomicData = () => {
   )
 
   useEffect(() => {
-    fetchEconomicData();
-  }, []);
-
-  useEffect(() => {
     fetchEconomicChart(dataId);
   }, [ dataId ]);
 
   useEffect(() => {
-    fetchEconomicDataset(countryCode, dataId)
+    dispatch(economicAction.getEconomicData(countryCode));
+  }, [ countryCode ])
+
+  useEffect(() => {
+    dispatch(economicAction.getEconomicValue(countryCode, dataId));
   }, [ countryCode, dataId]);
 
   return (
