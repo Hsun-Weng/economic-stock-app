@@ -17,8 +17,8 @@ public class EconomicDataServiceImpl implements EconomicDataService {
     
 
     @Override
-    public List<EconomicData> getByCountryDataId(String countryCode, Integer dataId) {
-        return repository.findByCountryCodeAndDataId(countryCode, dataId);
+    public List<EconomicData> getByCountryDataCode(String countryCode, String dataCode) {
+        return repository.findByCountryCodeAndDataCode(countryCode, dataCode);
     }
 
 }

@@ -3,7 +3,8 @@ import { economicService } from '../services';
 
 export const economicAction = {
     getEconomicData,
-    getEconomicValue
+    getEconomicValue,
+    getEconomicChartData
 }
 
 function getEconomicData(countryCode) {
@@ -40,4 +41,22 @@ function getEconomicValue(countryCode, dataId) {
     function request() { return { type: economicConstants.GET_ECONOMIC_VALUE_REQUEST } }
     function success(data) { return { type: economicConstants.GET_ECONOMIC_VALUE_SUCCESS, data } }
     function failure(error) { return { type: economicConstants.GET_ECONOMIC_VALUE_FAILURE, error } }
+}
+
+function getEconomicChartData(unitCode, data) {
+    return dispatch => {
+        dispatch(request());
+
+        economicService.getEconomicChartData(unitCode, data)
+            .then(data=>{
+                dispatch(success(data));
+            },
+            error=>{
+                dispatch(failure(error));
+            })
+    };
+
+    function request() { return { type: economicConstants.GET_ECONOMIC_CHART_DATA_REQUEST } }
+    function success(data) { return { type: economicConstants.GET_ECONOMIC_CHART_DATA_SUCCESS, data } }
+    function failure(error) { return { type: economicConstants.GET_ECONOMIC_CHART_DATA_FAILURE, error } }
 }

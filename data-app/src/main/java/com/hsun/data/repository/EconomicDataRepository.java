@@ -10,6 +10,6 @@ import com.hsun.data.entity.EconomicData;
 
 @Repository
 public interface EconomicDataRepository extends MongoRepository<EconomicData, String> {
-    @Query("{ 'country_code': ?0, 'data_id': ?1 }")
-    List<EconomicData> findByCountryCodeAndDataId(String countryCode, Integer dataId);
+    @Query("{ 'country_code': ?0, 'data_code': ?1 }")
+    List<EconomicData> findByCountryCodeAndDataCode(String countryCode, String dataCode);
 }

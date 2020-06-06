@@ -1,24 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Grid, FormControl, Select, InputLabel, MenuItem, Box} from '@material-ui/core'
+import { Grid, FormControl, Select, InputLabel, MenuItem, Box, Button, ButtonGroup } from '@material-ui/core'
 import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Brush } from 'recharts';
 
-const EconomicDataChart = ({ units, data }) => {
-    const [ unitCode, setUnitCode ] = useState(units[0].unit_code);
+import { economicAction } from '../actions';
 
-    const handleChangeUnitCode = event => {
-        setUnitCode(event.target.value);
+const EconomicDataChart = ({ data }) => {
+    const dispatch = useDispatch();
+    const chartData = useSelector(state=>state.economic.chartData.data);
+
+    const [ unitCode, setUnitCode ] = useState("TOTAL");
+
+    useEffect(()=>{
+        dispatch(economicAction.getEconomicChartData(unitCode, data));
+    }, [ unitCode ]);
+
+    const changeUnitCode = (unitCode) => {
+        setUnitCode(unitCode);
     }
 
-    const UnitSelect = () => (
-        <FormControl >
-            <InputLabel>Unit</InputLabel>
-            <Select
-                value={unitCode}
-                onChange={handleChangeUnitCode}>
-                {units.map((prop, key)=><MenuItem key={key} value={prop.unit_code}>{prop.label}</MenuItem>)}
-            </Select>
-        </FormControl>
+    const UnitButtonGroup = () => (
+        <ButtonGroup variant="text" color="inherit" >
+            <Button onClick={e=>changeUnitCode('TOTAL')}>TOTAL</Button>
+            <Button onClick={e=>changeUnitCode('CHANGE')}>CHANGE</Button>
+        </ButtonGroup>
     )
 
     const ChartTooltip = ({ active, payload}) => {
@@ -26,7 +32,7 @@ const EconomicDataChart = ({ units, data }) => {
             let data = payload[0].payload;
             return (<Box  border={1} borderColor="grey.500" p={1}>
                 <Box>{`Date: ${data.date}`}</Box>
-                <Box>{`Value: ${data.value[unitCode]}`}</Box>
+                <Box>{`Value: ${data.value}`}</Box>
             </Box>);
         }
         return null;
@@ -36,13 +42,13 @@ const EconomicDataChart = ({ units, data }) => {
         <LineChart
             height={400}
             width={950}
-            data={data}
+            data={chartData}
             margin={{ top: 50, right: 50, bottom: 50, left: 60 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip content={<ChartTooltip />}/>
-            <Line dataKey={`value.${unitCode}`} stroke="red" dot={false} />
+            <Line dataKey={`value`} stroke="red" dot={false} />
             <Brush dataKey="date" height={30} stroke="red" />
         </LineChart>
     )
@@ -51,8 +57,8 @@ const EconomicDataChart = ({ units, data }) => {
         <Box>
             <Grid container spacing={3}>
                 <Grid item md={12}>
-                    <Box display="flex" justifyContent="center">
-                        <UnitSelect />
+                    <Box display="flex" justifyContent="left">
+                        <UnitButtonGroup />
                     </Box>
                 </Grid>
             </Grid>

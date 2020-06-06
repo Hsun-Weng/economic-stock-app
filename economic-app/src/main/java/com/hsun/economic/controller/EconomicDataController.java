@@ -36,7 +36,7 @@ public class EconomicDataController {
             }).map((data)->{
                 Map<String, Object> dataMap = new HashMap<String, Object>();
 
-                dataMap.put("dataId", data.getDataId());
+                dataMap.put("dataCode", data.getDataCode());
                 dataMap.put("dataName", data.getDataName());
 
                 return dataMap;

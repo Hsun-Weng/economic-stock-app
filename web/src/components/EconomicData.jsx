@@ -37,31 +37,19 @@ const EconomicData = () => {
 
   const dispatch = useDispatch();
   const economicData = useSelector(state=>state.economic.data.data);
-  const dataset = useSelector(state=>state.economic.value.data);
+  const economicDataValue = useSelector(state=>state.economic.value.data);
 
   const [countryCode, setCountryCode] = useState("USA");
-  const [dataId, setDataId] = useState(1);
-  const [units, setUnits] = useState([]);
+  const [dataCode, setDataCode] = useState("NONFARM");
 
   const handleChangeCountry = event => {
     setCountryCode(event.target.value);
   };
 
   const handleChangeEconomicData = event => {
-    setDataId(event.target.value);
+    setDataCode(event.target.value);
   };
 
-  /**
-   * 取得圖表基本資料
-    */
-  const fetchEconomicChart = async (data) =>{
-    const res = await fetch(`/data/economic/chart/${data}`);
-    res.json()
-      .then(res=> res.data)
-      .then(data=> setUnits(data.chart.line.units))
-      .catch(err=>console.log(err));
-  }
-  
   const CountrySelect = () => (
     <FormControl className={classes.formControl}>
       <InputLabel>Country</InputLabel>
@@ -77,24 +65,20 @@ const EconomicData = () => {
     <FormControl className={classes.formControl}>
       <InputLabel>Economic Data</InputLabel>
       <Select
-        value={dataId}
+        value={dataCode}
         onChange={handleChangeEconomicData}>
-          {economicData.map((prop, key)=><MenuItem key={key} value={prop.dataId}>{prop.dataName}</MenuItem>)}
+          {economicData.map((prop, key)=><MenuItem key={key} value={prop.dataCode}>{prop.dataName}</MenuItem>)}
       </Select>
     </FormControl>
   )
-
-  useEffect(() => {
-    fetchEconomicChart(dataId);
-  }, [ dataId ]);
 
   useEffect(() => {
     dispatch(economicAction.getEconomicData(countryCode));
   }, [ countryCode ])
 
   useEffect(() => {
-    dispatch(economicAction.getEconomicValue(countryCode, dataId));
-  }, [ countryCode, dataId]);
+    dispatch(economicAction.getEconomicValue(countryCode, dataCode));
+  }, [ countryCode, dataCode]);
 
   return (
     <React.Fragment>
@@ -111,8 +95,8 @@ const EconomicData = () => {
         </Grid>
         <Grid item md={12}>
           <Paper className={fixedChartHeightPaper}>
-            {units.length > 0 && dataset.length > 0 ?
-              <EconomicDataChart units={units} data={dataset} />
+            {economicDataValue.length > 0 ?
+              <EconomicDataChart data={economicDataValue} />
             :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
           </Paper>
         </Grid>

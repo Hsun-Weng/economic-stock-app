@@ -24,6 +24,9 @@ public class EconomicData implements Serializable {
 	@Column(name="data_id")
 	private int dataId;
 
+	@Column(name="data_code")
+	private String dataCode;
+
 	@Column(name="data_name")
 	private String dataName;
 	
