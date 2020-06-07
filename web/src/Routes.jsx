@@ -35,14 +35,14 @@ export const mainItemRoutes = [
         exact: false,
         itemType: 0
     },
-    {
-        path: '/worldeconomic',
-        itemName: "World Economic",
-        icon: MapIcon,
-        component: WorldEconomic,
-        exact: false,
-        itemType: 0
-    },
+    // {
+    //     path: '/worldeconomic',
+    //     itemName: "World Economic",
+    //     icon: MapIcon,
+    //     component: WorldEconomic,
+    //     exact: false,
+    //     itemType: 0
+    // },
     {
         path: '/taiwan/stock/stockChart',
         itemName: "Stock Chart",

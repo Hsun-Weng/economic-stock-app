@@ -5,7 +5,8 @@ export const stockAction = {
     getCategories,
     getCategoryStocks,
     getStockPrices,
-    getStockIndex
+    getStockIndex,
+    getLatestStockPrice
 }
 
 function getCategories() {
@@ -78,4 +79,28 @@ function getStockIndex(indexCode, startDate, endDate) {
     function request() { return { type: stockConstants.GET_STOCK_INDEX_REQUEST } }
     function success(data) { return { type: stockConstants.GET_STOCK_INDEX_SUCCESS, data } }
     function failure(error) { return { type: stockConstants.GET_STOCK_INDEX_FAILURE, error } }
+}
+
+function getLatestStockPrice(products) {
+    return dispatch => {
+        dispatch(request());
+
+        stockService.getLatestStockPrice(products)
+            .then(data=>{
+                let result = data.map((detail)=>{
+                    return {...detail,
+                        productCode: detail.stockCode,
+                        productName: products.find((stock)=>stock.productCode===detail.stockCode).productName
+                    };
+                })
+                dispatch(success(result));
+            },
+            error=>{
+                dispatch(failure(error));
+            })
+    };
+
+    function request() { return { type: stockConstants.GET_LATEST_STOCK_PRICES_REQUEST } }
+    function success(data) { return { type: stockConstants.GET_LATEST_STOCK_PRICES_SUCCESS, data } }
+    function failure(error) { return { type: stockConstants.GET_LATEST_STOCK_PRICES_FAILURE, error } }
 }

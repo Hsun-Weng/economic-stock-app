@@ -3,7 +3,8 @@ export const stockService = {
     getCategories,
     getCategoryStocks,
     getStockPrices,
-    getStockIndex
+    getStockIndex,
+    getLatestStockPrice
 }
 
 function getCategories(){
@@ -43,6 +44,22 @@ function getStockIndex(indexCode, startDate, endDate) {
     };
 
     return fetch(`/data/stock/taiwan/index/${indexCode}?startDate=${startDate}&endDate=${endDate}`, requestOptions)
+        .then(handleResponse)
+}
+
+function getLatestStockPrice(products){
+    let stockCodes = Object.assign([], products)
+                    .filter((data)=>data.productType===1)
+                    .map((data)=>data.productCode);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(stockCodes)
+    };
+    
+
+    return fetch(`/data/stock/taiwan/latest`, requestOptions)
         .then(handleResponse)
 }
 

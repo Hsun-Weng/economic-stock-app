@@ -8,7 +8,7 @@ import { Skeleton } from '@material-ui/lab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
-import { portfolioAction } from '../actions/'
+import { portfolioAction, stockAction } from '../actions/'
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -32,6 +32,43 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+const PortfolioHeading = (prop) => (
+    <TableHead>
+        <TableRow>
+            <TableCell>
+                Code 
+            </TableCell>
+            <TableCell>
+                Name
+            </TableCell>
+            <TableCell>
+                Last
+            </TableCell>
+            <TableCell>
+                Open
+            </TableCell>
+            <TableCell>
+                High
+            </TableCell>
+            <TableCell>
+                Low
+            </TableCell>
+            <TableCell>
+                Chg
+            </TableCell>
+            <TableCell>
+                Chg %
+            </TableCell>
+            <TableCell>
+                Vol
+            </TableCell>
+            <TableCell>
+                Time
+            </TableCell>
+        </TableRow>
+    </TableHead>
+)
+
 const Portfolio = () => {
     const classes = useStyles();
     const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
@@ -40,9 +77,8 @@ const Portfolio = () => {
     const dispatch = useDispatch();
     const portfolio = useSelector(state=>state.portfolio.portfolios.data);
     const portfolioProducts = useSelector(state=>state.portfolio.products.data);
+    const latestPrices = useSelector(state=>state.stock.latestPrices.data);
     
-    const formatDate = date => date.toISOString().slice(0,10);
-
     const [ portfolioId, setPortfolioId ] = useState(0);
     const [ addPorftolioName, setAddPortfolioName ] = useState("");
 
@@ -53,7 +89,7 @@ const Portfolio = () => {
 
     const PortfolioBody = () => (
         <TableBody>
-            {portfolioProducts.map((prop, key)=>
+            {latestPrices.map((prop, key)=>
                 <TableRow key={key}>
                     <TableCell>
                         {prop.productCode}
@@ -62,67 +98,33 @@ const Portfolio = () => {
                         {prop.productName}
                     </TableCell>
                     <TableCell>
-                        Open
+                        {prop.close}
                     </TableCell>
                     <TableCell>
-                        High
+                        {prop.open}
                     </TableCell>
                     <TableCell>
-                        Low
+                        {prop.high}
                     </TableCell>
                     <TableCell>
-                        Chg
+                        {prop.low}
                     </TableCell>
                     <TableCell>
-                        Chg %
+                        {prop.change}
                     </TableCell>
                     <TableCell>
-                        Vol
+                        {prop.changePercent}
                     </TableCell>
                     <TableCell>
-                        Time
+                        {prop.volume}
+                    </TableCell>
+                    <TableCell>
+                        {prop.date}
                     </TableCell>
                 </TableRow>
             )}
         </TableBody>
     )
-
-    const PortfolioHeading = () => (
-        <TableHead>
-            <TableRow>
-                <TableCell>
-                    Code 
-                </TableCell>
-                <TableCell>
-                    Name
-                </TableCell>
-                <TableCell>
-                    Last
-                </TableCell>
-                <TableCell>
-                    Open
-                </TableCell>
-                <TableCell>
-                    High
-                </TableCell>
-                <TableCell>
-                    Low
-                </TableCell>
-                <TableCell>
-                    Chg
-                </TableCell>
-                <TableCell>
-                    Chg %
-                </TableCell>
-                <TableCell>
-                    Vol
-                </TableCell>
-                <TableCell>
-                    Time
-                </TableCell>
-            </TableRow>
-        </TableHead>
-    );
 
     useEffect(()=> {
         dispatch(portfolioAction.getPortfolio());
@@ -131,6 +133,10 @@ const Portfolio = () => {
     useEffect(()=>{
         dispatch(portfolioAction.getPortfolioProducts(portfolioId));
     }, [ portfolioId ])
+
+    useEffect(()=>{
+        dispatch(stockAction.getLatestStockPrice(portfolioProducts));
+    }, [ portfolioProducts ]);
 
     return (
         <React.Fragment>
@@ -165,7 +171,7 @@ const Portfolio = () => {
                 </Grid>
                 <Grid item md={12}>
                     <Paper className={fixedChartHeightPaper}>
-                        <TableContainer display="flex" justifyContent="center">
+                        <TableContainer >
                             <Table>
                                 <PortfolioHeading />
                                 <PortfolioBody />

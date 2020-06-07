@@ -20,7 +20,7 @@ public class TaiwanStockController {
     
     @Autowired
     private TaiwanStockService service;
-    
+
     @GetMapping("/stock/taiwan/{stockCode}")
     public Map<String, Object> getTaiwanStockByStockCodeAndDateBetween(@PathVariable String stockCode, 
             @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date startDate, @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date endDate){
@@ -50,4 +50,17 @@ public class TaiwanStockController {
         return result;
     }
 
+    @PostMapping("/stock/taiwan/latest")
+    public Map<String, Object> getBatchLatest(@RequestBody List<String> stockCodeList) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<Map<String, Object>> dataList = null;
+        try{
+            dataList = service.getBatchLatestPriceList(stockCodeList);
+
+            result.put("data", dataList);
+        }catch(Exception e){
+            throw new ApiServerException();
+        }
+        return result;
+    }
 }
