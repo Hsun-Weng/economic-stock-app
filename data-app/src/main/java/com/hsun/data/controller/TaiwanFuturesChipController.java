@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.hsun.data.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -48,7 +49,7 @@ public class TaiwanFuturesChipController {
             result.put("data", dataList);
             
         }catch(Exception e) {
-            e.printStackTrace();
+            throw new ApiServerException();
         }
         return result;
     }
