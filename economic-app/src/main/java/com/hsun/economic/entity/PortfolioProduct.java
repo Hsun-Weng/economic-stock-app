@@ -32,4 +32,7 @@ public class PortfolioProduct implements Serializable {
 
     @Transient
     private String productCode;
+
+    @Transient
+    private String productName;
 }

@@ -44,32 +44,28 @@ export const mainItemRoutes = [
         itemType: 0
     },
     {
-        itemName: 'Taiwan Stock',
-        icon: AtmIcon,
-        itemType: 1,
-        children: [
-            {
-                path: '/taiwan/stock/stockChart',
-                itemName: "Stock Chart",
-                icon: AccessibleIcon,
-                component: StockChart,
-                exact: false,
-            },
-            {
-                path: '/taiwan/stock/futuresChip',
-                itemName: "Futures Chip",
-                icon: AccessibleIcon,
-                component: FuturesChip,
-                exact: false,
-            },
-            {
-                path: '/taiwan/stock/futureChart',
-                itemName: "Futures Chart",
-                icon: AccessibleIcon,
-                component: FuturesChart,
-                exact: false,
-            }
-        ]
+        path: '/taiwan/stock/stockChart',
+        itemName: "Stock Chart",
+        icon: AccessibleIcon,
+        component: StockChart,
+        exact: false,
+        itemType: 0
+    },
+    {
+        path: '/taiwan/stock/futuresChip',
+        itemName: "Futures Chip",
+        icon: AccessibleIcon,
+        component: FuturesChip,
+        exact: false,
+        itemType: 0
+    },
+    {
+        path: '/taiwan/stock/futureChart',
+        itemName: "Futures Chart",
+        icon: AccessibleIcon,
+        component: FuturesChart,
+        exact: false,
+        itemType: 0
     }
 ]
 

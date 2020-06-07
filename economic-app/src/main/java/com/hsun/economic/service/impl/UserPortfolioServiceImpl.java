@@ -1,6 +1,7 @@
 package com.hsun.economic.service.impl;
 
 import com.hsun.economic.entity.PortfolioProduct;
+import com.hsun.economic.entity.TaiwanStock;
 import com.hsun.economic.entity.User;
 import com.hsun.economic.entity.UserPortfolio;
 import com.hsun.economic.exception.ApiClientException;
@@ -11,6 +12,9 @@ import com.hsun.economic.repository.UserRepository;
 import com.hsun.economic.service.UserPortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserPortfolioServiceImpl implements UserPortfolioService {
@@ -59,5 +63,33 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
                 .mapToInt(PortfolioProduct::getSort).sum();
         portfolioProduct.setSort(maxSort+1);
         portfolioProductRepository.save(portfolioProduct);
+    }
+
+    @Override
+    public List<PortfolioProduct> findUserPortfolioProductList(String userName, Integer portfolioId) {
+        User user = userRepository.findByName(userName).orElseThrow(()->new ApiClientException("User not found."));
+        UserPortfolio userPortfolio = user.getUserPortfolioList()
+                .stream().filter((data)->data.getPortfolioId() == portfolioId)
+                .findAny().orElseThrow(()->new ApiClientException("Portfolio not found."));
+
+        return userPortfolio.getPortfolioProductList()
+                .stream().map((portfolioProduct)->{
+                    String productCode = null;
+                    switch(portfolioProduct.getProductType()){
+                        case 0: //index
+                            break;
+                        case 1: //stock
+                            TaiwanStock stock = stockRepository.findById(portfolioProduct.getProductId())
+                                    .orElse(new TaiwanStock());
+                            portfolioProduct.setProductCode(stock.getStockCode());
+                            portfolioProduct.setProductName(stock.getStockName());
+                            break;
+                        case 3: //futures
+                            break;
+                        default:
+                            throw new ApiClientException("Can't add this product.");
+                    }
+                    return portfolioProduct;
+                }).collect(Collectors.toList());
     }
 }

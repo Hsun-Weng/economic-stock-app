@@ -49,13 +49,13 @@ function addPortfolioProduct(portfolioProduct) {
         })
 }
 
-function getPortfolioProducts() {
+function getPortfolioProducts(portfolioId) {
     const requestOptions = {
         method: 'GET',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/portfolio/{portfolioId}/products`, requestOptions)
+    return fetch(`/api/portfolio/${portfolioId}/products`, requestOptions)
         .then(handleResponse)
 }
 

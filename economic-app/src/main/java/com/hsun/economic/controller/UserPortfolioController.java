@@ -10,6 +10,7 @@ import com.hsun.economic.service.PortfolioProductService;
 import com.hsun.economic.service.UserPortfolioService;
 import com.hsun.economic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,22 +56,22 @@ public class UserPortfolioController {
     @GetMapping("/portfolio/{portfolioId}/products")
     public ResponseBean getPortfolioProductListById(Authentication authentication, @PathVariable Integer portfolioId){
         ResponseBean responseBean = new ResponseBean();
-        User user = null;
-        List<Map<String, Object>> userProfolioProductList = null;
+        List<Map<String, Object>> dataList = null;
+        List<PortfolioProduct> portfolioProductList = null;
         try{
-            user = userService.findUserByName(authentication.getName());
 
-            userProfolioProductList = user.getUserPortfolioList().stream()
-                    .filter((data)->data.getPortfolioId().equals(portfolioId))
-                    .collect(Collectors.toList())
-                    .get(0).getPortfolioProductList()
+            portfolioProductList = service.findUserPortfolioProductList(authentication.getName(), portfolioId);
+
+            dataList = portfolioProductList
                     .stream().map((data)->{
                         Map<String, Object> dataMap = new HashMap<String, Object>();
-
+                        dataMap.put("productType", data.getProductType());
+                        dataMap.put("productCode", data.getProductCode());
+                        dataMap.put("productName", data.getProductName());
                         return dataMap;
                     }).collect(Collectors.toList());
 
-            responseBean.setData(userProfolioProductList);
+            responseBean.setData(dataList);
 
         }catch(ApiClientException e){
             throw e;
@@ -113,6 +114,8 @@ public class UserPortfolioController {
         ResponseBean responseBean = new ResponseBean();
         try{
             service.addPortfolioProduct(authentication.getName(), portfolioProduct);
+        }catch(DataIntegrityViolationException e){
+            throw new ApiClientException("Product has been exists");
         }catch(ApiClientException e){
             throw e;
         }catch(Exception e){

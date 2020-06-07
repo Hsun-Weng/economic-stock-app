@@ -51,11 +51,50 @@ const Portfolio = () => {
         dispatch(portfolioAction.addPortfolio(portfolio))
     }
 
+    const PortfolioBody = () => (
+        <TableBody>
+            {portfolioProducts.map((prop, key)=>
+                <TableRow key={key}>
+                    <TableCell>
+                        {prop.productCode}
+                    </TableCell>
+                    <TableCell>
+                        {prop.productName}
+                    </TableCell>
+                    <TableCell>
+                        Open
+                    </TableCell>
+                    <TableCell>
+                        High
+                    </TableCell>
+                    <TableCell>
+                        Low
+                    </TableCell>
+                    <TableCell>
+                        Chg
+                    </TableCell>
+                    <TableCell>
+                        Chg %
+                    </TableCell>
+                    <TableCell>
+                        Vol
+                    </TableCell>
+                    <TableCell>
+                        Time
+                    </TableCell>
+                </TableRow>
+            )}
+        </TableBody>
+    )
+
     const PortfolioHeading = () => (
         <TableHead>
             <TableRow>
                 <TableCell>
-                    Product Code 
+                    Code 
+                </TableCell>
+                <TableCell>
+                    Name
                 </TableCell>
                 <TableCell>
                     Last
@@ -88,6 +127,10 @@ const Portfolio = () => {
     useEffect(()=> {
         dispatch(portfolioAction.getPortfolio());
     }, [])
+
+    useEffect(()=>{
+        dispatch(portfolioAction.getPortfolioProducts(portfolioId));
+    }, [ portfolioId ])
 
     return (
         <React.Fragment>
@@ -122,11 +165,12 @@ const Portfolio = () => {
                 </Grid>
                 <Grid item md={12}>
                     <Paper className={fixedChartHeightPaper}>
-                        <Box display="flex" justifyContent="center">
+                        <TableContainer display="flex" justifyContent="center">
                             <Table>
                                 <PortfolioHeading />
+                                <PortfolioBody />
                             </Table>
-                        </Box>
+                        </TableContainer>
                     </Paper>
                 </Grid>
             </Grid>

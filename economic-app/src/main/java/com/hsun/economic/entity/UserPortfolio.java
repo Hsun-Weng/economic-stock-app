@@ -28,7 +28,7 @@ public class UserPortfolio implements Serializable {
     @Column(name="user_id")
     private Integer userId;
 
-    @OneToMany(cascade=CascadeType.DETACH)
+    @OneToMany(cascade=CascadeType.REMOVE)
     @JoinColumn(name="portfolio_id")
     private List<PortfolioProduct> portfolioProductList;
 }

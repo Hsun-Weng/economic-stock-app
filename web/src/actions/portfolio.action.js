@@ -45,11 +45,11 @@ function addPortfolio(portfolio) {
     function failure(error) { return { type: portfolioConstants.ADD_PORTFOLIO_FAILURE, error } }
 }
 
-function getPortfolioProducts() {
+function getPortfolioProducts(portfolioId) {
     return dispatch => {
         dispatch(request());
 
-        portfolioService.getPortfolioProducts()
+        portfolioService.getPortfolioProducts(portfolioId)
             .then(data=>{
                 dispatch(success(data));
             },
