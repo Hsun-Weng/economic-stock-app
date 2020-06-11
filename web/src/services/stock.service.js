@@ -1,10 +1,21 @@
 
 export const stockService = {
+    getAllStocks,
     getCategories,
     getCategoryStocks,
     getStockPrices,
     getStockIndex,
     getLatestStockPrice
+}
+
+function getAllStocks(){
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    };
+
+    return fetch(`/api/stock/taiwan`, requestOptions)
+        .then(handleResponse)
 }
 
 function getCategories(){

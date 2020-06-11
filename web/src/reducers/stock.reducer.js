@@ -6,11 +6,24 @@ const initState = {
     price: {loading: false, data: []}, 
     categoryStocks: {loading: false, data:[] },
     index: {loading: false, data:[]},
-    latestPrices: {loading:false, data: []}
+    latestPrices: {loading:false, data: []},
+    allStocks: {loading: false, data:[]}
 };
 
 export const stock = (state=initState, action) => {
     switch(action.type) {
+        // all stocks
+        case stockConstants.GET_ALL_STOCKS_REQUEST: 
+            return {...state,
+                allStocks: { loading: true, data: [] }
+            }
+        case stockConstants.GET_ALL_STOCKS_SUCCESS:
+            return {...state,
+                allStocks: { loading: false, data: action.data }
+            }
+        case stockConstants.GET_ALL_STOCKS_FAILURE:
+            return { ...state,  
+                error: action.error };
         // categories
         case stockConstants.GET_CATEGORIES_REQUEST: 
             return {...state,

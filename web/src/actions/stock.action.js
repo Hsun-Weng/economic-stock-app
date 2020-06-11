@@ -2,11 +2,30 @@ import stockConstants from '../constants/stock.constants';
 import { stockService } from '../services';
 
 export const stockAction = {
+    getAllStocks,
     getCategories,
     getCategoryStocks,
     getStockPrices,
     getStockIndex,
     getLatestStockPrice
+}
+
+function getAllStocks() {
+    return dispatch => {
+        dispatch(request());
+
+        stockService.getAllStocks()
+            .then(data=>{
+                dispatch(success(data));
+            },
+            error=>{
+                dispatch(failure(error));
+            })
+    };
+
+    function request() { return { type: stockConstants.GET_ALL_STOCKS_REQUEST } }
+    function success(data) { return { type: stockConstants.GET_ALL_STOCKS_SUCCESS, data } }
+    function failure(error) { return { type: stockConstants.GET_ALL_STOCKS_FAILURE, error } }
 }
 
 function getCategories() {
