@@ -12,6 +12,7 @@ import com.hsun.economic.repository.UserRepository;
 import com.hsun.economic.service.UserPortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +36,9 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     public void addPortfolio(String userName, UserPortfolio userPortfolio) {
         User user = userRepository.findByName(userName).orElseThrow(()->new ApiClientException("User not found."));
         userPortfolio.setUserId(user.getId());
+        if(StringUtils.isEmpty(userPortfolio.getPortfolioName())){
+            throw new ApiClientException("Portfolio name can't be empty.");
+        }
         repository.save(userPortfolio);
     }
 
