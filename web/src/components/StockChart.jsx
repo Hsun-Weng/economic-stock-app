@@ -5,8 +5,10 @@ import { useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-import { Paper, Box } from '@material-ui/core';
+import { Paper, Box, Grid, FormControl, InputLabel, Select, MenuItem, IconButton } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+
+import AddIcon from '@material-ui/icons/Add';
 
 import { ChartCanvas, Chart } from 'react-stockcharts';
 import { CandlestickSeries, LineSeries, BarSeries, RSISeries } from "react-stockcharts/lib/series";
@@ -21,9 +23,16 @@ import { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate 
 
 import { last } from "react-stockcharts/lib/utils";
 
-import { stockAction } from '../actions';
+import { stockAction, portfolioAction } from '../actions';
 
 const useStyles = makeStyles(theme => ({
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 200
+    },
+    button: {
+        margin: theme.spacing(1)
+    },
     fixedInputSkeletonHeight: {
         height: 65,
     },
@@ -174,16 +183,49 @@ const CandleStickChart = ({ dataset }) => {
 }
 
 const StockChart = () => {
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.user.user);
+    const portfolios = useSelector(state => state.portfolio.portfolios.data);
+    const prices = useSelector(state=>state.stock.price.data);
+
     const classes = useStyles();
     const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
+    const [ portfolioId, setPortfolioId ] = useState(0);
+
     const { stockCode } = useParams();
 
-    const dispatch = useDispatch();
-    const prices = useSelector(state=>state.stock.price.data);
-
     const formatDate = date => date.toISOString().slice(0,10);
+
+    const handleChangePortfolioId = ( event ) => {
+        setPortfolioId(event.target.value);
+    }
+
+    const addPortfolioProduct = ( event ) => {
+        let portfolioProduct = {
+            portfolioId: portfolioId,
+            productType: 1,
+            productCode: stockCode
+        }
+        dispatch(portfolioAction.addPortfolioProduct(portfolioProduct));
+    }
+
+
+    const UserPortfolioSelect = () =>(
+        <FormControl className={classes.formControl}>
+            <InputLabel>Add to portfolio</InputLabel>
+            <Select
+                value={portfolioId}
+                onChange={handleChangePortfolioId}>
+                {portfolios.map((prop, key)=><MenuItem key={key} value={prop.portfolioId}>{prop.portfolioName}</MenuItem>)}
+            </Select>
+        </FormControl>
+    );
+
+    useEffect(() => {
+        dispatch(portfolioAction.getPortfolio());
+    }, []);
 
     useEffect(() => {
         let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
@@ -191,19 +233,34 @@ const StockChart = () => {
         dispatch(stockAction.getStockPrices(stockCode, formatDate(startDate), formatDate(endDate)))
     }, [ stockCode ])
 
-
     return (
         <React.Fragment>
-            <Paper className={fixedChartHeightPaper}>
-                <Box display="flex" justifyContent="center">
-                    {prices.length > 0 ?
-                        <CandleStickChart dataset={prices.map((data) => {
-                            data.date = new Date(data.date);
-                            return data;
-                        })} />
-                    :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
-                </Box>
-            </Paper>
+            <Grid container spacing={3}>
+                {(user != null && portfolios.length > 0) &&
+                    <Grid item md={12}>
+                        <Paper>
+                            <Box>
+                                <UserPortfolioSelect />
+                                <IconButton color="primary" className={classes.button} onClick={addPortfolioProduct}>
+                                    <AddIcon />
+                                </IconButton>
+                            </Box>
+                        </Paper>
+                    </Grid>
+                }
+                <Grid item md={12}>
+                    <Paper className={fixedChartHeightPaper}>
+                        <Box display="flex" justifyContent="center">
+                            {prices.length > 0 ?
+                                <CandleStickChart dataset={prices.map((data) => {
+                                    data.date = new Date(data.date);
+                                    return data;
+                                })} />
+                            :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+                        </Box>
+                    </Paper>
+                </Grid>
+            </Grid>
         </React.Fragment>
     );
 }
