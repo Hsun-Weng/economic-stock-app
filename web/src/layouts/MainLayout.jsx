@@ -22,6 +22,7 @@ import UserListItems from '../components/layout-menus/UserListItems';
 import RouteComponent from '../Routes';
 import UserAvatar from '../components/UserAvatar';
 import Notification from '../components/Notification';
+import SearchBar from '../components/SearchBar';
 
 import {Switch} from 'react-router-dom'
 
@@ -65,9 +66,6 @@ const useStyles = makeStyles(theme => ({
   menuButtonHidden: {
     display: 'none',
   },
-  title: {
-    flexGrow: 1,
-  },
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
@@ -106,6 +104,9 @@ const useStyles = makeStyles(theme => ({
   },
   fixedHeight: {
     height: 240,
+  },
+  grow: {
+    flexGrow: 1,
   },
 }));
 
@@ -152,25 +153,26 @@ export default function Dashboard() {
         <Notification />
         <CssBaseline />
           <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-          <Toolbar className={classes.toolbar}>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              Dashboard
-            </Typography>
-            <FormControlLabel
-              control={<SwitchButton size="small" checked={false} checked={isDarkMode} color="default" onChange={handleDarkMode}/>}
-            />
-            <UserAvatar />
-          </Toolbar>
-        </AppBar>
+            <Toolbar className={classes.toolbar}>
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                className={clsx(classes.menuButton, open && classes.menuButtonHidden)}>
+                <MenuIcon />
+              </IconButton>
+              <Typography component="h1" variant="h6" color="inherit" noWrap >
+                Dashboard
+              </Typography>
+              <SearchBar />
+              <div className={classes.grow} />
+              <FormControlLabel
+                control={<SwitchButton size="small" checked={false} checked={isDarkMode} color="default" onChange={handleDarkMode}/>}
+              />
+              <UserAvatar />
+            </Toolbar>
+          </AppBar>
         <Drawer
           variant="permanent"
           classes={{

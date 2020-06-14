@@ -17,7 +17,6 @@ import FuturesChart from './components/taiwan-stock/FuturesChart';
 import StockChart from './components/taiwan-stock/StockChart';
 
 import Portfolio from './components/Portfolio';
-import StockSearch from './components/taiwan-stock/StockSearch';
 
 export const mainItemRoutes = [
     {
@@ -49,14 +48,6 @@ export const mainItemRoutes = [
         itemName: "Stock Chart",
         icon: AccessibleIcon,
         component: StockChart,
-        exact: false,
-        itemType: 0
-    },
-    {
-        path: '/taiwan/stock/stockSearch',
-        itemName: "Stock Search",
-        icon: AccessibleIcon,
-        component: StockSearch,
         exact: false,
         itemType: 0
     },
