@@ -1,7 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -10,13 +9,11 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
 import SwitchButton from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import MainListItems from '../components/layout-menus/MainListItems';
 import UserListItems from '../components/layout-menus/UserListItems';
 import RouteComponent from '../Routes';
@@ -168,7 +165,7 @@ export default function Dashboard() {
               <SearchBar />
               <div className={classes.grow} />
               <FormControlLabel
-                control={<SwitchButton size="small" checked={false} checked={isDarkMode} color="default" onChange={handleDarkMode}/>}
+                control={<SwitchButton size="small" checked={isDarkMode} color="default" onChange={handleDarkMode}/>}
               />
               <UserAvatar />
             </Toolbar>

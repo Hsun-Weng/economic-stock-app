@@ -3,14 +3,11 @@ import { Route } from 'react-router-dom';
 
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
-import MapIcon from '@material-ui/icons/Map';
-import AtmIcon from '@material-ui/icons/Atm';
 import AccessibleIcon from '@material-ui/icons/Accessible'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 
 import Dashbaord from './components/Dashboard'
 import EconomicData from './components/EconomicData';
-import WorldEconomic from './components/WorldEconomic';
 import StockChart from './components/StockChart';
 import StockIndexChart from './components/StockIndexChart';
 

@@ -74,11 +74,11 @@ const EconomicData = () => {
 
   useEffect(() => {
     dispatch(economicAction.getEconomicData(countryCode));
-  }, [ countryCode ])
+  }, [ dispatch, countryCode ])
 
   useEffect(() => {
     dispatch(economicAction.getEconomicValue(countryCode, dataCode));
-  }, [ countryCode, dataCode]);
+  }, [ dispatch, countryCode, dataCode]);
 
   return (
     <React.Fragment>

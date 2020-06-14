@@ -10,7 +10,7 @@ const UserAvatar = () => {
     
     useEffect(()=>{
         dispatch(userAction.getUser())
-    }, []);
+    }, [ dispatch ]);
 
     return (
         <div>

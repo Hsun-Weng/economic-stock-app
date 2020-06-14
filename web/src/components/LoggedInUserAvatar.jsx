@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch} from 'react-redux';
-import { IconButton, Badge, Menu, MenuItem, Typography } from '@material-ui/core';
+import { IconButton, Menu, MenuItem, Typography } from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 
 import { userAction } from '../actions';

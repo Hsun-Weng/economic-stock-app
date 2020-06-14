@@ -189,7 +189,6 @@ const StockChart = () => {
     const prices = useSelector(state=>state.stock.price.data);
 
     const classes = useStyles();
-    const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
     const [ portfolioId, setPortfolioId ] = useState(0);
@@ -225,13 +224,13 @@ const StockChart = () => {
 
     useEffect(() => {
         dispatch(portfolioAction.getPortfolio());
-    }, []);
+    }, [ dispatch ]);
 
     useEffect(() => {
         let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
         let endDate = new Date();
         dispatch(stockAction.getStockPrices(stockCode, formatDate(startDate), formatDate(endDate)))
-    }, [ stockCode ])
+    }, [ dispatch, stockCode ])
 
     return (
         <React.Fragment>

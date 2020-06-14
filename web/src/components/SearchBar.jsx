@@ -57,7 +57,6 @@ const SearchBar = () => {
     const allStockIndexes = useSelector(state=> state.stock.allStockIndexes.data);
     const [ products, setProducts ] = useState([]);
     
-    // const [ stock, setStock ] = useState({stockCode: "2330", stockName: "台積電"});
     const [ product, setProduct ] = useState(null);
 
     const history = useHistory();
@@ -74,6 +73,7 @@ const SearchBar = () => {
                     break;
                 case 2:
                     break;
+                default:
             }
         }
     }
@@ -81,9 +81,10 @@ const SearchBar = () => {
     useEffect(() => {
         dispatch(stockAction.getAllStocks());
         dispatch(stockAction.getAllStockIndexes());
-    }, [])
+    }, [ dispatch ])
 
     useEffect(() => {
+        let allProducts = [];
         let stockProducts = allStocks.map((data)=>{
             let product = {};
             product.productType = 1;
@@ -92,10 +93,6 @@ const SearchBar = () => {
             product.productName = data.stockName;
             return product;
         });
-        setProducts(products.concat(stockProducts));
-    }, [ allStocks ]);
-
-    useEffect(() => {
         let stockIndexProducts = allStockIndexes.map((data)=>{
             let product = {};
             product.productType = 0;
@@ -104,8 +101,14 @@ const SearchBar = () => {
             product.productName = data.indexName;
             return product;
         });
-        setProducts(products.concat(stockIndexProducts));
-    }, [ allStockIndexes ]);
+        allProducts = stockProducts.concat(stockIndexProducts);
+        setProducts(allProducts);
+    }, [ allStocks, allStockIndexes ]);
+
+    // useEffect(() => {
+        
+    //     setProducts(products.concat(stockIndexProducts));
+    // }, [ allStockIndexes ]);
 
     return (
         <div className={classes.search}>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Grid, FormControl, Select, InputLabel, MenuItem, Box, Button, ButtonGroup } from '@material-ui/core'
+import { Grid, Box, Button, ButtonGroup } from '@material-ui/core'
 import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Brush } from 'recharts';
 
 import { economicAction } from '../actions';
@@ -14,7 +14,7 @@ const EconomicDataChart = ({ data }) => {
 
     useEffect(()=>{
         dispatch(economicAction.getEconomicChartData(unitCode, data));
-    }, [ unitCode ]);
+    }, [ dispatch, unitCode, data ]);
 
     const changeUnitCode = (unitCode) => {
         setUnitCode(unitCode);

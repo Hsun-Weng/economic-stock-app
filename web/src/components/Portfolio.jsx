@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { Grid, Paper, IconButton, TextField, FormControl, Select, InputLabel, MenuItem, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Link} from '@material-ui/core'
-import { Skeleton } from '@material-ui/lab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -120,7 +119,6 @@ const PortfolioBody = ({ latestPrices }) => {
 
 const Portfolio = () => {
     const classes = useStyles();
-    const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
     const dispatch = useDispatch();
@@ -138,15 +136,15 @@ const Portfolio = () => {
 
     useEffect(()=> {
         dispatch(portfolioAction.getPortfolio());
-    }, [])
+    }, [ dispatch ])
 
     useEffect(()=>{
         dispatch(portfolioAction.getPortfolioProducts(portfolioId));
-    }, [ portfolioId ])
+    }, [ dispatch, portfolioId ])
 
     useEffect(()=>{
         dispatch(stockAction.getLatestStockPrice(portfolioProducts));
-    }, [ portfolioProducts ]);
+    }, [ dispatch, portfolioProducts ]);
 
     return (
         <React.Fragment>

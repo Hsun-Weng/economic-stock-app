@@ -46,10 +46,6 @@ const FuturesChip = () => {
     const [futuresCode, setFuturesCode] = useState("MTX");
     const [indexCode, setIndexCode] = useState('TAIEX');
 
-    // 預設30天前
-    const [ startDate, setStartDate ] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
-    const [ endDate, setEndDate ] = useState(new Date());
-
     const [dataset, setDataset] = useState([]);
 
     const formatDate = date => date.toISOString().slice(0,10);
@@ -101,15 +97,19 @@ const FuturesChip = () => {
 
     useEffect(() => {
         dispatch(futuresAction.getFutures());
-    }, [])
+    }, [ dispatch ])
 
     useEffect(() => {
+        let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
+        let endDate = new Date();
         dispatch(futuresAction.getFuturesChip(futuresCode, investorCode, formatDate(startDate), formatDate(endDate)))
-    }, [ futuresCode, investorCode, startDate, endDate ])
+    }, [ dispatch, futuresCode, investorCode ])
 
     useEffect(() => {
+        let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
+        let endDate = new Date();
         dispatch(stockAction.getStockIndex(indexCode, formatDate(startDate), formatDate(endDate)));
-    }, [ indexCode, startDate, endDate ])
+    }, [ dispatch, indexCode ])
 
     useEffect(()=>{
         mergeDataset(indexDataset, futuresChipDataset);
