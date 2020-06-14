@@ -1,14 +1,8 @@
 package com.hsun.economic.service.impl;
 
-import com.hsun.economic.entity.PortfolioProduct;
-import com.hsun.economic.entity.TaiwanStock;
-import com.hsun.economic.entity.User;
-import com.hsun.economic.entity.UserPortfolio;
+import com.hsun.economic.entity.*;
 import com.hsun.economic.exception.ApiClientException;
-import com.hsun.economic.repository.PortfolioProductRepository;
-import com.hsun.economic.repository.TaiwanStockRepository;
-import com.hsun.economic.repository.UserPortfolioRepository;
-import com.hsun.economic.repository.UserRepository;
+import com.hsun.economic.repository.*;
 import com.hsun.economic.service.UserPortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +26,9 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Autowired
     private TaiwanStockRepository stockRepository;
 
+    @Autowired
+    private TaiwanStockIndexRepository stockIndexRepository;
+
     @Override
     public void addPortfolio(String userName, UserPortfolio userPortfolio) {
         User user = userRepository.findByName(userName).orElseThrow(()->new ApiClientException("User not found."));
@@ -50,6 +47,8 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
         Integer productId = null;
         switch(portfolioProduct.getProductType()){
             case 0: //index
+                productId = stockIndexRepository.findByIndexCode(portfolioProduct.getProductCode())
+                        .orElseThrow(()->new ApiClientException("Stock not found.")).getIndexId();
                 break;
             case 1: //stock
                 productId = stockRepository.findByStockCode(portfolioProduct.getProductCode())
@@ -64,7 +63,7 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
         portfolioProduct.setProductId(productId);
         Integer maxSort = userPortfolio.getPortfolioProductList()
                 .stream()
-                .mapToInt(PortfolioProduct::getSort).sum();
+                .mapToInt(PortfolioProduct::getSort).max().orElse(0);
         portfolioProduct.setSort(maxSort+1);
         portfolioProductRepository.save(portfolioProduct);
     }
@@ -81,6 +80,10 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
                     String productCode = null;
                     switch(portfolioProduct.getProductType()){
                         case 0: //index
+                            TaiwanStockIndex stockIndex = stockIndexRepository.findById(portfolioProduct.getProductId())
+                                    .orElse(new TaiwanStockIndex());
+                            portfolioProduct.setProductCode(stockIndex.getIndexCode());
+                            portfolioProduct.setProductName(stockIndex.getIndexName());
                             break;
                         case 1: //stock
                             TaiwanStock stock = stockRepository.findById(portfolioProduct.getProductId())

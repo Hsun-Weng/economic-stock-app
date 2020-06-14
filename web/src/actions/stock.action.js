@@ -111,7 +111,8 @@ function getLatestStockPrice(products) {
                 let result = data.map((detail)=>{
                     return {...detail,
                         productCode: detail.stockCode,
-                        productName: products.find((stock)=>stock.productCode===detail.stockCode).productName
+                        productName: products.find((stock)=>stock.productCode===detail.stockCode).productName,
+                        sort: products.find((stock)=>stock.productCode===detail.stockCode).sort
                     };
                 })
                 dispatch(success(result));
@@ -148,12 +149,13 @@ function getLatestStockIndexPrice(products) {
     return dispatch => {
         dispatch(request());
 
-        stockService.getLatestStockPrice(products)
+        stockService.getLatestStockIndexPrice(products)
             .then(data=>{
                 let result = data.map((detail)=>{
                     return {...detail,
-                        productCode: detail.stockCode,
-                        productName: products.find((stock)=>stock.productCode===detail.stockCode).productName
+                        productCode: detail.indexCode,
+                        productName: products.find((index)=>index.productCode===detail.indexCode).productName,
+                        sort: products.find((index)=>index.productCode===detail.indexCode).sort
                     };
                 })
                 dispatch(success(result));

@@ -68,6 +68,7 @@ public class UserPortfolioController {
                         dataMap.put("productType", data.getProductType());
                         dataMap.put("productCode", data.getProductCode());
                         dataMap.put("productName", data.getProductName());
+                        dataMap.put("sort", data.getSort());
                         return dataMap;
                     }).collect(Collectors.toList());
 
