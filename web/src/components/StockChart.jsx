@@ -222,9 +222,11 @@ const StockChart = () => {
         </FormControl>
     );
 
-    useEffect(() => {
-        dispatch(portfolioAction.getPortfolio());
-    }, [ dispatch ]);
+    useEffect(()=>{
+        if( portfolios.length > 0){
+            setPortfolioId(portfolios[0].portfolioId);
+        }
+    }, [ portfolios ])
 
     useEffect(() => {
         let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);

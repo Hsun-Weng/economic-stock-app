@@ -123,7 +123,6 @@ const StockChart = () => {
 
     useEffect(() => {
         dispatch(stockAction.getCategories());
-        dispatch(portfolioAction.getPortfolio());
     }, [])
 
     useEffect(() => { 

@@ -134,12 +134,16 @@ const Portfolio = () => {
         dispatch(portfolioAction.addPortfolio(portfolio))
     }
 
-    useEffect(()=> {
-        dispatch(portfolioAction.getPortfolio());
-    }, [ dispatch ])
+    useEffect(()=>{
+        if( portfolio.length > 0){
+            setPortfolioId(portfolio[0].portfolioId);
+        }
+    }, [ portfolio ])
 
     useEffect(()=>{
-        dispatch(portfolioAction.getPortfolioProducts(portfolioId));
+        if( portfolioId !== 0){
+            dispatch(portfolioAction.getPortfolioProducts(portfolioId));
+        }
     }, [ dispatch, portfolioId ])
 
     useEffect(()=>{

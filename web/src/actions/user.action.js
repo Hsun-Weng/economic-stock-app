@@ -1,6 +1,6 @@
 import userConstants from '../constants/user.constants';
 import { userService } from '../services';
-import { notificationActions } from './notification.action';
+import { notificationActions, portfolioAction } from './';
 
 export const userAction = {
     getUser,
@@ -16,6 +16,7 @@ function getUser() {
             userService.getUser()
                 .then(user=>{
                     dispatch(success(user));
+                    dispatch(portfolioAction.getPortfolio());
                 },
                 error=>{
                     dispatch(failure(error));
