@@ -12,6 +12,7 @@ import Dashbaord from './components/Dashboard'
 import EconomicData from './components/EconomicData';
 import WorldEconomic from './components/WorldEconomic';
 import StockChart from './components/StockChart';
+import StockIndexChart from './components/StockIndexChart';
 
 import FuturesChip from './components/taiwan-stock/FuturesChip';
 import FuturesChart from './components/taiwan-stock/FuturesChart';
@@ -113,6 +114,7 @@ const RouteComponent = () => (
             }
         })}
         <Route path="/stock/:stockCode" children={<StockChart />} />
+        <Route path="/index/:indexCode" children={<StockIndexChart />} />
     </div>
 );
 

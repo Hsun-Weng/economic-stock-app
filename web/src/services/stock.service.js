@@ -5,7 +5,9 @@ export const stockService = {
     getCategoryStocks,
     getStockPrices,
     getStockIndex,
-    getLatestStockPrice
+    getLatestStockPrice,
+    getAllStockIndexes,
+    getLatestStockIndexPrice
 }
 
 function getAllStocks(){
@@ -71,6 +73,32 @@ function getLatestStockPrice(products){
     
 
     return fetch(`/data/stock/taiwan/latest`, requestOptions)
+        .then(handleResponse)
+}
+
+function getAllStockIndexes(){
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    };
+
+    return fetch(`/api/stock/taiwan/index`, requestOptions)
+        .then(handleResponse)
+}
+
+function getLatestStockIndexPrice(products){
+    let indexCodes = Object.assign([], products)
+                    .filter((data)=>data.productType===0)
+                    .map((data)=>data.productCode);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(indexCodes)
+    };
+    
+
+    return fetch(`/data/stock/taiwan/index/latest`, requestOptions)
         .then(handleResponse)
 }
 

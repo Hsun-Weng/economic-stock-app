@@ -3,11 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import { InputBase, Box, IconButton, Menu, TextField } from '@material-ui/core'
-import { Skeleton, Autocomplete } from '@material-ui/lab';
+import { TextField } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab';
 import SearchIcon from '@material-ui/icons/Search';
-import AddIcon from '@material-ui/icons/Add';
 
 import { stockAction } from '../actions';
 
@@ -25,9 +23,6 @@ const useStyles = makeStyles(theme => ({
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
-        // [theme.breakpoints.up('md')]: {
-        //     width: '20ch',
-        // },
     },
     search: {
         position: 'relative',
@@ -59,22 +54,58 @@ const SearchBar = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const allStocks = useSelector(state=> state.stock.allStocks.data);
+    const allStockIndexes = useSelector(state=> state.stock.allStockIndexes.data);
+    const [ products, setProducts ] = useState([]);
     
     // const [ stock, setStock ] = useState({stockCode: "2330", stockName: "台積電"});
-    const [ stock, setStock ] = useState(null);
+    const [ product, setProduct ] = useState(null);
 
     const history = useHistory();
 
     const handleChangeStock = ( event, value ) => {
-        setStock(value);
+        setProduct(value);
         if(value != null){
-            history.push(`/stock/${value.stockCode}`);
+            switch(value.productType){
+                case 0:
+                    history.push(`/index/${value.productCode}`);
+                    break;
+                case 1:
+                    history.push(`/stock/${value.productCode}`);
+                    break;
+                case 2:
+                    break;
+            }
         }
     }
 
     useEffect(() => {
         dispatch(stockAction.getAllStocks());
+        dispatch(stockAction.getAllStockIndexes());
     }, [])
+
+    useEffect(() => {
+        let stockProducts = allStocks.map((data)=>{
+            let product = {};
+            product.productType = 1;
+            product.productTypeName = "股票";
+            product.productCode = data.stockCode;
+            product.productName = data.stockName;
+            return product;
+        });
+        setProducts(products.concat(stockProducts));
+    }, [ allStocks ]);
+
+    useEffect(() => {
+        let stockIndexProducts = allStockIndexes.map((data)=>{
+            let product = {};
+            product.productType = 0;
+            product.productTypeName = "指數";
+            product.productCode = data.indexCode;
+            product.productName = data.indexName;
+            return product;
+        });
+        setProducts(products.concat(stockIndexProducts));
+    }, [ allStockIndexes ]);
 
     return (
         <div className={classes.search}>
@@ -82,18 +113,16 @@ const SearchBar = () => {
               <SearchIcon />
             </div>
             <Autocomplete
-                options={allStocks}
-                getOptionLabel={(stock)=>stock.stockCode + " " + stock.stockName}
-                value={stock}
+                options={products.sort((product1, product2)=>product1.productType - product2.productType)}
+                groupBy={(product)=>product.productTypeName}
+                getOptionLabel={(product)=>product.productCode + " " + product.productName}
+                value={product}
                 onChange={handleChangeStock}
                 autoHighlight
                 selectOnFocus
                 renderInput={((params)=>{
                     return (<TextField
                     {...params}
-                    // ref={params.inputProps.ref}
-                    // inputProps={params.inputProps}
-                    // disableUnderline={true}
                     placeholder="Search Stock..."
                     className={classes.inputRoot}
                     inputProps={{

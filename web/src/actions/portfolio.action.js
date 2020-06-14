@@ -70,7 +70,6 @@ function addPortfolioProduct(portfolioProduct) {
         portfolioService.addPortfolioProduct(portfolioProduct)
             .then(()=>{
                 dispatch(success());
-                dispatch(getPortfolioProducts());
             },
             error=>{
                 dispatch(failure(error));

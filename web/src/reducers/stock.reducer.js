@@ -7,7 +7,9 @@ const initState = {
     categoryStocks: {loading: false, data:[] },
     index: {loading: false, data:[]},
     latestPrices: {loading:false, data: []},
-    allStocks: {loading: false, data:[]}
+    allStocks: {loading: false, data:[]},
+    allStockIndexes: {loading: false, data: []},
+    latestIndexPrices: {loading:false, data: []},
 };
 
 export const stock = (state=initState, action) => {
@@ -88,7 +90,31 @@ export const stock = (state=initState, action) => {
             return { ...state,
                 latestPrices: action.error 
             };
-
+        // all stock indexes
+        case stockConstants.GET_ALL_STOCK_INDEXES_REQUEST: 
+            return {...state,
+                allStockIndexes: { loading: true, data: [] }
+            }
+        case stockConstants.GET_ALL_STOCK_INDEXES_SUCCESS:
+            return {...state,
+                allStockIndexes: { loading: false, data: action.data }
+            }
+        case stockConstants.GET_ALL_STOCK_INDEXES_FAILURE:
+            return { ...state,  
+                error: action.error };
+        // batch stock index price
+        case stockConstants.GET_LATEST_STOCK_INDEX_PRICES_REQUEST: 
+            return { ...state,
+                latestIndexPrices: { loading: true, data: [] }
+            }
+        case stockConstants.GET_LATEST_STOCK_INDEX_PRICES_SUCCESS:
+            return { ...state,
+                latestIndexPrices: { loading: false, data: action.data }
+            }
+        case stockConstants.GET_LATEST_STOCK_INDEX_PRICES_FAILURE:
+            return { ...state,
+                latestIndexPrices: action.error 
+            };
         default: 
             return state;
     }
