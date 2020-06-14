@@ -11,10 +11,10 @@ import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import Dashbaord from './components/Dashboard'
 import EconomicData from './components/EconomicData';
 import WorldEconomic from './components/WorldEconomic';
+import StockChart from './components/StockChart';
 
 import FuturesChip from './components/taiwan-stock/FuturesChip';
 import FuturesChart from './components/taiwan-stock/FuturesChart';
-import StockChart from './components/taiwan-stock/StockChart';
 
 import Portfolio from './components/Portfolio';
 
@@ -43,14 +43,6 @@ export const mainItemRoutes = [
     //     exact: false,
     //     itemType: 0
     // },
-    {
-        path: '/taiwan/stock/stockChart',
-        itemName: "Stock Chart",
-        icon: AccessibleIcon,
-        component: StockChart,
-        exact: false,
-        itemType: 0
-    },
     {
         path: '/taiwan/stock/futuresChip',
         itemName: "Futures Chip",
@@ -83,43 +75,44 @@ export const userItemRoutes = [
 const RouteComponent = () => (
     <div>
         {mainItemRoutes.map((prop, key) => {
-        if(prop.itemType === 0){
-            return (
-            <Route path={prop.path} exact={prop.exact} key={key}><prop.component /></Route>
-            );
-        }else if (prop.itemType === 1){
-            const routeItems = prop.children;
-            return (
-            <div key={key}>
-                {routeItems.map((itemProp, itemKey)=>
-                    <Route path={itemProp.path} 
-                    exact={itemProp.exact}
-                    key={itemKey}><itemProp.component /></Route>)}
-            </div>
-            )
-        }else{
-            return(<div />)
-        }
+            if(prop.itemType === 0){
+                return (
+                <Route path={prop.path} exact={prop.exact} key={key}><prop.component /></Route>
+                );
+            }else if (prop.itemType === 1){
+                const routeItems = prop.children;
+                return (
+                <div key={key}>
+                    {routeItems.map((itemProp, itemKey)=>
+                        <Route path={itemProp.path} 
+                        exact={itemProp.exact}
+                        key={itemKey}><itemProp.component /></Route>)}
+                </div>
+                )
+            }else{
+                return(<div />)
+            }
         })}
         {userItemRoutes.map((prop, key) => {
-        if(prop.itemType === 0){
-            return (
-            <Route path={prop.path} exact={prop.exact} key={key}><prop.component /></Route>
-            );
-        }else if (prop.itemType === 1){
-            const routeItems = prop.children;
-            return (
-            <div key={key}>
-                {routeItems.map((itemProp, itemKey)=>
-                    <Route path={itemProp.path} 
-                    exact={itemProp.exact}
-                    key={itemKey}><itemProp.component /></Route>)}
-            </div>
-            )
-        }else{
-            return(<div />)
-        }
+            if(prop.itemType === 0){
+                return (
+                <Route path={prop.path} exact={prop.exact} key={key}><prop.component /></Route>
+                );
+            }else if (prop.itemType === 1){
+                const routeItems = prop.children;
+                return (
+                <div key={key}>
+                    {routeItems.map((itemProp, itemKey)=>
+                        <Route path={itemProp.path} 
+                        exact={itemProp.exact}
+                        key={itemKey}><itemProp.component /></Route>)}
+                </div>
+                )
+            }else{
+                return(<div />)
+            }
         })}
+        <Route path="/stock/:stockCode" children={<StockChart />} />
     </div>
 );
 

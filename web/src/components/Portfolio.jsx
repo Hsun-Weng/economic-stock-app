@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { Grid, Paper, IconButton, TextField, FormControl, Select, InputLabel, MenuItem, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Icon} from '@material-ui/core'
+import { Grid, Paper, IconButton, TextField, FormControl, Select, InputLabel, MenuItem, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Link} from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
@@ -69,6 +70,54 @@ const PortfolioHeading = (prop) => (
     </TableHead>
 )
 
+const PortfolioBody = ({ latestPrices }) => {
+    const history = useHistory();
+
+    const redirectStockChart = ( event, stockCode ) => {
+        event.preventDefault();
+        history.push(`/stock/${stockCode}`)
+    }
+
+    return (<TableBody>
+        {latestPrices.map((prop, key)=>
+            <TableRow key={key}>
+                <TableCell>
+                    <Link href="#" onClick={event=>redirectStockChart(event, prop.productCode)}>
+                        {prop.productCode}
+                    </Link>
+                </TableCell>
+                <TableCell>
+                    {prop.productName}
+                </TableCell>
+                <TableCell>
+                    {prop.close}
+                </TableCell>
+                <TableCell>
+                    {prop.open}
+                </TableCell>
+                <TableCell>
+                    {prop.high}
+                </TableCell>
+                <TableCell>
+                    {prop.low}
+                </TableCell>
+                <TableCell>
+                    {prop.change}
+                </TableCell>
+                <TableCell>
+                    {prop.changePercent}
+                </TableCell>
+                <TableCell>
+                    {prop.volume}
+                </TableCell>
+                <TableCell>
+                    {prop.date}
+                </TableCell>
+            </TableRow>
+        )}
+    </TableBody>)
+}
+
 const Portfolio = () => {
     const classes = useStyles();
     const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
@@ -77,7 +126,7 @@ const Portfolio = () => {
     const dispatch = useDispatch();
     const portfolio = useSelector(state=>state.portfolio.portfolios.data);
     const portfolioProducts = useSelector(state=>state.portfolio.products.data);
-    const latestPrices = useSelector(state=>state.stock.latestPrices.data);
+    const stockLatestPrices = useSelector(state=>state.stock.latestPrices.data);
     
     const [ portfolioId, setPortfolioId ] = useState(0);
     const [ addPorftolioName, setAddPortfolioName ] = useState("");
@@ -86,45 +135,6 @@ const Portfolio = () => {
         let portfolio = { portfolioName: addPorftolioName}
         dispatch(portfolioAction.addPortfolio(portfolio))
     }
-
-    const PortfolioBody = () => (
-        <TableBody>
-            {latestPrices.map((prop, key)=>
-                <TableRow key={key}>
-                    <TableCell>
-                        {prop.productCode}
-                    </TableCell>
-                    <TableCell>
-                        {prop.productName}
-                    </TableCell>
-                    <TableCell>
-                        {prop.close}
-                    </TableCell>
-                    <TableCell>
-                        {prop.open}
-                    </TableCell>
-                    <TableCell>
-                        {prop.high}
-                    </TableCell>
-                    <TableCell>
-                        {prop.low}
-                    </TableCell>
-                    <TableCell>
-                        {prop.change}
-                    </TableCell>
-                    <TableCell>
-                        {prop.changePercent}
-                    </TableCell>
-                    <TableCell>
-                        {prop.volume}
-                    </TableCell>
-                    <TableCell>
-                        {prop.date}
-                    </TableCell>
-                </TableRow>
-            )}
-        </TableBody>
-    )
 
     useEffect(()=> {
         dispatch(portfolioAction.getPortfolio());
@@ -174,7 +184,7 @@ const Portfolio = () => {
                         <TableContainer >
                             <Table>
                                 <PortfolioHeading />
-                                <PortfolioBody />
+                                <PortfolioBody latestPrices={stockLatestPrices} />
                             </Table>
                         </TableContainer>
                     </Paper>

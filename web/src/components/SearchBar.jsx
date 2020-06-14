@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -16,16 +17,17 @@ const useStyles = makeStyles(theme => ({
     },
     inputRoot: {
         color: 'inherit',
-      },
+    },
     inputInput: {
+        color: 'white',
         padding: theme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '20ch',
-        },
+        // [theme.breakpoints.up('md')]: {
+        //     width: '20ch',
+        // },
     },
     search: {
         position: 'relative',
@@ -58,10 +60,16 @@ const SearchBar = () => {
     const dispatch = useDispatch();
     const allStocks = useSelector(state=> state.stock.allStocks.data);
     
-    const [ stock, setStock ] = useState({stockCode: "2330", stockName: "台積電"});
+    // const [ stock, setStock ] = useState({stockCode: "2330", stockName: "台積電"});
+    const [ stock, setStock ] = useState(null);
+
+    const history = useHistory();
 
     const handleChangeStock = ( event, value ) => {
         setStock(value);
+        if(value != null){
+            history.push(`/stock/${value.stockCode}`);
+        }
     }
 
     useEffect(() => {
@@ -74,23 +82,26 @@ const SearchBar = () => {
               <SearchIcon />
             </div>
             <Autocomplete
-                freeSolo
                 options={allStocks}
                 getOptionLabel={(stock)=>stock.stockCode + " " + stock.stockName}
                 value={stock}
                 onChange={handleChangeStock}
-                disableClearable
-                color="inherit"
-                style={{width: 300}}
-                renderInput={(params)=> <InputBase {...params}
-                    ref={params.InputProps.ref}
-                    inputProps={params.inputProps}
-                    classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
+                autoHighlight
+                selectOnFocus
+                renderInput={((params)=>{
+                    return (<TextField
+                    {...params}
+                    // ref={params.inputProps.ref}
+                    // inputProps={params.inputProps}
+                    // disableUnderline={true}
+                    placeholder="Search Stock..."
+                    className={classes.inputRoot}
+                    inputProps={{
+                        ...params.inputProps,
+                        className: classes.inputInput,
                     }}
-                    placeholder="Search Stock..." 
-                />}
+                  />)}
+                )}
             />
         </div>
         );
