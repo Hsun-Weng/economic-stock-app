@@ -203,8 +203,10 @@ const StockChart = () => {
 
     const addPortfolioProduct = ( event ) => {
         let portfolioProduct = {
-            portfolioId: portfolioId,
-            productType: 1,
+            id: {
+                portfolioId: portfolioId,
+                productType: 1,
+            },
             productCode: stockCode
         }
         dispatch(portfolioAction.addPortfolioProduct(portfolioProduct));

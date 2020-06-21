@@ -5,7 +5,8 @@ const initState = {
     portfolios: {loading: false, data: []},
     products: {loading: false, data: []},
     addPortfolio: {loading: false},
-    addPortfolioProduct: {loading: false}
+    addPortfolioProduct: {loading: false},
+    updatePortfolio: {loading: false}
 }
 
 export const portfolio = (state=initState, action) => {
@@ -59,6 +60,19 @@ export const portfolio = (state=initState, action) => {
                 addPortfolioProduct:{ loading: false }
             };
         case portfolioConstants.ADD_PORTFOLIO_PRODUCT_FAILURE:
+            return {...state,
+                error: action.error
+            };
+        // Update portfolio product
+        case portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_REQUEST: 
+            return {...state,
+                updatePortfolio:{ loading: true }
+            };
+        case portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_SUCCESS:
+            return {...state,
+                updatePortfolio:{ loading: false }
+            };
+        case portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_FAILURE:
             return {...state,
                 error: action.error
             };

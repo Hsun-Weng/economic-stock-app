@@ -57,7 +57,7 @@ public class UserPortfolioController {
     public ResponseBean getPortfolioProductListById(Authentication authentication, @PathVariable Integer portfolioId){
         ResponseBean responseBean = new ResponseBean();
         List<Map<String, Object>> dataList = null;
-        List<PortfolioProduct> portfolioProductList = null;
+        List<PortfolioProduct> portfolioProductList;
         try{
 
             portfolioProductList = service.findUserPortfolioProductList(authentication.getName(), portfolioId);
@@ -65,7 +65,7 @@ public class UserPortfolioController {
             dataList = portfolioProductList
                     .stream().map((data)->{
                         Map<String, Object> dataMap = new HashMap<String, Object>();
-                        dataMap.put("productType", data.getProductType());
+                        dataMap.put("productType", data.getId().getProductType());
                         dataMap.put("productCode", data.getProductCode());
                         dataMap.put("productName", data.getProductName());
                         dataMap.put("sort", data.getSort());

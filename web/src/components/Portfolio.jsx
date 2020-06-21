@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { Grid, Paper, IconButton, TextField, FormControl, Select, InputLabel, MenuItem, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Link} from '@material-ui/core'
+
+import { Grid, Paper, IconButton, TextField, FormControl, Select, InputLabel, MenuItem, Box, Table, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
-import { portfolioAction, stockAction } from '../actions/'
+import { portfolioAction } from '../actions/'
+
+import PortfolioTableBody from './PortfolioTableBody';
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -32,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const PortfolioHeading = (prop) => (
+const PortfolioHeading = () => (
     <TableHead>
         <TableRow>
             <TableCell>
@@ -65,65 +67,10 @@ const PortfolioHeading = (prop) => (
             <TableCell>
                 Time
             </TableCell>
+            <TableCell />
         </TableRow>
     </TableHead>
 )
-
-const PortfolioBody = ({ latestPrices }) => {
-    const history = useHistory();
-
-    const redirectStockChart = ( event, productCode, productType ) => {
-        event.preventDefault();
-        switch(productType){
-            case 0:
-                history.push(`/index/${productCode}`);
-                break;
-            case 1:
-                history.push(`/stock/${productCode}`);
-                break;
-            default:
-        }
-    }
-
-    return (<TableBody>
-        {latestPrices.map((prop, key)=>
-            <TableRow key={key}>
-                <TableCell>
-                    <Link href="#" onClick={event=>redirectStockChart(event, prop.productCode, prop.productType)}>
-                        {prop.productCode}
-                    </Link>
-                </TableCell>
-                <TableCell>
-                    {prop.productName}
-                </TableCell>
-                <TableCell>
-                    {prop.close}
-                </TableCell>
-                <TableCell>
-                    {prop.open}
-                </TableCell>
-                <TableCell>
-                    {prop.high}
-                </TableCell>
-                <TableCell>
-                    {prop.low}
-                </TableCell>
-                <TableCell>
-                    {prop.change}
-                </TableCell>
-                <TableCell>
-                    {prop.changePercent}
-                </TableCell>
-                <TableCell>
-                    {prop.volume}
-                </TableCell>
-                <TableCell>
-                    {prop.date}
-                </TableCell>
-            </TableRow>
-        )}
-    </TableBody>)
-}
 
 const Portfolio = () => {
     const classes = useStyles();
@@ -131,11 +78,6 @@ const Portfolio = () => {
 
     const dispatch = useDispatch();
     const portfolio = useSelector(state=>state.portfolio.portfolios.data);
-    const portfolioProducts = useSelector(state=>state.portfolio.products.data);
-    const stockLatestPrices = useSelector(state=>state.stock.latestPrices.data);
-    const stockIndexLatestPrices = useSelector(state=>state.stock.latestIndexPrices.data);
-    
-    const [ productPrices, setProductPrices ] = useState([]);
     
     const [ portfolioId, setPortfolioId ] = useState(0);
     const [ addPorftolioName, setAddPortfolioName ] = useState("");
@@ -150,29 +92,6 @@ const Portfolio = () => {
             setPortfolioId(portfolio[0].portfolioId);
         }
     }, [ portfolio ])
-
-    useEffect(()=>{
-        if( portfolioId !== 0){
-            dispatch(portfolioAction.getPortfolioProducts(portfolioId));
-        }
-    }, [ dispatch, portfolioId ])
-
-    useEffect(()=>{
-        dispatch(stockAction.getLatestStockPrice(portfolioProducts));
-        dispatch(stockAction.getLatestStockIndexPrice(portfolioProducts));
-    }, [ dispatch, portfolioProducts ]);
-
-    useEffect(()=> {
-        let allProducts = [];
-        let stockIndexPrices = stockIndexLatestPrices.map((data)=>{
-            return {...data, productType: 0} 
-         });
-        let stockPrices = stockLatestPrices.map((data)=>{
-           return {...data, productType: 1} 
-        });
-        setProductPrices(stockIndexPrices.concat(stockPrices)
-            .sort((product1,product2)=>product1.sort-product2.sort));
-    }, [ stockLatestPrices, stockIndexLatestPrices ]);
 
     return (
         <React.Fragment>
@@ -210,7 +129,7 @@ const Portfolio = () => {
                         <TableContainer >
                             <Table>
                                 <PortfolioHeading />
-                                <PortfolioBody latestPrices={productPrices} />
+                                <PortfolioTableBody portfolioId={portfolioId} />
                             </Table>
                         </TableContainer>
                     </Paper>

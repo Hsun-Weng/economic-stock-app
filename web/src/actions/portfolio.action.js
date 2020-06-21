@@ -5,7 +5,8 @@ export const portfolioAction = {
     getPortfolio,
     addPortfolio,
     getPortfolioProducts,
-    addPortfolioProduct
+    addPortfolioProduct,
+    updatePortfolioProducts
 }
 
 function getPortfolio() {
@@ -79,4 +80,22 @@ function addPortfolioProduct(portfolioProduct) {
     function request() { return { type: portfolioConstants.ADD_PORTFOLIO_PRODUCT_REQUEST } }
     function success() { return { type: portfolioConstants.ADD_PORTFOLIO_PRODUCT_SUCCESS } }
     function failure(error) { return { type: portfolioConstants.ADD_PORTFOLIO_PRODUCT_FAILURE, error } }
+}
+
+function updatePortfolioProducts(portfolioId, portfolioProducts) {
+    return dispatch => {
+        dispatch(request());
+
+        portfolioService.updatePortfolioProducts(portfolioId, portfolioProducts)
+            .then(()=>{
+                dispatch(success());
+            },
+            error=>{
+                dispatch(failure(error));
+            })
+    }
+
+    function request() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_REQUEST } }
+    function success() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_SUCCESS } }
+    function failure(error) { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_FAILURE, error } }
 }

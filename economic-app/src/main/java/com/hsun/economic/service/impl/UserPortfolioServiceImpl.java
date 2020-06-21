@@ -42,10 +42,10 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Override
     public void addPortfolioProduct(String userName, PortfolioProduct portfolioProduct) {
         User user = userRepository.findByName(userName).orElseThrow(()->new ApiClientException("User not found."));
-        UserPortfolio userPortfolio = repository.findById(portfolioProduct.getPortfolioId())
+        UserPortfolio userPortfolio = repository.findById(portfolioProduct.getId().getPortfolioId())
                 .orElseThrow(()->new ApiClientException("Portfolio not found."));
         Integer productId = null;
-        switch(portfolioProduct.getProductType()){
+        switch(portfolioProduct.getId().getProductType()){
             case 0: //index
                 productId = stockIndexRepository.findByIndexCode(portfolioProduct.getProductCode())
                         .orElseThrow(()->new ApiClientException("Stock not found.")).getIndexId();
@@ -59,8 +59,8 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
             default:
                 throw new ApiClientException("Can't add this product.");
         }
-        portfolioProduct.setPortfolioId(userPortfolio.getPortfolioId());
-        portfolioProduct.setProductId(productId);
+        portfolioProduct.getId().setPortfolioId(userPortfolio.getPortfolioId());
+        portfolioProduct.getId().setProductId(productId);
         Integer maxSort = userPortfolio.getPortfolioProductList()
                 .stream()
                 .mapToInt(PortfolioProduct::getSort).max().orElse(0);
@@ -78,15 +78,15 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
         return userPortfolio.getPortfolioProductList()
                 .stream().map((portfolioProduct)->{
                     String productCode = null;
-                    switch(portfolioProduct.getProductType()){
+                    switch(portfolioProduct.getId().getProductType()){
                         case 0: //index
-                            TaiwanStockIndex stockIndex = stockIndexRepository.findById(portfolioProduct.getProductId())
+                            TaiwanStockIndex stockIndex = stockIndexRepository.findById(portfolioProduct.getId().getProductId())
                                     .orElse(new TaiwanStockIndex());
                             portfolioProduct.setProductCode(stockIndex.getIndexCode());
                             portfolioProduct.setProductName(stockIndex.getIndexName());
                             break;
                         case 1: //stock
-                            TaiwanStock stock = stockRepository.findById(portfolioProduct.getProductId())
+                            TaiwanStock stock = stockRepository.findById(portfolioProduct.getId().getProductId())
                                     .orElse(new TaiwanStock());
                             portfolioProduct.setProductCode(stock.getStockCode());
                             portfolioProduct.setProductName(stock.getStockName());
