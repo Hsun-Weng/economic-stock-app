@@ -37,6 +37,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private WebSecurityConfig webSecurityConfig;
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -53,7 +56,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         
         http
         .addFilter(jwtAuthenticationFilter)
-        .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userService));
+        .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userService, webSecurityConfig));
     }
     
     @Override
