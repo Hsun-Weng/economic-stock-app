@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hsun.data.entity.InvestorChip;
+import com.hsun.data.entity.InvestorFuturesChip;
 import com.hsun.data.entity.TaiwanFutures;
 import com.hsun.data.entity.TaiwanFuturesChip;
 import com.hsun.data.repository.TaiwanFuturesChipRepository;
@@ -50,22 +50,22 @@ public class TaiwanFuturesChipServiceImpl implements TaiwanFuturesChipService {
             // 未平倉總量
             Integer openInterstLot = taiwanFuturesChip.getOpenInterestLot();
             
-            List<InvestorChip> investorChipList = taiwanFuturesChip.getInvestorChip();
+            List<InvestorFuturesChip> investorFuturesChipList = taiwanFuturesChip.getInvestorFuturesChip();
             
             // 三大法人未平倉
-            Integer corporationLongLot = investorChipList.stream().mapToInt(InvestorChip::getOpenInterestLongLot).sum();
-            Integer corporationShortLot = investorChipList.stream().mapToInt(InvestorChip::getOpenInterestShortLot).sum();
+            Integer corporationLongLot = investorFuturesChipList.stream().mapToInt(InvestorFuturesChip::getOpenInterestLongLot).sum();
+            Integer corporationShortLot = investorFuturesChipList.stream().mapToInt(InvestorFuturesChip::getOpenInterestShortLot).sum();
             
             // 未平倉總量 - 三大法人多空未平倉 = 散戶未平倉
             Integer retailOpenInterestLongLot = openInterstLot - corporationLongLot;
             Integer retailOpenInterestShortLot = openInterstLot - corporationShortLot;
             
-            InvestorChip retailChip = new InvestorChip();
+            InvestorFuturesChip retailChip = new InvestorFuturesChip();
             retailChip.setInvestorCode("RI");
             retailChip.setOpenInterestLongLot(retailOpenInterestLongLot);
             retailChip.setOpenInterestShortLot(retailOpenInterestShortLot);
             
-            investorChipList.add(retailChip);
+            investorFuturesChipList.add(retailChip);
         });
         
         return taiwanFuturesChipList;

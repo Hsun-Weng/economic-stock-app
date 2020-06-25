@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Document
 @Data
-public class InvestorChip {
+public class InvestorFuturesChip {
     @Field("investor_code")
     private String investorCode;
     @Field("long_lot")

@@ -22,7 +22,7 @@ public class TaiwanFuturesChip {
     @Field("date")
     private Date date;
     @Field("investor_chip")
-    private List<InvestorChip> investorChip;
+    private List<InvestorFuturesChip> investorFuturesChip;
     @Transient
     private Integer openInterestLot;
 }

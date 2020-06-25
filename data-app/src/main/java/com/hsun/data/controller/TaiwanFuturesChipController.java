@@ -39,7 +39,7 @@ public class TaiwanFuturesChipController {
                 dataMap.put("date", data.getDate());
                 dataMap.put("futuresCode", data.getFuturesCode());
                 dataMap.put("openInterestLot", data.getOpenInterestLot());
-                dataMap.put("investorChip", data.getInvestorChip().stream()
+                dataMap.put("investorChip", data.getInvestorFuturesChip().stream()
                         .filter((chip)->StringUtils.isEmpty(investorCode)
                                 ||chip.getInvestorCode().equals(investorCode))
                         .collect(Collectors.toList()));
