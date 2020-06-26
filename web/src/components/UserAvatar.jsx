@@ -6,7 +6,7 @@ import { userAction } from '../actions';
 
 const UserAvatar = () => {
     const dispatch = useDispatch();
-    const user = useSelector(state => state.user.user);
+    const user = useSelector(state => state.user.data);
     
     useEffect(()=>{
         dispatch(userAction.getUser())

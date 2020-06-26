@@ -1,61 +1,85 @@
 import userConstants from '../constants/user.constants';
 
-export const user = (state={user: null}, action) =>{
+const userInitState = {
+  error: null,
+  loading: false,
+  data: null
+};
+
+export const user = (state=userInitState, action) =>{
   switch (action.type) {
     case userConstants.GET_USER_REQUEST:
-      return {
-        gettingUser: true,
+      return {...state,
+        loading: true,
+        data: null 
       };
     case userConstants.GET_USER_SUCCESS:
-      return {
-        user: action.user
-      };
+      return {...state,
+        loading: true, 
+        data: action.user
+      }
     case userConstants.GET_USER_FAILURE:
-      return {
-        error: action.error
-      };
-    case userConstants.CLEAR_USER:
-      return {};
-    default:
-      return state
-  }
-}
-
-export const login = (state={}, action) => {
-  switch (action.type) {
-    case userConstants.LOGIN_REQUEST:
-      return {
-        loggingIn: true,
-      };
-    case userConstants.LOGIN_SUCCESS:
-      return {
-        loggedIn: true,
-      };
-    case userConstants.LOGIN_FAILURE:
-      return {
-        error: action.error
+      return {...state,
+        error: action.error,
+        data: null
       };
     case userConstants.LOGOUT:
-      return {};
+      return {...state,
+        data: null
+      };
     default:
       return state;
   }
 }
 
-export const signUp = (state={result: false}, action) => {
+const loginInitState = {
+  error: null,
+  loading: false
+}
+
+export const login = (state=loginInitState, action) => {
+  switch (action.type) {
+    case userConstants.LOGIN_REQUEST:
+      return {...state,
+        loading: true,
+      };
+    case userConstants.LOGIN_SUCCESS:
+      return {...state,
+        loading: false,
+        error: null
+      };
+    case userConstants.LOGIN_FAILURE:
+      return {...state,
+        loading: false,
+        error: action.error
+      };
+    default:
+      return state;
+  }
+}
+
+const signUpInitState = {
+  error: null,
+  loading: false,
+  result: false
+}
+
+export const signUp = (state=signUpInitState, action) => {
   switch (action.type) {
     case userConstants.SIGNUP_REQUEST:
-      return {
-        result: false,
-        signningUp: true
+      return {...state,
+        loading: true
       };
     case userConstants.SIGNUP_SUCCESS:
-      return { 
+      return {...state,
+        loading: false,
         result: true,
+        error: null
       };
     case userConstants.SIGNUP_FAILURE:
-      return {
+      return {...state,
         result: false,
+        loading: false,
         error: action.error
       };
     default:

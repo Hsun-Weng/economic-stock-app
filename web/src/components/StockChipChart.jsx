@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Table, TableCell, TableContainer, TableHead, TableBody, TableRow} from '@material-ui/core'
+import { Box, Table, TableCell, TableContainer, TableHead, TableBody, TableRow} from '@material-ui/core'
 import { useEffect } from 'react';
 
 import { stockAction } from '../actions';
@@ -21,17 +21,39 @@ const ChipHeading = () => (
 const ChipRow = ({data}) => {
     const netShare = (shares) => shares.longShare - shares.shortShare;
 
-    const fiData = (investors) => investors.filter((investor)=>investor.investorCode === 'FI')[0];
-    const itData = (investors) => investors.filter((investor)=>investor.investorCode === 'IT')[0];
-    const dData = (investors) => investors.filter((investor)=>investor.investorCode === 'D')[0];
+    const fiData = (investors) => investors.filter((investor)=>investor.investorCode === 'FI');
+    const itData = (investors) => investors.filter((investor)=>investor.investorCode === 'IT');
+    const dData = (investors) => investors.filter((investor)=>investor.investorCode === 'D');
+
+    const investorChipCell = (investorData) => {
+        if(investorData.length === 0){
+            return;
+        }
+        let investorNetShare = netShare(investorData[0]);
+        return cellValue(investorNetShare);
+    }
+
+    const cellValue = (value) => {
+        let fontColor = ""
+        if(value > 0){
+            fontColor = "green";
+        }else if(value < 0) {
+            fontColor = "red";
+        }
+        return (
+            <Box color={fontColor}>
+                {value}
+            </Box>
+        )
+    }
 
     return (
         <TableRow>
             <TableCell>{data.date}</TableCell>
-            <TableCell>{netShare(fiData(data.investorChip))}</TableCell>
-            <TableCell>{netShare(itData(data.investorChip))}</TableCell>
-            <TableCell>{netShare(dData(data.investorChip))}</TableCell>
-            <TableCell>{data.netShare}</TableCell>
+            <TableCell>{investorChipCell(fiData(data.investorChip))}</TableCell>
+            <TableCell>{investorChipCell(itData(data.investorChip))}</TableCell>
+            <TableCell>{investorChipCell(dData(data.investorChip))}</TableCell>
+            <TableCell>{cellValue(data.netShare)}</TableCell>
         </TableRow>
     )
 }

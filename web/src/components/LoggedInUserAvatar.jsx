@@ -7,7 +7,7 @@ import { userAction } from '../actions';
 
 const LoggedInUserAvatar = () => {
     const dispatch = useDispatch();
-    const user = useSelector(state => state.user.user);
+    const user = useSelector(state => state.user.data);
 
     const [ anchorEl, setAnchorEl ] = useState(null);
     const open = Boolean(anchorEl);

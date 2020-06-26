@@ -66,7 +66,7 @@ export default function SignUpForm() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       {signUpError ?
-        <Alert severity="error">{signUpError.message}</Alert>
+        <Alert severity="error">{signUpError}</Alert>
         :<div/>
       }
       <div className={classes.paper}>

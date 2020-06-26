@@ -23,7 +23,7 @@ const UserListItems = () => {
     return location.pathname === routePath;
   }
 
-  const user = useSelector(state => state.user.user);
+  const user = useSelector(state => state.user.data);
 
   const listItem = ( prop, key ) => {
     if(prop.itemType === 0){

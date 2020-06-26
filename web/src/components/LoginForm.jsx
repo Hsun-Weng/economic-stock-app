@@ -44,7 +44,7 @@ export default function LoginForm() {
   const [ userName, setUserName ] = useState("");
   const [ password, setPassword ] = useState("");
 
-  const loggingIn = useSelector(state => state.login.loggingIn);
+  const loading = useSelector(state => state.login.loading);
   const loginError = useSelector(state => state.login.error);
 
   const dispatch = useDispatch();
@@ -98,7 +98,7 @@ export default function LoginForm() {
               variant="contained"
               color="primary"
               className={classes.submit}>
-              {loggingIn? <CircularProgress size={24} />:
+              {loading? <CircularProgress size={24} />:
               <Typography>Sign In</Typography>}
             </Button>
           </div>

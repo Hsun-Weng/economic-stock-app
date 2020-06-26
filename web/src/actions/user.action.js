@@ -21,18 +21,12 @@ function getUser() {
                 error=>{
                     dispatch(failure(error));
                 })
-        }else{
-            dispatch(clearUser());
         }
     };
 
     function request() { return { type: userConstants.GET_USER_REQUEST } }
     function success(user) { return { type: userConstants.GET_USER_SUCCESS, user } }
     function failure(error) { return { type: userConstants.GET_USER_FAILURE, error } }
-}
-
-function clearUser() {
-    return { type: userConstants.CLEAR_USER };
 }
 
 function login(userName, password) {
@@ -64,8 +58,7 @@ function login(userName, password) {
 function logout() {
     return dispatch =>{
         userService.logout();
-        dispatch(_logout);
-        dispatch(clearUser());
+        dispatch(_logout());
     }
 
     function _logout(){
