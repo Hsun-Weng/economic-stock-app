@@ -18,6 +18,8 @@ public class TaiwanStockChip {
     private String stockCode;
     @Field("date")
     private Date date;
+    @Field("net_share")
+    private Integer netShare;
     @Field("investor_chip")
     private List<InvestorStockChip> investorStockChip;
 }
