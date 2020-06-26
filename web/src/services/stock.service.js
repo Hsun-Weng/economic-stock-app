@@ -7,7 +7,8 @@ export const stockService = {
     getStockIndex,
     getLatestStockPrice,
     getAllStockIndexes,
-    getLatestStockIndexPrice
+    getLatestStockIndexPrice,
+    getStockChip
 }
 
 function getAllStocks(){
@@ -100,6 +101,21 @@ function getLatestStockIndexPrice(products){
 
     return fetch(`/data/stock/taiwan/index/latest`, requestOptions)
         .then(handleResponse)
+}
+
+function getStockChip(stockCode, startDate, endDate){
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    };
+
+    return fetch(`/data/stock/taiwan/${stockCode}/chip?&startDate=${startDate}&endDate=${endDate}`, requestOptions)
+        .then(handleResponse)
+        .then((data)=>
+            data.sort(function(a, b){
+                return a.date > b.date ? -1 : 1;
+            })
+        )
 }
 
 const handleResponse = (httpResponse) => {

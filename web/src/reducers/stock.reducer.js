@@ -10,6 +10,7 @@ const initState = {
     allStocks: {loading: false, data:[]},
     allStockIndexes: {loading: false, data: []},
     latestIndexPrices: {loading:false, data: []},
+    chips: {loading:false, data: []},
 };
 
 export const stock = (state=initState, action) => {
@@ -115,6 +116,18 @@ export const stock = (state=initState, action) => {
             return { ...state,
                 latestIndexPrices: action.error 
             };
+        // chips
+        case stockConstants.GET_STOCK_CHIP_REQUEST: 
+            return {...state,
+                chips: { loading: true, data: [] }
+            };
+        case stockConstants.GET_STOCK_CHIP_SUCCESS:
+            return {...state,
+                chips: { loading: false, data: action.data }
+            };
+        case stockConstants.GET_STOCK_CHIP_FAILURE:
+            return { ...state,
+                error: action.error };
         default: 
             return state;
     }

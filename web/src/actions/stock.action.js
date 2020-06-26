@@ -9,7 +9,8 @@ export const stockAction = {
     getStockIndex,
     getLatestStockPrice,
     getAllStockIndexes,
-    getLatestStockIndexPrice
+    getLatestStockIndexPrice,
+    getStockChip
 }
 
 function getAllStocks() {
@@ -168,4 +169,22 @@ function getLatestStockIndexPrice(products) {
     function request() { return { type: stockConstants.GET_LATEST_STOCK_INDEX_PRICES_REQUEST } }
     function success(data) { return { type: stockConstants.GET_LATEST_STOCK_INDEX_PRICES_SUCCESS, data } }
     function failure(error) { return { type: stockConstants.GET_LATEST_STOCK_INDEX_PRICES_FAILURE, error } }
+}
+
+function getStockChip(stockCode, startDate, endDate) {
+    return dispatch => {
+        dispatch(request());
+
+        stockService.getStockChip(stockCode, startDate, endDate)
+            .then(data=>{
+                dispatch(success(data));
+            },
+            error=>{
+                dispatch(failure(error));
+            })
+    };
+
+    function request() { return { type: stockConstants.GET_STOCK_CHIP_REQUEST } }
+    function success(data) { return { type: stockConstants.GET_STOCK_CHIP_SUCCESS, data } }
+    function failure(error) { return { type: stockConstants.GET_STOCK_CHIP_FAILURE, error } }
 }

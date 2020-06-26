@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-import { Paper, Box, Grid, FormControl, InputLabel, Select, MenuItem, IconButton } from '@material-ui/core';
+import { Paper, Box, Grid, FormControl, InputLabel, Select, MenuItem, IconButton, AppBar, Tabs, Tab } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import AddIcon from '@material-ui/icons/Add';
@@ -13,6 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { stockAction, portfolioAction } from '../actions';
 
 import CandleStickChart from './CandleStickChart';
+import StockChipChart from './StockChipChart';
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -42,6 +43,8 @@ const StockChart = () => {
     const portfolios = useSelector(state => state.portfolio.portfolios.data);
     const prices = useSelector(state=>state.stock.price.data);
 
+    const [ tabValue, setTabValue] = useState(0);
+
     const classes = useStyles();
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
@@ -55,6 +58,10 @@ const StockChart = () => {
         setPortfolioId(event.target.value);
     }
 
+    const handleChangeTab = (event, newValue) => {
+        setTabValue(newValue);
+      };
+
     const addPortfolioProduct = ( event ) => {
         let portfolioProduct = {
             id: {
@@ -65,6 +72,20 @@ const StockChart = () => {
         }
         dispatch(portfolioAction.addPortfolioProduct(portfolioProduct));
     }
+
+    const TabPanel = (props) => {
+        const { children, value, index, ...other } = props;
+      
+        return (
+          <div
+            role="tabpanel"
+            hidden={value !== index}
+            {...other}
+          >
+            {value === index && children}
+          </div>
+        );
+      }
 
 
     const UserPortfolioSelect = () =>(
@@ -106,15 +127,26 @@ const StockChart = () => {
                     </Grid>
                 }
                 <Grid item md={12}>
+                    <AppBar position="static" color='default'>
+                        <Tabs value={tabValue} onChange={handleChangeTab}>
+                            <Tab label="技術線圖" />
+                            <Tab label="法人進出" />
+                        </Tabs>
+                    </AppBar>
                     <Paper className={fixedChartHeightPaper}>
-                        <Box display="flex" justifyContent="center">
-                            {prices.length > 0 ?
-                                <CandleStickChart dataset={prices.map((data) => {
-                                    data.date = new Date(data.date);
-                                    return data;
-                                })} />
-                            :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
-                        </Box>
+                        <TabPanel value={tabValue} index={0}>
+                            <Box display="flex" justifyContent="center">
+                                {prices.length > 0 ?
+                                    <CandleStickChart dataset={prices.map((data) => {
+                                        data.date = new Date(data.date);
+                                        return data;
+                                    })} />
+                                :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+                            </Box>
+                        </TabPanel>
+                        <TabPanel value={tabValue} index={1}>
+                            <StockChipChart stockCode={stockCode} />
+                        </TabPanel>
                     </Paper>
                 </Grid>
             </Grid>
