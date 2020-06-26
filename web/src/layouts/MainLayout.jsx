@@ -13,7 +13,6 @@ import Container from '@material-ui/core/Container';
 import SwitchButton from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import MainListItems from '../components/layout-menus/MainListItems';
 import UserListItems from '../components/layout-menus/UserListItems';
 import RouteComponent from '../Routes';
@@ -49,19 +48,8 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
   menuButton: {
     marginRight: 36,
-  },
-  menuButtonHidden: {
-    display: 'none',
   },
   drawerPaper: {
     position: 'relative',
@@ -80,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     }),
     width: theme.spacing(7),
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
+      width: theme.spacing(0),
     },
   },
   appBarSpacer: theme.mixins.toolbar,
@@ -121,7 +109,7 @@ const Copyright = () => (
 
 export default function Dashboard() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [isDarkMode, setDarkMode] = React.useState(false);
 
   const theme = React.useMemo(
@@ -134,11 +122,8 @@ export default function Dashboard() {
       [isDarkMode]
   );
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleDrawer = () => {
+    setOpen(!open);
   };
   const handleDarkMode = () => {
     setDarkMode((darkMode)=> !darkMode);
@@ -149,14 +134,14 @@ export default function Dashboard() {
       <ThemeProvider theme={theme}>
         <Notification />
         <CssBaseline />
-          <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+          <AppBar position="absolute" className={clsx(classes.appBar)}>
             <Toolbar className={classes.toolbar}>
               <IconButton
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                className={clsx(classes.menuButton, open && classes.menuButtonHidden)}>
+                onClick={handleDrawer}
+                className={clsx(classes.menuButton)}>
                 <MenuIcon />
               </IconButton>
               <Typography component="h1" variant="h6" color="inherit" noWrap >
@@ -178,9 +163,6 @@ export default function Dashboard() {
           open={open}
         >
           <div className={classes.toolbarIcon}>
-            <IconButton onClick={handleDrawerClose}>
-              <ChevronLeftIcon />
-            </IconButton>
           </div>
           <Divider />
           <List><MainListItems /></List>
