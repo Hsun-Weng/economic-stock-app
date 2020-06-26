@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 
-import { TableBody, TableCell, TableRow, Link} from '@material-ui/core'
+import { TableBody, TableCell, TableRow, Link, Box} from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu';
 
 import { portfolioAction, stockAction } from '../actions'
@@ -55,8 +55,24 @@ const PortfolioTableBody = ({ portfolioId }) => {
 
     const DrageHandle = SortableHandle(()=> <MenuIcon />);
     
-    const StockRow = SortableElement(({product}) => (
-        <TableRow >
+    const StockRow = SortableElement(({product}) => {
+        const CellValue = ({children}) => {
+            let fontColor = "";
+            if(product.change > 0){
+                fontColor = "green";
+            }else if(product.change < 0) {
+                fontColor = "red";
+            }else {
+                fontColor = "";
+            }
+            return (
+                <Box color={fontColor}>
+                    {children}
+                </Box>
+            );
+        }
+
+        return (<TableRow >
             <TableCell>
                 <Link href="#" onClick={event=>redirectStockChart(event, product.productCode, product.productType)}>
                     {product.productCode}
@@ -68,25 +84,39 @@ const PortfolioTableBody = ({ portfolioId }) => {
                 </Link>
             </TableCell>
             <TableCell>
-                {product.close}
+                <CellValue>
+                    {product.close}
+                </CellValue>
             </TableCell>
             <TableCell>
-                {product.open}
+                <CellValue>
+                    {product.open}
+                </CellValue>
             </TableCell>
             <TableCell>
-                {product.high}
+                <CellValue>
+                    {product.high}
+                </CellValue>
             </TableCell>
             <TableCell>
-                {product.low}
+                <CellValue>
+                    {product.low}
+                </CellValue>
             </TableCell>
             <TableCell>
-                {product.change}
+                <CellValue>
+                    {product.change}
+                </CellValue>
             </TableCell>
             <TableCell>
-                {product.changePercent}
+                <CellValue>
+                    {product.changePercent}
+                </CellValue>
             </TableCell>
             <TableCell>
-                {product.volume}
+                <CellValue>
+                    {product.volume}
+                </CellValue>
             </TableCell>
             <TableCell>
                 {product.date}
@@ -95,7 +125,7 @@ const PortfolioTableBody = ({ portfolioId }) => {
                 <DrageHandle />
             </TableCell>
         </TableRow>
-    ));
+    )});
 
     useEffect(()=>{
         if( portfolioId !== 0){
