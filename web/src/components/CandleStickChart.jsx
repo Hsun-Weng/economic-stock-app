@@ -13,7 +13,7 @@ import { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate 
 
 import { last } from "react-stockcharts/lib/utils";
 
-const CandlestickChart = ({ dataset }) => {
+const CandleStickChart = ({ dataset }) => {
 
     const sma5 = sma().options({ 
                     windowSize: 5 ,
@@ -148,4 +148,4 @@ const CandlestickChart = ({ dataset }) => {
         </ChartCanvas>);
 }
 
-export default CandlestickChart;
+export default CandleStickChart;
