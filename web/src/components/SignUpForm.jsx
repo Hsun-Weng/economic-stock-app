@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container } from '@material-ui/core';
+import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, CircularProgress } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useDispatch, useSelector } from 'react-redux';
@@ -51,6 +51,7 @@ export default function SignUpForm() {
   const [ firstName, setFirstName ] = useState("");
   const [ lastName, setLastName ] = useState("");
 
+  const loading = useSelector(state=>state.signUp.loading);
   const signUpError = useSelector(state=>state.signUp.error);
   
   const handleSubmit = ( event ) => {
@@ -127,7 +128,9 @@ export default function SignUpForm() {
             fullWidth
             variant="contained"
             color="primary"
+            disabled={loading}
             className={classes.submit}>
+            {loading && <CircularProgress size={24} />}
             Sign Up
           </Button>
         </form>

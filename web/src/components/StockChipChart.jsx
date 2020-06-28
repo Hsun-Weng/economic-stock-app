@@ -1,10 +1,6 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { Box, Table, TableCell, TableContainer, TableHead, TableBody, TableRow} from '@material-ui/core'
-import { useEffect } from 'react';
-
-import { stockAction } from '../actions';
 
 const ChipHeading = () => (
     <TableHead>
@@ -58,16 +54,7 @@ const ChipRow = ({data}) => {
     )
 }
 
-const StockChipChart = ({ stockCode }) => {
-    const dispatch = useDispatch();
-    const data = useSelector(state=>state.stock.chips.data);
-    const formatDate = date => date.toISOString().slice(0,10);
-
-    useEffect(()=>{
-        let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
-        let endDate = new Date();
-        dispatch(stockAction.getStockChip(stockCode, formatDate(startDate), formatDate(endDate)));
-    }, [ dispatch, stockCode ]);
+const StockChipChart = ({ data }) => {
 
     return (
         <TableContainer >

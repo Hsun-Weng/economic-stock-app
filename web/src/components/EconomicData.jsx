@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
   },
   fixedInputSkeletonHeight: {
     height: 65,
+    width: '100%'
   },
   fixedChartHeight: {
     height: 550,
@@ -38,6 +39,8 @@ const EconomicData = () => {
   const dispatch = useDispatch();
   const economicData = useSelector(state=>state.economic.data.data);
   const economicDataValue = useSelector(state=>state.economic.value.data);
+  const dataLoading = useSelector(state=>state.economic.data.loading);
+  const valueLoading = useSelector(state=>state.economic.value.loading);
 
   const [countryCode, setCountryCode] = useState("USA");
   const [dataCode, setDataCode] = useState("NONFARM");
@@ -84,21 +87,23 @@ const EconomicData = () => {
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item md={12}>
-          <Paper>
-            {economicData.length > 0?
+          {dataLoading ?
+            <Skeleton variant="text" className={fixedInputSkeletonHeight}/>:
+            <Paper>
               <Box>
                 <CountrySelect />
                 <EconomicDataSelect />
               </Box>
-            :<Skeleton variant="text" className={fixedInputSkeletonHeight}/>}
-          </Paper>
+            </Paper>
+          }
         </Grid>
         <Grid item md={12}>
-          <Paper className={fixedChartHeightPaper}>
-            {economicDataValue.length > 0 ?
-              <EconomicDataChart data={economicDataValue} />
-            :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
-          </Paper>
+          {valueLoading ?
+            <Skeleton variant="rect" className={fixedChartHeightPaper} />:
+            <Paper className={fixedChartHeightPaper}>
+                <EconomicDataChart data={economicDataValue} />
+            </Paper>
+          }
         </Grid>
       </Grid>
     </React.Fragment>

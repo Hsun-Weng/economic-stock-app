@@ -42,6 +42,9 @@ const StockChart = () => {
     const user = useSelector(state => state.user.data);
     const portfolios = useSelector(state => state.portfolio.portfolios.data);
     const prices = useSelector(state=>state.stock.price.data);
+    const chipData = useSelector(state=>state.stock.chips.data);
+    const pricesLoading = useSelector(state=>state.stock.price.loading);
+    const chipDataLoading = useSelector(state=>state.stock.chips.loading);
 
     const [ tabValue, setTabValue] = useState(0);
 
@@ -111,6 +114,12 @@ const StockChart = () => {
         dispatch(stockAction.getStockPrices(stockCode, formatDate(startDate), formatDate(endDate)))
     }, [ dispatch, stockCode ])
 
+    useEffect(()=>{
+        let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
+        let endDate = new Date();
+        dispatch(stockAction.getStockChip(stockCode, formatDate(startDate), formatDate(endDate)));
+    }, [ dispatch, stockCode ]);
+
     return (
         <React.Fragment>
             <Grid container spacing={3}>
@@ -135,17 +144,23 @@ const StockChart = () => {
                     </AppBar>
                     <Paper className={fixedChartHeightPaper}>
                         <TabPanel value={tabValue} index={0}>
-                            <Box display="flex" justifyContent="center">
-                                {prices.length > 0 ?
-                                    <CandleStickChart dataset={prices.map((data) => {
-                                        data.date = new Date(data.date);
-                                        return data;
-                                    })} />
-                                :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
-                            </Box>
+                            {pricesLoading.loading ?
+                                <Skeleton variant="rect" className={fixedChartHeightPaper} />
+                                :<Box display="flex" justifyContent="center">
+                                    {prices.length > 0 &&
+                                        <CandleStickChart dataset={prices.map((data) => {
+                                            data.date = new Date(data.date);
+                                            return data;
+                                        })} />
+                                    }
+                                </Box>
+                            }
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                            <StockChipChart stockCode={stockCode} />
+                            {chipDataLoading? 
+                                <Skeleton variant="rect" className={fixedChartHeightPaper} />:
+                                <StockChipChart data={chipData} />
+                            }
                         </TabPanel>
                     </Paper>
                 </Grid>

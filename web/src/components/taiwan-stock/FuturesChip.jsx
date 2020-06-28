@@ -42,6 +42,8 @@ const FuturesChip = () => {
     const indexDataset = useSelector(state=>state.stock.index.data);
     const futuresChipDataset = useSelector(state=>state.futures.chips.data);
 
+    const futuresLoading = useSelector(state=>state.futures.futures.loading);
+
     const [investorCode, setInvestorCode] = useState('RI');
     const [futuresCode, setFuturesCode] = useState("MTX");
     const [indexCode, setIndexCode] = useState('TAIEX');
@@ -119,21 +121,23 @@ const FuturesChip = () => {
         <React.Fragment>
             <Grid container spacing={3}>
                 <Grid item md={12}>
-                    <Paper>
-                    {futures.length > 0?
-                        <Box>
-                            <InvestorSelect />
-                            <FuturesSelect />
-                        </Box>
-                    :<Skeleton variant="text" className={fixedInputSkeletonHeight} />}
-                    </Paper>
+                    {futuresLoading ? 
+                        <Skeleton variant="text" className={fixedInputSkeletonHeight} />
+                        :<Paper>
+                            <Box>
+                                <InvestorSelect />
+                                <FuturesSelect />
+                            </Box>
+                        </Paper>
+                    }
                 </Grid>
                 <Grid item md={12}>
-                    <Paper className={fixedChartHeightPaper}>
-                        {dataset.length > 0 ?
+                    {dataset.length > 0 ?
+                        <Paper className={fixedChartHeightPaper}>
                             <FuturesChipChart data={dataset} />
-                        :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
-                    </Paper>
+                        </Paper>
+                        :<Skeleton variant="rect" className={fixedChartHeightPaper} />
+                    }
                 </Grid>
             </Grid>
         </React.Fragment>);

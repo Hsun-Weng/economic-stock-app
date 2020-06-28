@@ -37,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
 }));
 
 export default function LoginForm() {
@@ -91,15 +95,16 @@ export default function LoginForm() {
             value={password}
             onChange={event=>setPassword(event.target.value)}
           />
-          <div>
+          <div className={classes.wrapper}>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
+              disabled={loading}
               className={classes.submit}>
-              {loading? <CircularProgress size={24} />:
-              <Typography>Sign In</Typography>}
+              {loading && <CircularProgress size={24} />}
+              <Typography>Sign In</Typography>
             </Button>
           </div>
         </form>
