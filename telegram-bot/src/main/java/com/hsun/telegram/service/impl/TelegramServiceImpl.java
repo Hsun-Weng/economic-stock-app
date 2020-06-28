@@ -35,18 +35,20 @@ public class TelegramServiceImpl implements TelegramService {
         SendMessage sendMessage = null;
         Message message = update.getMessage();
 
-        Optional<String> messageTextOptional = Optional.ofNullable(update.getMessage().getText());
+        if( message != null) {
+            Optional<String> messageTextOptional = Optional.ofNullable(update.getMessage().getText());
 
-        String messageText = messageTextOptional.orElse("");
-        if(messageText.startsWith("/")) { // is command
-            String[] texts = messageText.split(" ");
-            String command = texts[0];
-            List<String> args = Arrays.asList(texts).subList(1, texts.length);
-            sendMessage = handleCommand(update, command, args);
-        }
+            String messageText = messageTextOptional.orElse("");
+            if (messageText.startsWith("/")) { // is command
+                String[] texts = messageText.split(" ");
+                String command = texts[0];
+                List<String> args = Arrays.asList(texts).subList(1, texts.length);
+                sendMessage = handleCommand(update, command, args);
+            }
 
-        if(sendMessage != null) {
-            sendMessage(sendMessage);
+            if (sendMessage != null) {
+                sendMessage(sendMessage);
+            }
         }
     }
 
@@ -60,7 +62,16 @@ public class TelegramServiceImpl implements TelegramService {
                     String stockCode = argList.get(0);
                     Map<String, Object> stockMap = stockService.findStockLatestPrice(stockCode);
                     if (stockMap != null) {
-                        sendMessage.setText(stockMap.toString());
+                        String message = "股票代號: "+ stockMap.get("stockCode") + "\n";
+                        message += "成交日期: "+ stockMap.get("date") + "\n";
+                        message += "開盤價: "+ stockMap.get("open") + "\n";
+                        message += "最低價: "+ stockMap.get("low") + "\n";
+                        message += "最高價: "+ stockMap.get("high") + "\n";
+                        message += "收盤價: "+ stockMap.get("close") + "\n";
+                        message += "成交量: "+ stockMap.get("volume") + "\n";
+                        message += "漲跌: "+ stockMap.get("change") + "\n";
+                        message += "漲跌(%): "+ stockMap.get("changePercent");
+                        sendMessage.setText(message);
                     } else {
                         sendMessage.setText("Can't find stock no: " + stockCode);
                     }

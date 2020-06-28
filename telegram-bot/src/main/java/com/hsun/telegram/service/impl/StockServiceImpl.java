@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,7 +31,11 @@ public class StockServiceImpl implements StockService {
 
         String postUrl = apiConfig.getDataApi() + "/stock/taiwan/latest";
         try{
-            stockMap = restTemplate.postForObject(postUrl, Arrays.asList(stockCode), Map.class);
+            Map<String, Object> result = restTemplate.postForObject(postUrl, Arrays.asList(stockCode), Map.class);
+            List<Map<String, Object>> stockList = (List<Map<String, Object>>) result.getOrDefault("data", Collections.emptyList());
+            if(stockList.size() > 0){
+                stockMap = stockList.get(0);
+            }
         }catch(Exception e){
             e.printStackTrace();
         }
