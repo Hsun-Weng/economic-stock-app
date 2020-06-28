@@ -16,9 +16,6 @@ public class TelegramController {
 
     @PostMapping("/receive")
     public void receive(@RequestBody Update update){
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(update.getMessage().getChat().getId());
-        sendMessage.setText(update.getMessage().getText());
-        service.sendMessage(sendMessage);
+        service.handleMessage(update);
     }
 }
