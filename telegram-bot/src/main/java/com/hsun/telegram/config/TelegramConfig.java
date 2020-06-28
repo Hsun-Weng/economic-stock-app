@@ -10,4 +10,6 @@ import org.springframework.context.annotation.Configuration;
 public class TelegramConfig {
     private String id;
     private String token;
+    private String sendApi;
+    private Long sendTimeout;
 }
