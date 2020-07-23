@@ -11,6 +11,7 @@ const initState = {
     allStockIndexes: {loading: false, data: []},
     latestIndexPrices: {loading:false, data: []},
     chips: {loading:false, data: []},
+    margins: {loading:false, data: []}
 };
 
 export const stock = (state=initState, action) => {
@@ -126,6 +127,18 @@ export const stock = (state=initState, action) => {
                 chips: { loading: false, data: action.data }
             };
         case stockConstants.GET_STOCK_CHIP_FAILURE:
+            return { ...state,
+                error: action.error };
+        // margins
+        case stockConstants.GET_STOCK_MARGIN_REQUEST: 
+            return {...state,
+                margins: { loading: true, data: [] }
+            };
+        case stockConstants.GET_STOCK_MARGIN_SUCCESS:
+            return {...state,
+                margins: { loading: false, data: action.data }
+            };
+        case stockConstants.GET_STOCK_MARGIN_FAILURE:
             return { ...state,
                 error: action.error };
         default: 

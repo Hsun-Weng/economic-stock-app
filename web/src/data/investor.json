@@ -1,18 +1,18 @@
 [
 	{
 		"investorCode" : "RI",
-		"investorName" : "Retailer Investor"
+		"investorName" : "非法人"
 	},
 	{
 		"investorCode" : "FI",
-		"investorName" : "Foreign Investor(s)"
+		"investorName" : "外資"
 	},
 	{
 		"investorCode" : "IT",
-		"investorName" : "Investment Trust"
+		"investorName" : "投信"
 	},
 	{
 		"investorCode" : "D",
-		"investorName" : "Dealer"
+		"investorName" : "自營商"
 	}
 ]
