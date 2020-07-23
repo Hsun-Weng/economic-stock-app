@@ -14,6 +14,7 @@ import { stockAction, portfolioAction } from '../actions';
 
 import CandleStickChart from './CandleStickChart';
 import StockChipChart from './StockChipChart';
+import StockMarginChart from './StockMarginChart';
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -42,9 +43,7 @@ const StockChart = () => {
     const user = useSelector(state => state.user.data);
     const portfolios = useSelector(state => state.portfolio.portfolios.data);
     const prices = useSelector(state=>state.stock.price.data);
-    const chipData = useSelector(state=>state.stock.chips.data);
     const pricesLoading = useSelector(state=>state.stock.price.loading);
-    const chipDataLoading = useSelector(state=>state.stock.chips.loading);
 
     const [ tabValue, setTabValue] = useState(0);
 
@@ -111,14 +110,8 @@ const StockChart = () => {
     useEffect(() => {
         let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
         let endDate = new Date();
-        dispatch(stockAction.getStockPrices(stockCode, formatDate(startDate), formatDate(endDate)))
+        dispatch(stockAction.getStockPrices(stockCode, formatDate(startDate), formatDate(endDate)));
     }, [ dispatch, stockCode ])
-
-    useEffect(()=>{
-        let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
-        let endDate = new Date();
-        dispatch(stockAction.getStockChip(stockCode, formatDate(startDate), formatDate(endDate)));
-    }, [ dispatch, stockCode ]);
 
     return (
         <React.Fragment>
@@ -140,6 +133,7 @@ const StockChart = () => {
                         <Tabs value={tabValue} onChange={handleChangeTab}>
                             <Tab label="技術線圖" />
                             <Tab label="法人進出" />
+                            <Tab label="資券變化" />
                         </Tabs>
                     </AppBar>
                     <Paper className={fixedChartHeightPaper}>
@@ -157,10 +151,10 @@ const StockChart = () => {
                             }
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                            {chipDataLoading? 
-                                <Skeleton variant="rect" className={fixedChartHeightPaper} />:
-                                <StockChipChart data={chipData} />
-                            }
+                            <StockChipChart stockCode={stockCode} chartHeight={900} />
+                        </TabPanel>
+                        <TabPanel value={tabValue} index={2}>
+                            <StockMarginChart stockCode={stockCode} chartHeight={900} />
                         </TabPanel>
                     </Paper>
                 </Grid>
