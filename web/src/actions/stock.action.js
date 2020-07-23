@@ -10,7 +10,8 @@ export const stockAction = {
     getLatestStockPrice,
     getAllStockIndexes,
     getLatestStockIndexPrice,
-    getStockChip
+    getStockChip,
+    getStockMargin
 }
 
 function getAllStocks() {
@@ -187,4 +188,22 @@ function getStockChip(stockCode, startDate, endDate) {
     function request() { return { type: stockConstants.GET_STOCK_CHIP_REQUEST } }
     function success(data) { return { type: stockConstants.GET_STOCK_CHIP_SUCCESS, data } }
     function failure(error) { return { type: stockConstants.GET_STOCK_CHIP_FAILURE, error } }
+}
+
+function getStockMargin(stockCode, startDate, endDate) {
+    return dispatch => {
+        dispatch(request());
+
+        stockService.getStockMargin(stockCode, startDate, endDate)
+            .then(data=>{
+                dispatch(success(data));
+            },
+            error=>{
+                dispatch(failure(error));
+            })
+    };
+
+    function request() { return { type: stockConstants.GET_STOCK_MARGIN_REQUEST } }
+    function success(data) { return { type: stockConstants.GET_STOCK_MARGIN_SUCCESS, data } }
+    function failure(error) { return { type: stockConstants.GET_STOCK_MARGIN_FAILURE, error } }
 }
