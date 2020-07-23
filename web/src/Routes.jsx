@@ -18,7 +18,7 @@ import Portfolio from './components/Portfolio';
 export const mainItemRoutes = [
     {
         path: '/',
-        itemName: 'Dashboard',
+        itemName: '儀表板',
         icon: DashboardIcon,
         component: Dashbaord,
         exact: true,
@@ -26,7 +26,7 @@ export const mainItemRoutes = [
     },
     {
         path: '/economicdata',
-        itemName: 'Economic Data',
+        itemName: '經濟數據',
         icon: ShowChartIcon,
         component: EconomicData,
         exact: false,
@@ -42,7 +42,7 @@ export const mainItemRoutes = [
     // },
     {
         path: '/taiwan/stock/futuresChip',
-        itemName: "Futures Chip",
+        itemName: "期貨籌碼多空比",
         icon: AccessibleIcon,
         component: FuturesChip,
         exact: false,
@@ -53,7 +53,7 @@ export const mainItemRoutes = [
 export const userItemRoutes = [
     {
         path: '/portfolio',
-        itemName: "Portfolio",
+        itemName: "投資組合",
         icon: AccountBalanceWalletIcon,
         component: Portfolio,
         exact: false,
