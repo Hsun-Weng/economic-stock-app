@@ -37,7 +37,7 @@ public class TaiwanStockMarginController {
                 dataMap.put("date", data.getDate());
                 dataMap.put("stockCode", data.getStockCode());
                 dataMap.put("longShare", data.getLongShare());
-                dataMap.put("shortShare", data.getLongShare());
+                dataMap.put("shortShare", data.getShortShare());
                 dataMap.put("totalLongShare", data.getTotalLongShare());
                 dataMap.put("totalShortShare", data.getTotalShortShare());
                 dataMap.put("dayShare", data.getDayShare());

@@ -8,7 +8,8 @@ export const stockService = {
     getLatestStockPrice,
     getAllStockIndexes,
     getLatestStockIndexPrice,
-    getStockChip
+    getStockChip,
+    getStockMargin
 }
 
 function getAllStocks(){
@@ -110,6 +111,21 @@ function getStockChip(stockCode, startDate, endDate){
     };
 
     return fetch(`/data/stock/taiwan/${stockCode}/chip?&startDate=${startDate}&endDate=${endDate}`, requestOptions)
+        .then(handleResponse)
+        .then((data)=>
+            data.sort(function(a, b){
+                return a.date > b.date ? -1 : 1;
+            })
+        )
+}
+
+function getStockMargin(stockCode, startDate, endDate){
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    };
+
+    return fetch(`/data/stock/taiwan/${stockCode}/margin?&startDate=${startDate}&endDate=${endDate}`, requestOptions)
         .then(handleResponse)
         .then((data)=>
             data.sort(function(a, b){
