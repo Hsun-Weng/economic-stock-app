@@ -34,14 +34,14 @@ function addPortfolio(portfolio){
         })
 }
 
-function addPortfolioProduct(portfolioProduct) {
+function addPortfolioProduct(portfolioId, portfolioProduct) {
     const requestOptions = {
         method: 'POST',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
         body: JSON.stringify(portfolioProduct)
     };
 
-    return fetch(`/api/portfolio/product`, requestOptions)
+    return fetch(`/api/portfolio/${portfolioId}/product`, requestOptions)
         .then((httpResponse) => {
             if (!httpResponse.ok) {
                 const error = httpResponse;

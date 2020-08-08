@@ -20,14 +20,14 @@ public class EconomicDataController {
     @Autowired
     private EconomicDataService service;
     
-    @GetMapping("/economic/data/{countryCode}/{dataCode}")
+    @GetMapping("/economic/{countryCode}/{dataCode}")
     public Map<String, Object> getEconomicDataByDataCode(@PathVariable String countryCode,
             @PathVariable String dataCode) {
         Map<String, Object> result = new HashMap<String, Object>();
         List<EconomicData> economicDataList = null;
         List<Map<String, Object>> dataList = null;
         try {
-            economicDataList = service.getByCountryDataCode(countryCode, dataCode);
+            economicDataList = service.getDataByCodeAndCountryCode(countryCode, dataCode);
             
             dataList = economicDataList.stream().map((data)->{
                 Map<String, Object> dataMap = new HashMap<String, Object>();

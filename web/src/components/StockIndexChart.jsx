@@ -58,12 +58,11 @@ const StockIndexChart = () => {
     const addPortfolioProduct = ( event ) => {
         let portfolioProduct = {
             id: {
-                portfolioId: portfolioId,
-                productType: 0
+                productType: 0,
+                productCode: indexCode
             },
-            productCode: indexCode
         }
-        dispatch(portfolioAction.addPortfolioProduct(portfolioProduct));
+        dispatch(portfolioAction.addPortfolioProduct(portfolioId, portfolioProduct));
     }
 
 

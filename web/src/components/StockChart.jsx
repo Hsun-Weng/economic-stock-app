@@ -67,12 +67,11 @@ const StockChart = () => {
     const addPortfolioProduct = ( event ) => {
         let portfolioProduct = {
             id: {
-                portfolioId: portfolioId,
                 productType: 1,
+                productCode: stockCode
             },
-            productCode: stockCode
         }
-        dispatch(portfolioAction.addPortfolioProduct(portfolioProduct));
+        dispatch(portfolioAction.addPortfolioProduct(portfolioId, portfolioProduct));
     }
 
     const TabPanel = (props) => {

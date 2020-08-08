@@ -26,9 +26,9 @@ const PortfolioTableBody = ({ portfolioId }) => {
         let updateProducts = resortedProducts.map((product)=>{
             return {
                 id: {
-                    productType: product.productType
+                    productType: product.productType,
+                    productCode: product.productCode
                 },
-                productCode: product.productCode,
                 sort: ++resortIndex
             };
         });

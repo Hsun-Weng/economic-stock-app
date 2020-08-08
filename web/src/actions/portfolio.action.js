@@ -64,11 +64,11 @@ function getPortfolioProducts(portfolioId) {
     function failure(error) { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCTS_FAILURE, error } }
 }
 
-function addPortfolioProduct(portfolioProduct) {
+function addPortfolioProduct(portfolioId, portfolioProduct) {
     return dispatch => {
         dispatch(request());
 
-        portfolioService.addPortfolioProduct(portfolioProduct)
+        portfolioService.addPortfolioProduct(portfolioId, portfolioProduct)
             .then(()=>{
                 dispatch(success());
             },

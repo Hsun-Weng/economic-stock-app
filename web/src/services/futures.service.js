@@ -10,7 +10,7 @@ function getFutures(){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/api/futures/taiwan`, requestOptions)
+    return fetch(`/api/futures`, requestOptions)
         .then(handleResponse)
 }
 
@@ -20,7 +20,7 @@ function getFuturesChip(futuresCode, investorCode, startDate, endDate){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/data/futures/taiwan/${futuresCode}/chip?investorCode=${investorCode}&startDate=${startDate}&endDate=${endDate}`, requestOptions)
+    return fetch(`/data/futures/${futuresCode}/chip?investorCode=${investorCode}&startDate=${startDate}&endDate=${endDate}`, requestOptions)
         .then(handleResponse)
         .then(data => {
             return data.map((investorChipData)=>{

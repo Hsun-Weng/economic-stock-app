@@ -15,13 +15,13 @@ function getEconomicData(countryCode){
         .then(handleResponse)
 }
 
-function getEconomicValue(countryCode, dataId){
+function getEconomicValue(countryCode, dataCode){
     const requestOptions = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/data/economic/data/${countryCode}/${dataId}`, requestOptions)
+    return fetch(`/data/economic/${countryCode}/${dataCode}`, requestOptions)
         .then(handleResponse)
 }
 

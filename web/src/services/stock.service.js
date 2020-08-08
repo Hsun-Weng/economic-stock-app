@@ -18,7 +18,7 @@ function getAllStocks(){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/api/stock/taiwan`, requestOptions)
+    return fetch(`/api/stocks`, requestOptions)
         .then(handleResponse)
 }
 
@@ -28,7 +28,7 @@ function getCategories(){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/api/stock/taiwan/categories`, requestOptions)
+    return fetch(`/api/categories`, requestOptions)
         .then(handleResponse)
 }
 
@@ -38,7 +38,7 @@ function getCategoryStocks(categoryCode){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/api/stock/taiwan/category/${categoryCode}/stocks`, requestOptions)
+    return fetch(`/api/category/${categoryCode}/stocks`, requestOptions)
         .then(handleResponse)
 }
 
@@ -48,7 +48,7 @@ function getStockPrices(stockCode, startDate, endDate){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/data/stock/taiwan/${stockCode}?startDate=${startDate}&endDate=${endDate}`, requestOptions)
+    return fetch(`/data/stock/${stockCode}?startDate=${startDate}&endDate=${endDate}`, requestOptions)
         .then(handleResponse)
 }
 
@@ -58,7 +58,7 @@ function getStockIndex(indexCode, startDate, endDate) {
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/data/stock/taiwan/index/${indexCode}?startDate=${startDate}&endDate=${endDate}`, requestOptions)
+    return fetch(`/data/stock/index/${indexCode}?startDate=${startDate}&endDate=${endDate}`, requestOptions)
         .then(handleResponse)
 }
 
@@ -74,7 +74,7 @@ function getLatestStockPrice(products){
     };
     
 
-    return fetch(`/data/stock/taiwan/latest`, requestOptions)
+    return fetch(`/data/stock/latest`, requestOptions)
         .then(handleResponse)
 }
 
@@ -84,7 +84,7 @@ function getAllStockIndexes(){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/api/stock/taiwan/index`, requestOptions)
+    return fetch(`/api/indexes`, requestOptions)
         .then(handleResponse)
 }
 
@@ -100,7 +100,7 @@ function getLatestStockIndexPrice(products){
     };
     
 
-    return fetch(`/data/stock/taiwan/index/latest`, requestOptions)
+    return fetch(`/data/stock/index/latest`, requestOptions)
         .then(handleResponse)
 }
 
@@ -110,7 +110,7 @@ function getStockChip(stockCode, startDate, endDate){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/data/stock/taiwan/${stockCode}/chip?&startDate=${startDate}&endDate=${endDate}`, requestOptions)
+    return fetch(`/data/stock/${stockCode}/chip?&startDate=${startDate}&endDate=${endDate}`, requestOptions)
         .then(handleResponse)
         .then((data)=>
             data.sort(function(a, b){
@@ -125,7 +125,7 @@ function getStockMargin(stockCode, startDate, endDate){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/data/stock/taiwan/${stockCode}/margin?&startDate=${startDate}&endDate=${endDate}`, requestOptions)
+    return fetch(`/data/stock/${stockCode}/margin?&startDate=${startDate}&endDate=${endDate}`, requestOptions)
         .then(handleResponse)
         .then((data)=>
             data.sort(function(a, b){
