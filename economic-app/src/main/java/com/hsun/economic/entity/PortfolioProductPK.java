@@ -19,6 +19,6 @@ private static final long serialVersionUID = -7003609857421117044L;
     @Column(name="product_type")
     private Integer productType;
 
-    @Column(name="product_id")
-    private Integer productId;
+    @Column(name="product_code")
+    private String productCode;
 }

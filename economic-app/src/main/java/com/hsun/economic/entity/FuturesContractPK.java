@@ -9,15 +9,15 @@ import lombok.Data;
 
 @Embeddable
 @Data
-public class CountryEconomicDataPK implements Serializable {/**
+public class FuturesContractPK implements Serializable {/**
      * 
      */
     private static final long serialVersionUID = -7003609857421117044L;
     
-    @Column(name="country_id")
-    private Integer countryId;
+    @Column(name="futures_code")
+    private String futuresCode;
     
-    @Column(name="data_id")
-    private Integer dataId;
+    @Column(name="contract_date")
+    private String contractDate;
 
 }

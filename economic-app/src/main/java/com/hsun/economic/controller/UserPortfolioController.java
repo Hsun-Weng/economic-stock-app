@@ -66,7 +66,7 @@ public class UserPortfolioController {
                     .stream().map((data)->{
                         Map<String, Object> dataMap = new HashMap<String, Object>();
                         dataMap.put("productType", data.getId().getProductType());
-                        dataMap.put("productCode", data.getProductCode());
+                        dataMap.put("productCode", data.getId().getProductCode());
                         dataMap.put("productName", data.getProductName());
                         dataMap.put("sort", data.getSort());
                         return dataMap;
@@ -110,11 +110,12 @@ public class UserPortfolioController {
         return responseBean;
     }
 
-    @PostMapping("/portfolio/product")
-    public ResponseBean addPortfolioProduct(Authentication authentication, @RequestBody PortfolioProduct portfolioProduct) {
+    @PostMapping("/portfolio/{portfolioId}/product")
+    public ResponseBean addPortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
+            , @RequestBody PortfolioProduct portfolioProduct) {
         ResponseBean responseBean = new ResponseBean();
         try{
-            service.addPortfolioProduct(authentication.getName(), portfolioProduct);
+            portfolioProductService.addPortfolioProduct(authentication.getName(), portfolioId, portfolioProduct);
         }catch(DataIntegrityViolationException e){
             throw new ApiClientException("Product has been exists");
         }catch(ApiClientException e){

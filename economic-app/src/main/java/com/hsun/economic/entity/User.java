@@ -19,10 +19,6 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id")
-	private Integer id;
-
 	@Column(name="user_name")
 	private String userName;
 	
@@ -35,7 +31,7 @@ public class User implements Serializable {
 	@Column(name="last_name")
 	private String lastName;
 
-	@OneToMany(cascade=CascadeType.DETACH)
-	@JoinColumn(name="user_id")
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="user_name")
 	private List<UserPortfolio> userPortfolioList;
 }

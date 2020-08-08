@@ -12,20 +12,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.entity.TaiwanStock;
-import com.hsun.economic.entity.TaiwanStockCategory;
-import com.hsun.economic.service.TaiwanStockCategoryService;
+import com.hsun.economic.entity.StockCategory;
+import com.hsun.economic.service.StockCategoryService;
 
 @RestController
-public class TaiwanStockCategoryController {
+public class StockCategoryController {
     
     @Autowired
-    private TaiwanStockCategoryService service;
+    private StockCategoryService service;
     
-    @GetMapping("/stock/taiwan/categories")
+    @GetMapping("/categories")
     public ResponseBean getCategories() {
         ResponseBean responseBean = new ResponseBean();
-        List<TaiwanStockCategory> categoryList = null;
+        List<StockCategory> categoryList = null;
         List<Map<String, Object>> dataList = null;
         try {
             categoryList = service.getAllCategories();
@@ -45,23 +44,19 @@ public class TaiwanStockCategoryController {
         return responseBean;
     }
     
-    @GetMapping("/stock/taiwan/category/{categoryCode}/stocks")
-    public ResponseBean getCategoryByCode(@PathVariable String categoryCode) {
+    @GetMapping("/category/{categoryCode}/stocks")
+    public ResponseBean getStockByCategory(@PathVariable String categoryCode) {
         ResponseBean responseBean = new ResponseBean();
-        List<TaiwanStockCategory> categoryList = null;
+        StockCategory category = null;
         List<Map<String, Object>> dataList = null;
         try {
-            categoryList = service.getCategoryByCode(categoryCode);
-            
-            dataList = categoryList.stream().flatMap((category)->{
-                 List<Map<String, Object>> stockList = category.getCategoryStock().stream().map((categoryStock)->{
-                    Map<String, Object> dataMap = new HashMap<String, Object>();
-                    TaiwanStock stock = categoryStock.getTaiwanStock();
-                    dataMap.put("stockCode", stock.getStockCode());
-                    dataMap.put("stockName", stock.getStockName());
-                    return dataMap;
-                }).collect(Collectors.toList());
-                return stockList.stream();
+            category = service.getCategoryByCode(categoryCode);
+
+            dataList = category.getStockList().stream().map((stock)->{
+                Map<String, Object> dataMap = new HashMap<String, Object>();
+                dataMap.put("stockCode", stock.getStockCode());
+                dataMap.put("stockName", stock.getStockName());
+                return dataMap;
             }).collect(Collectors.toList());
              
             responseBean.setData(dataList);

@@ -18,15 +18,15 @@ public class UserPortfolio implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue
     @Column(name="portfolio_id")
     private Integer portfolioId;
 
     @Column(name="portfolio_name")
     private String portfolioName;
 
-    @Column(name="user_id")
-    private Integer userId;
+    @Column(name="user_name")
+    private String userName;
 
     @OneToMany(cascade=CascadeType.REMOVE)
     @JoinColumn(name="portfolio_id")

@@ -20,51 +20,38 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private UserPortfolioRepository userPortfolioRepository;
+    @Override
+    public void addPortfolioProduct(String userName, Integer portfolioId, PortfolioProduct portfolioProduct) {
+        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
+        UserPortfolio userPortfolio = user.getUserPortfolioList().stream()
+                .filter((portfolio->portfolio.getPortfolioId()
+                        .equals(portfolioId))).findFirst()
+                .orElseThrow(()->new ApiClientException("Portfolio not found."));
 
-    @Autowired
-    private TaiwanStockIndexRepository stockIndexRepository;
-
-    @Autowired
-    private TaiwanStockRepository stockRepository;
+        portfolioProduct.getId().setPortfolioId(portfolioId);
+        Integer maxSort = userPortfolio.getPortfolioProductList()
+                .stream()
+                .mapToInt(PortfolioProduct::getSort).max().orElse(0);
+        portfolioProduct.setSort(maxSort+1);
+        repository.save(portfolioProduct);
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void savePortfolioProducts(String userName, Integer portfolioId
             , List<PortfolioProduct> portfolioProductList) {
-        User user = userRepository.findByName(userName).orElseThrow(()->new ApiClientException("User not found."));
+        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
         user.getUserPortfolioList().stream()
                 .filter((userPortfolio->userPortfolio.getPortfolioId()
                         .equals(portfolioId))).findAny()
                 .orElseThrow(()->new ApiClientException("Portfolio not found."));
 
-        List<PortfolioProduct> entity = portfolioProductList.stream()
+        List<PortfolioProduct> entityList = portfolioProductList.stream()
                 .map((portfolioProduct)->{
-                    PortfolioProductPK id = portfolioProduct.getId();
-                    id.setPortfolioId(portfolioId);
-                    switch(portfolioProduct.getId().getProductType()){
-                        case 0: //index
-                            TaiwanStockIndex stockIndex = stockIndexRepository.findByIndexCode(portfolioProduct.getProductCode())
-                                    .orElse(new TaiwanStockIndex());
-                            id.setProductId(stockIndex.getIndexId());
-                            id.setProductType(0);
-                            break;
-                        case 1: //stock
-                            TaiwanStock stock = stockRepository.findByStockCode(portfolioProduct.getProductCode())
-                                    .orElse(new TaiwanStock());
-                            id.setProductId(stock.getStockId());
-                            id.setProductType(1);
-                            break;
-                        case 3: //futures
-                            break;
-                        default:
-                            throw new ApiClientException("Couldn't update products.");
-                    }
-                    portfolioProduct.setId(id);
+                    portfolioProduct.getId().setPortfolioId(portfolioId);
                     return portfolioProduct;
                 }).collect(Collectors.toList());
 
-        repository.saveAll(portfolioProductList);
+        repository.saveAll(entityList);
     }
 }

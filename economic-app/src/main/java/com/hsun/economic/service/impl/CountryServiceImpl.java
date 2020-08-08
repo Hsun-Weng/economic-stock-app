@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.hsun.economic.entity.Country;
 import com.hsun.economic.repository.CountryRepository;
-import com.hsun.economic.service.ContryService;
+import com.hsun.economic.service.CountryService;
 
 @Service
-public class ContryServiceImpl implements ContryService{
+public class CountryServiceImpl implements CountryService {
     
     @Autowired
     private CountryRepository repository;
@@ -18,5 +18,10 @@ public class ContryServiceImpl implements ContryService{
     @Override
     public List<Country> getAllCountries() {
         return repository.findAll();
+    }
+
+    @Override
+    public Country getCountryByCode(String countryCode) {
+        return repository.findById(countryCode).orElse(null);
     }
 }

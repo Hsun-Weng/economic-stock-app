@@ -1,37 +1,36 @@
 package com.hsun.economic.controller;
 
+import com.hsun.economic.bean.ResponseBean;
+import com.hsun.economic.entity.StockIndex;
+import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.service.StockIndexService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.hsun.economic.exception.ApiServerException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.entity.TaiwanStock;
-import com.hsun.economic.service.TaiwanStockService;
-
 @RestController
-public class TaiwanStockController {
+public class StockIndexController {
     
     @Autowired
-    private TaiwanStockService service;
+    private StockIndexService service;
     
-    @GetMapping("/stock/taiwan")
-    public ResponseBean getAllTaiwanStocks() {
+    @GetMapping("/indexes")
+    public ResponseBean getAllStockIndexes() {
         ResponseBean responseBean = new ResponseBean();
-        List<TaiwanStock> stockList = null;
+        List<StockIndex> stockIndexList = null;
         List<Map<String, Object>> dataList = null;
         try {
-            stockList = service.getAllTaiwanStocks();
+            stockIndexList = service.getAllStockIndexes();
             
-            dataList = stockList.stream().map((stock)->{
+            dataList = stockIndexList.stream().map((stockIndex)->{
                  Map<String, Object> stockMap = new HashMap<String, Object>();
-                 stockMap.put("stockCode", stock.getStockCode());
-                 stockMap.put("stockName", stock.getStockName());
+                 stockMap.put("indexCode", stockIndex.getIndexCode());
+                 stockMap.put("indexName", stockIndex.getIndexName());
                  return stockMap;
             }).collect(Collectors.toList());
              

@@ -12,28 +12,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.entity.TaiwanFutures;
-import com.hsun.economic.service.TaiwanFuturesService;
+import com.hsun.economic.entity.Futures;
+import com.hsun.economic.service.FuturesService;
 
 @RestController
-public class TaiwanFuturesController {
+public class FuturesController {
     
     @Autowired
-    private TaiwanFuturesService service;
+    private FuturesService service;
     
-    @GetMapping("/futures/taiwan")
-    public ResponseBean getTaiwanFutures() {
+    @GetMapping("/futures")
+    public ResponseBean getAllFutures() {
         ResponseBean responseBean = new ResponseBean();
-        List<TaiwanFutures> futuresList = null;
+        List<Futures> futuresList = null;
         List<Map<String, Object>> dataList = null;
         try {
-            futuresList = service.getAllTaiwanFutures();
+            futuresList = service.getAllFutures();
             
             dataList = futuresList.stream().map((futures)->{
                  Map<String, Object> futuresMap = new HashMap<String, Object>();
                  futuresMap.put("futuresCode", futures.getFuturesCode());
                  futuresMap.put("futuresName", futures.getFuturesName());
-                 futuresMap.put("indexCode", futures.getTaiwanStockIndex().getIndexCode());
+                 futuresMap.put("indexCode", futures.getStockIndex().getIndexCode());
                  return futuresMap;
             }).collect(Collectors.toList());
              
@@ -45,15 +45,15 @@ public class TaiwanFuturesController {
         return responseBean;
     }
     
-    @GetMapping("/futures/taiwan/{futuresCode}/contract")
-    public ResponseBean getTaiwanFuturesContractByFuturesCode(@PathVariable String futuresCode){
+    @GetMapping("/futures/{futuresCode}/contract")
+    public ResponseBean getFuturesContractByCode(@PathVariable String futuresCode){
         ResponseBean responseBean = new ResponseBean();
-        TaiwanFutures futures = null;
+        Futures futures = null;
         List<Map<String, Object>> dataList = null;
         try {
-            futures = service.getTaiwanFuturesByFuturesCode(futuresCode);
+            futures = service.getFuturesByCode(futuresCode);
             
-            dataList = futures.getTaiwanFuturesContract().stream().map((futuresContract)->{
+            dataList = futures.getFuturesContractList().stream().map((futuresContract)->{
                  Map<String, Object> dataMap = new HashMap<String, Object>();
                  dataMap.put("contractDate", futuresContract.getId().getContractDate());
                  return dataMap;
