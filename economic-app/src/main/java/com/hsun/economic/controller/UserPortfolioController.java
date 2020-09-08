@@ -95,6 +95,33 @@ public class UserPortfolioController {
         return responseBean;
     }
 
+    @DeleteMapping("/portfolio/{portfolioId}")
+    public ResponseBean deletePortfolio(Authentication authentication, @PathVariable Integer portfolioId) {
+        ResponseBean responseBean = new ResponseBean();
+        try{
+            service.deletePortfolio(authentication.getName(), portfolioId);
+        }catch(ApiClientException e){
+            throw e;
+        }catch(Exception e){
+            throw new ApiServerException();
+        }
+        return responseBean;
+    }
+
+    @PutMapping("/portfolio/{portfolioId}")
+    public ResponseBean updatePortfolio(Authentication authentication, @PathVariable Integer portfolioId
+            , @RequestBody UserPortfolio userPortfolio) {
+        ResponseBean responseBean = new ResponseBean();
+        try{
+            service.updatePortfolio(authentication.getName(), portfolioId, userPortfolio);
+        }catch(ApiClientException e){
+            throw e;
+        }catch(Exception e){
+            throw new ApiServerException();
+        }
+        return responseBean;
+    }
+
     @PutMapping("/portfolio/{portfolioId}/products")
     public ResponseBean updatePortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
             , @RequestBody List<PortfolioProduct> portfolioProductList){
