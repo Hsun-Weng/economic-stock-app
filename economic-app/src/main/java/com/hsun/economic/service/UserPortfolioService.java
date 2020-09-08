@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface UserPortfolioService {
     void addPortfolio(String userName, UserPortfolio userPortfolio);
+    void deletePortfolio(String userName, Integer portfolioId);
+    void updatePortfolio(String userName, Integer portfolioId, UserPortfolio userPortfolio);
     List<PortfolioProduct> findUserPortfolioProductList(String userName, Integer portfolioId);
 }

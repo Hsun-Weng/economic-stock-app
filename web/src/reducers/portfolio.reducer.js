@@ -6,7 +6,9 @@ const initState = {
     products: {loading: false, data: []},
     addPortfolio: {loading: false},
     addPortfolioProduct: {loading: false},
-    updatePortfolio: {loading: false}
+    updatePortfolio: {loading: false},
+    updatePortfolioProduct: {loading: false},
+    deletePortfolio: {loading: false}
 }
 
 export const portfolio = (state=initState, action) => {
@@ -50,6 +52,32 @@ export const portfolio = (state=initState, action) => {
             return {...state,
                 error: action.error
             };
+        // Delete portfolio
+        case portfolioConstants.DELETE_PORTFOLIO_REQUEST: 
+            return {...state,
+                deletePortfolio:{ loading: true }
+            };
+        case portfolioConstants.DELETE_PORTFOLIO_SUCCESS:
+            return {...state,
+                deletePortfolio:{ loading: false }
+            };
+        case portfolioConstants.DELETE_PORTFOLIO_FAILURE:
+            return {...state,
+                error: action.error
+            };
+        // Update portfolio
+        case portfolioConstants.UPDATE_PORTFOLIO_REQUEST: 
+            return {...state,
+                updatePortfolio:{ loading: true }
+            };
+        case portfolioConstants.UPDATE_PORTFOLIO_SUCCESS:
+            return {...state,
+                updatePortfolio:{ loading: false }
+            };
+        case portfolioConstants.UPDATE_PORTFOLIO_FAILURE:
+            return {...state,
+                error: action.error
+            };
         // Add portfolio product
         case portfolioConstants.ADD_PORTFOLIO_PRODUCT_REQUEST: 
             return {...state,
@@ -66,11 +94,11 @@ export const portfolio = (state=initState, action) => {
         // Update portfolio product
         case portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_REQUEST: 
             return {...state,
-                updatePortfolio:{ loading: true }
+                updatePortfolioProduct:{ loading: true }
             };
         case portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_SUCCESS:
             return {...state,
-                updatePortfolio:{ loading: false }
+                updatePortfolioProduct:{ loading: false }
             };
         case portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_FAILURE:
             return {...state,

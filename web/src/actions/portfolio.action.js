@@ -1,9 +1,13 @@
 import portfolioConstants from '../constants/portfolio.constants';
 import { portfolioService } from '../services';
 
+import { notificationActions } from './';
+
 export const portfolioAction = {
     getPortfolio,
     addPortfolio,
+    deletePortfolio,
+    updatePortfolio,
     getPortfolioProducts,
     addPortfolioProduct,
     updatePortfolioProducts
@@ -35,6 +39,13 @@ function addPortfolio(portfolio) {
             .then(()=>{
                 dispatch(success());
                 dispatch(getPortfolio());
+                dispatch(notificationActions.enqueueNotification({
+                    message: `新增成功：投資組合 ${portfolio.portfolioName}`,
+                    options: {
+                        key: new Date().getTime() + Math.random(),
+                        variant: 'success',
+                    },
+                }))
             },
             error=>{
                 dispatch(failure(error));
@@ -44,6 +55,58 @@ function addPortfolio(portfolio) {
     function request() { return { type: portfolioConstants.ADD_PORTFOLIO_REQUEST } }
     function success() { return { type: portfolioConstants.ADD_PORTFOLIO_SUCCESS } }
     function failure(error) { return { type: portfolioConstants.ADD_PORTFOLIO_FAILURE, error } }
+}
+
+function deletePortfolio(portfolioId) {
+    return dispatch => {
+        dispatch(request());
+
+        portfolioService.deletePortfolio(portfolioId)
+            .then(()=>{
+                dispatch(success());
+                dispatch(getPortfolio());
+                dispatch(notificationActions.enqueueNotification({
+                    message: `刪除成功`,
+                    options: {
+                        key: new Date().getTime() + Math.random(),
+                        variant: 'success',
+                    },
+                }))
+            },
+            error=>{
+                dispatch(failure(error));
+            })
+    }
+
+    function request() { return { type: portfolioConstants.DELETE_PORTFOLIO_REQUEST } }
+    function success() { return { type: portfolioConstants.DELETE_PORTFOLIO_SUCCESS } }
+    function failure(error) { return { type: portfolioConstants.DELETE_PORTFOLIO_FAILURE, error } }
+}
+
+function updatePortfolio(portfolio) {
+    return dispatch => {
+        dispatch(request());
+
+        portfolioService.updatePortfolio(portfolio)
+            .then(()=>{
+                dispatch(success());
+                dispatch(getPortfolio());
+                dispatch(notificationActions.enqueueNotification({
+                    message: `修改成功`,
+                    options: {
+                        key: new Date().getTime() + Math.random(),
+                        variant: 'success',
+                    },
+                }))
+            },
+            error=>{
+                dispatch(failure(error));
+            })
+    }
+
+    function request() { return { type: portfolioConstants.UPDATE_PORTFOLIO_REQUEST } }
+    function success() { return { type: portfolioConstants.UPDATE_PORTFOLIO_SUCCESS } }
+    function failure(error) { return { type: portfolioConstants.UPDATE_PORTFOLIO_FAILURE, error } }
 }
 
 function getPortfolioProducts(portfolioId) {
