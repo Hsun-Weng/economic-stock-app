@@ -2,3 +2,4 @@ setupProxy.js
 db_params.py
 economic-app.iml
 Pipfile.lock
+web/src/config.js

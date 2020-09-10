@@ -94,3 +94,17 @@ module.exports = function (app) {
     );
 };
 ```
+
+Add config.js in src/
+```javascript
+export default {
+    domainName: "http://xxxxxxxx:oooo",
+    oauth: {
+        facebook: {
+            authorizationEndpoint: "https://www.facebook.com/dialog/oauth",
+            clientId: "xxxxxxxxxxxxx",
+            scopes: "email,publish_actions"
+        }
+    }
+}
+```

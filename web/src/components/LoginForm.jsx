@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Avatar, Button, CssBaseline, TextField, Link, CircularProgress, Box, Typography, Container, makeStyles } from '@material-ui/core';
+import { useLocation } from 'react-router-dom';
+import { Avatar, Button, CssBaseline, TextField, Link, CircularProgress, Box, Typography, Container, makeStyles, IconButton, Icon, Divider } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import FacebookIcon from '@material-ui/icons/Facebook';
 
 import { userAction } from '../actions';
+
+import config from '../config';
 
 function Copyright() {
   return (
@@ -21,7 +25,7 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(1),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -35,7 +39,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(3, 0, 1),
+  },
+  loginButton: {
+    width: '100%', // Fix IE 11 issue.
+    margin: theme.spacing(0, 2, 3),
   },
   wrapper: {
     margin: theme.spacing(1),
@@ -43,6 +51,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+const FacebookLoginButton = () => {
+  const classes = useStyles();
+  const location = useLocation();
+
+  const domainName = config.domainName;
+  const authorizationEndpoint = config.oauth.facebook.authorizationEndpoint;
+  const clientId = config.oauth.facebook.clientId;
+  const currentFullPath = domainName + location.pathname;
+
+  const redirectUrl = `${authorizationEndpoint}?client_id=${clientId}&redirect_uri=${currentFullPath}&display=page&response_type=code&scopes=email,publish_actions`
+  
+  return (
+    <Button
+      component={Link}
+      variant="contained"
+      color="primary"
+      fullWidth
+      className={classes.loginButton}
+      href={redirectUrl}>
+      <FacebookIcon />
+      Facebook
+      </Button>
+  )
+}
+  
 export default function LoginForm() {
   const classes = useStyles();
   const [ userName, setUserName ] = useState("");
@@ -100,7 +134,7 @@ export default function LoginForm() {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
+              color="secondary"
               disabled={loading}
               className={classes.submit}>
               {loading && <CircularProgress size={24} />}
@@ -109,6 +143,10 @@ export default function LoginForm() {
           </div>
         </form>
       </div>
+      <Box className={classes.paper}>
+        <Divider />
+        <FacebookLoginButton />
+      </Box>
       <Box mt={8}>
         <Copyright />
       </Box>
