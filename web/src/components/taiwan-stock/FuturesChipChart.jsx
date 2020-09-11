@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
 
 import { Box } from '@material-ui/core';
-import { ComposedChart, Line, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, 
-Brush} from 'recharts';
+import { ComposedChart, Line, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 
 const FuturesChipChart = ({ data }) =>{
 
@@ -43,7 +42,6 @@ const FuturesChipChart = ({ data }) =>{
                         return <Cell key={key} fill={color} />;
                     })}
                 </Bar>
-                <Brush dataKey="date" height={30} stroke="#ff7300" />
             </ComposedChart>
         </Box>
     );

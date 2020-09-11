@@ -6,10 +6,23 @@ import * as serviceWorker from './serviceWorker';
 import MainLayout from './layouts/MainLayout'
 import {BrowserRouter as Router} from 'react-router-dom'
 
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import rootReducer from './reducers';
+
+import { SnackbarProvider } from 'notistack';
+
+const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
+
 ReactDOM.render(
-  <Router>
-    <MainLayout />
-  </Router>, 
+  <Provider store={store}>
+    <SnackbarProvider>
+      <Router>
+        <MainLayout />
+      </Router>
+    </SnackbarProvider>
+  </Provider>,
   document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

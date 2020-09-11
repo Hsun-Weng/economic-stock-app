@@ -20,9 +20,8 @@ public class EconomicData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="data_id")
-	private int dataId;
+	@Column(name="data_code")
+	private String dataCode;
 
 	@Column(name="data_name")
 	private String dataName;
@@ -30,7 +29,6 @@ public class EconomicData implements Serializable {
 	@Column(name="frequency")
 	private int frequency;
 	
-	@OneToMany(cascade=CascadeType.DETACH)
-	@JoinColumn(name="data_id", referencedColumnName="data_id")
-	private List<CountryEconomicData> countryEconomicData;
+	@ManyToMany(mappedBy = "economicDataList")
+	private List<Country> countryList;
 }

@@ -6,5 +6,5 @@ import com.hsun.data.entity.EconomicData;
 
 public interface EconomicDataService {
     
-    List<EconomicData> getByCountryDataId(String countryCode, Integer dataId);
+    List<EconomicData> getDataByCodeAndCountryCode(String countryCode, String dataCode);
 }

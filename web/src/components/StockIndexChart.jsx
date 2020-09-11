@@ -1,0 +1,124 @@
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+
+import { Paper, Box, Grid, FormControl, InputLabel, Select, MenuItem, IconButton } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
+
+import AddIcon from '@material-ui/icons/Add';
+
+import { stockAction, portfolioAction } from '../actions';
+
+import CandleStickChart from './CandleStickChart';
+
+const useStyles = makeStyles(theme => ({
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 200
+    },
+    button: {
+        margin: theme.spacing(1)
+    },
+    fixedInputSkeletonHeight: {
+        height: 65,
+    },
+    fixedChartHeight: {
+        height: 900,
+    },
+    paper: {
+        padding: theme.spacing(2),
+        display: 'flex',
+        overflow: 'auto',
+        flexDirection: 'column',
+    },
+}));
+
+const StockIndexChart = () => {
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.user.data);
+    const portfolios = useSelector(state => state.portfolio.portfolios.data);
+    const prices = useSelector(state=>state.stock.index.data);
+
+    const classes = useStyles();
+    const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
+
+    const [ portfolioId, setPortfolioId ] = useState(0);
+
+    const { indexCode } = useParams();
+
+    const formatDate = date => date.toISOString().slice(0,10);
+
+    const handleChangePortfolioId = ( event ) => {
+        setPortfolioId(event.target.value);
+    }
+
+    const addPortfolioProduct = ( event ) => {
+        let portfolioProduct = {
+            id: {
+                productType: 0,
+                productCode: indexCode
+            },
+        }
+        dispatch(portfolioAction.addPortfolioProduct(portfolioId, portfolioProduct));
+    }
+
+
+    const UserPortfolioSelect = () =>(
+        <FormControl className={classes.formControl}>
+            <InputLabel>Add to portfolio</InputLabel>
+            <Select
+                value={portfolioId}
+                onChange={handleChangePortfolioId}>
+                {portfolios.map((prop, key)=><MenuItem key={key} value={prop.portfolioId}>{prop.portfolioName}</MenuItem>)}
+            </Select>
+        </FormControl>
+    );
+
+    useEffect(()=>{
+        if( portfolios.length > 0){
+            setPortfolioId(portfolios[0].portfolioId);
+        }
+    }, [ portfolios ])
+
+    useEffect(() => {
+        let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
+        let endDate = new Date();
+        dispatch(stockAction.getStockIndex(indexCode, formatDate(startDate), formatDate(endDate)))
+    }, [ dispatch, indexCode ])
+
+    return (
+        <React.Fragment>
+            <Grid container spacing={3}>
+                {(user != null && portfolios.length > 0) &&
+                    <Grid item md={12}>
+                        <Paper>
+                            <Box>
+                                <UserPortfolioSelect />
+                                <IconButton color="primary" className={classes.button} onClick={addPortfolioProduct}>
+                                    <AddIcon />
+                                </IconButton>
+                            </Box>
+                        </Paper>
+                    </Grid>
+                }
+                <Grid item md={12}>
+                    <Paper className={fixedChartHeightPaper}>
+                        <Box display="flex" justifyContent="center">
+                            {prices.length > 0 ?
+                                <CandleStickChart dataset={prices.map((data) => {
+                                    data.date = new Date(data.date);
+                                    return data;
+                                })} />
+                            :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+                        </Box>
+                    </Paper>
+                </Grid>
+            </Grid>
+        </React.Fragment>
+    );
+}
+
+export default StockIndexChart;

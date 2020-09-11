@@ -1,11 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link, useLocation} from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+
+import { userItemRoutes } from '../../Routes';
+import FoldListItem from './FoldMenuListItem';
 
 const useStyles = makeStyles(theme => ({
   nested: {
@@ -22,27 +22,55 @@ const UserListItems = () => {
   const isSelected = (routePath) => {
     return location.pathname === routePath;
   }
+
+  const user = useSelector(state => state.user.data);
+
+  const listItem = ( prop, key ) => {
+    if(prop.itemType === 0){
+      return (
+        <ListItem button 
+          component={LinkBehavior} 
+          to={prop.path}
+          selected={isSelected(prop.path)}
+          key={key}>
+          <ListItemIcon>
+            <prop.icon />
+          </ListItemIcon>
+          <ListItemText primary={prop.itemName} />
+        </ListItem>
+      )
+    }else if (prop.itemType === 1){
+      const _children = prop.children;
+      return (
+        <FoldListItem key={key} groupName={prop.itemName} groupIcon={prop.icon}>
+          {_children.map((item, itemKey)=>{
+            return (
+              <ListItem button 
+                component={LinkBehavior} 
+                to={item.path}
+                selected={isSelected(item.path)}
+                key={itemKey}
+                className={classes.nested}
+                >
+                <ListItemIcon>
+                  <item.icon />
+                </ListItemIcon>
+                <ListItemText primary={item.itemName} />
+              </ListItem>);
+          })}
+        </FoldListItem>
+      )
+    }
+  }
+  
   return (
     <div>
-      <ListSubheader inset>Saved reports</ListSubheader>
-      <ListItem button>
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Current month" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Last quarter" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Year-end sale" />
-      </ListItem>
+        {user ? 
+          <div>
+            {userItemRoutes.map((prop, key) => listItem(prop, key))}
+          </div>
+          :<div />
+        }
     </div>)
 }
 

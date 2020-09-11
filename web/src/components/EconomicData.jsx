@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, FormControl, Select, InputLabel, MenuItem, Grid} from '@material-ui/core'
+import { Paper, FormControl, Select, InputLabel, MenuItem, Grid, Box} from '@material-ui/core'
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import EconomicDataChart from './EconomicDataChart';
 
+import { economicAction } from '../actions';
 import countries from '../data/country';
 
 const useStyles = makeStyles(theme => ({
@@ -14,8 +16,9 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     minWidth: 120
   },
-  fixedHeight: {
-    height: 110,
+  fixedInputSkeletonHeight: {
+    height: 65,
+    width: '100%'
   },
   fixedChartHeight: {
     height: 550,
@@ -30,53 +33,25 @@ const useStyles = makeStyles(theme => ({
 
 const EconomicData = () => {
   const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
   const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
-  const [economicData, setEconomicData] = useState([]);
+  const dispatch = useDispatch();
+  const economicData = useSelector(state=>state.economic.data.data);
+  const economicDataValue = useSelector(state=>state.economic.value.data);
+  const dataLoading = useSelector(state=>state.economic.data.loading);
+  const valueLoading = useSelector(state=>state.economic.value.loading);
+
   const [countryCode, setCountryCode] = useState("USA");
-  const [dataId, setDataId] = useState(1);
-  const [units, setUnits] = useState([]);
-  const [dataset, setDataset] = useState([]);
+  const [dataCode, setDataCode] = useState("NONFARM");
 
   const handleChangeCountry = event => {
     setCountryCode(event.target.value);
   };
 
   const handleChangeEconomicData = event => {
-    setDataId(event.target.value);
+    setDataCode(event.target.value);
   };
-
-  const fetchEconomicData = async () => {
-    const res = await fetch("/api/economic/country/data");
-    res.json()
-      .then(res => res.data)
-      .then(data => setEconomicData(data))
-      .catch(err=>console.log)
-  };
-
-  /**
-   * 取得圖表基本資料
-    */
-  const fetchEconomicChart = async (data) =>{
-    const res = await fetch(`/data/economic/chart/${data}`);
-    res.json()
-      .then(res=> res.data)
-      .then(data=> setUnits(data.chart.line.units))
-      .catch(err=>console.log(err));
-  }
-  
-
-  /**
-   * 取得數據
-   */
-  const fetchEconomicDataset = async (country, data) =>{
-    const res = await fetch(`/data/economic/data/${country}/${data}`);
-    res.json()
-      .then(res => res.data)
-      .then(data => setDataset(data))
-      .catch(err=>console.log(err));
-  }
 
   const CountrySelect = () => (
     <FormControl className={classes.formControl}>
@@ -93,42 +68,42 @@ const EconomicData = () => {
     <FormControl className={classes.formControl}>
       <InputLabel>Economic Data</InputLabel>
       <Select
-        value={dataId}
+        value={dataCode}
         onChange={handleChangeEconomicData}>
-          {economicData.map((prop, key)=><MenuItem key={key} value={prop.dataId}>{prop.dataName}</MenuItem>)}
+          {economicData.map((prop, key)=><MenuItem key={key} value={prop.dataCode}>{prop.dataName}</MenuItem>)}
       </Select>
     </FormControl>
   )
 
   useEffect(() => {
-    fetchEconomicData();
-  }, []);
+    dispatch(economicAction.getEconomicData(countryCode));
+  }, [ dispatch, countryCode ])
 
   useEffect(() => {
-    fetchEconomicChart(dataId);
-  }, [ dataId ]);
-
-  useEffect(() => {
-    fetchEconomicDataset(countryCode, dataId)
-  }, [ countryCode, dataId]);
+    dispatch(economicAction.getEconomicValue(countryCode, dataCode));
+  }, [ dispatch, countryCode, dataCode]);
 
   return (
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item md={12}>
-          {economicData.length > 0?
+          {dataLoading ?
+            <Skeleton variant="text" className={fixedInputSkeletonHeight}/>:
             <Paper>
-              <CountrySelect />
-              <EconomicDataSelect />
-            </Paper>:<Skeleton variant="text" className={fixedHeightPaper}/>
+              <Box>
+                <CountrySelect />
+                <EconomicDataSelect />
+              </Box>
+            </Paper>
           }
         </Grid>
         <Grid item md={12}>
-          {units.length > 0 && dataset.length > 0 ?
+          {valueLoading ?
+            <Skeleton variant="rect" className={fixedChartHeightPaper} />:
             <Paper className={fixedChartHeightPaper}>
-              <EconomicDataChart units={units} data={dataset} />
+                <EconomicDataChart data={economicDataValue} />
             </Paper>
-          :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
+          }
         </Grid>
       </Grid>
     </React.Fragment>

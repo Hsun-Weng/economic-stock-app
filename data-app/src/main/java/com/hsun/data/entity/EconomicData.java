@@ -16,12 +16,12 @@ public class EconomicData {
     private ObjectId id;
     @Field("country_code")
     private String countryCode;
-    @Field("data_id")
-    private Integer dataId;
+    @Field("data_code")
+    private String dataCode;
     @Field("date")
     private Date date;
     @Field("data_name")
     private String dataName;
     @Field("value")
-    private org.bson.Document value;
+    private Long value;
 }
