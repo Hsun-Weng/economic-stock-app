@@ -59,9 +59,10 @@ const FacebookLoginButton = () => {
   const domainName = config.domainName;
   const authorizationEndpoint = config.oauth.facebook.authorizationEndpoint;
   const clientId = config.oauth.facebook.clientId;
+  const scopes = config.oauth.facebook.scopes;
   const currentFullPath = domainName + location.pathname;
 
-  const redirectUrl = `${authorizationEndpoint}?client_id=${clientId}&redirect_uri=${currentFullPath}&display=page&response_type=code&scopes=email,publish_actions`
+  const redirectUrl = `${authorizationEndpoint}?client_id=${clientId}&redirect_uri=${currentFullPath}&display=page&response_type=code&scopes=${scopes}`
   
   return (
     <Button
