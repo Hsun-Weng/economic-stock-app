@@ -63,6 +63,7 @@ export const portfolio = (state=initState, action) => {
             };
         case portfolioConstants.DELETE_PORTFOLIO_FAILURE:
             return {...state,
+                deletePortfolio:{ loading: false },
                 error: action.error
             };
         // Update portfolio

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { Avatar, Button, CssBaseline, TextField, Link, CircularProgress, Box, Typography, Container, makeStyles, IconButton, Icon, Divider } from '@material-ui/core';
+import { Avatar, Button, CssBaseline, TextField, Link, CircularProgress, Box, Typography, Container, makeStyles, Divider } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import FacebookIcon from '@material-ui/icons/Facebook';
@@ -54,15 +53,13 @@ const useStyles = makeStyles((theme) => ({
 
 const FacebookLoginButton = () => {
   const classes = useStyles();
-  const location = useLocation();
 
-  const domainName = config.domainName;
   const authorizationEndpoint = config.oauth.facebook.authorizationEndpoint;
   const clientId = config.oauth.facebook.clientId;
+  const redirectUri = config.oauth.facebook.redirectUri;
   const scopes = config.oauth.facebook.scopes;
-  const currentFullPath = domainName + location.pathname;
 
-  const redirectUrl = `${authorizationEndpoint}?client_id=${clientId}&redirect_uri=${currentFullPath}&display=page&response_type=code&scopes=${scopes}`
+  const redirectUrl = `${authorizationEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&display=page&response_type=code&scopes=${scopes}`
   
   return (
     <Button
@@ -70,7 +67,7 @@ const FacebookLoginButton = () => {
       variant="contained"
       color="primary"
       fullWidth
-      className={classes.loginButton}
+      className={classes.submit}
       href={redirectUrl}>
       <FacebookIcon />
       Facebook
@@ -142,12 +139,12 @@ export default function LoginForm() {
               <Typography>Sign In</Typography>
             </Button>
           </div>
+          <div className={classes.wrapper}>
+            <Divider />
+            <FacebookLoginButton />
+          </div>
         </form>
       </div>
-      <Box className={classes.paper}>
-        <Divider />
-        <FacebookLoginButton />
-      </Box>
       <Box mt={8}>
         <Copyright />
       </Box>

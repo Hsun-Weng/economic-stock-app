@@ -26,7 +26,7 @@ const LoggedInUserAvatar = () => {
         <div>
             <IconButton onClick={handleMenu} color="inherit">
                 <AccountCircleRoundedIcon />
-                <Typography>{user && user.firstName}</Typography>
+                <Typography>{user && user.lastName}</Typography>
             </IconButton>
             <Menu 
                 anchorEl={anchorEl}

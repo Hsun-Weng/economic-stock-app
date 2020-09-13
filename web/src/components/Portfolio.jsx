@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-import { Grid, Paper, IconButton, FormControl, Select, InputLabel, Button, Menu, MenuItem, ListItemIcon, ListItemText, Box, TextField, Table, TableCell
-    , TableContainer, TableHead, TableRow, Divider, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from '@material-ui/core'
+import { Grid, Paper, IconButton, FormControl, Select, InputLabel, Menu, MenuItem, ListItemIcon, ListItemText, Box, Table, TableCell
+    , TableContainer, TableHead, TableRow, Divider } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
@@ -76,7 +76,6 @@ const Portfolio = () => {
     const classes = useStyles();
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
-    const dispatch = useDispatch();
     const portfolio = useSelector(state=>state.portfolio.portfolios.data);
     
     const [ portfolioId, setPortfolioId ] = useState(0);

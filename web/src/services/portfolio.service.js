@@ -51,14 +51,14 @@ function deletePortfolio(portfolioId){
         })
 }
 
-function updatePortfolio(portfolio){
+function updatePortfolio(portfolioId, portfolio){
     const requestOptions = {
         method: 'PUT',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
         body: JSON.stringify(portfolio)
     };
 
-    return fetch(`/api/portfolio`, requestOptions)
+    return fetch(`/api/portfolio/${portfolioId}`, requestOptions)
         .then((httpResponse) => {
             if (!httpResponse.ok) {
                 const error = httpResponse;

@@ -52,8 +52,8 @@ const EditPortoflioDialog = ({ open, handleClose, portfolioId, portfolioName }) 
     const [ updatePortfolioName, setUpdatePortfolioName ] = useState("");
 
     const updatePortfolio = () => {
-        let portfolio = { portfolioId: portfolioId, portfolioName: updatePortfolioName}
-        dispatch(portfolioAction.updatePortfolio(portfolio))
+        let portfolio = { portfolioName: updatePortfolioName}
+        dispatch(portfolioAction.updatePortfolio(portfolioId, portfolio))
     };
 
     const handleChange = (event) => {

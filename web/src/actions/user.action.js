@@ -6,7 +6,8 @@ export const userAction = {
     getUser,
     login,
     signUp,
-    logout
+    logout,
+    oauthLogin
 }
 function getUser() {
     return dispatch => {
@@ -91,4 +92,30 @@ function signUp(user) {
     function request () { return { type: userConstants.SIGNUP_REQUEST } }
     function success () { return { type: userConstants.SIGNUP_SUCCESS } }
     function failure (error) { return { type: userConstants.SIGNUP_FAILURE, error } }
+}
+
+function oauthLogin(providerCode, code) {
+    return dispatch => {
+        dispatch(request());
+        
+        userService.oauthLogin(providerCode, code)
+            .then(() => {
+                    dispatch(success());
+                    dispatch(getUser());
+                },
+                error => {
+                    dispatch(failure(error));
+                }
+            );
+    }
+
+    function request() {
+        return {type: userConstants.LOGIN_REQUEST};
+    }
+    function success() {
+        return {type: userConstants.LOGIN_SUCCESS};
+    }
+    function failure(error) {
+        return {type: userConstants.LOGIN_FAILURE, error};
+    }
 }

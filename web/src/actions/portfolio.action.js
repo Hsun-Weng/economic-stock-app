@@ -74,6 +74,7 @@ function deletePortfolio(portfolioId) {
                 }))
             },
             error=>{
+                console.log(error);
                 dispatch(failure(error));
             })
     }
@@ -83,11 +84,11 @@ function deletePortfolio(portfolioId) {
     function failure(error) { return { type: portfolioConstants.DELETE_PORTFOLIO_FAILURE, error } }
 }
 
-function updatePortfolio(portfolio) {
+function updatePortfolio(portfolioId, portfolio) {
     return dispatch => {
         dispatch(request());
 
-        portfolioService.updatePortfolio(portfolio)
+        portfolioService.updatePortfolio(portfolioId, portfolio)
             .then(()=>{
                 dispatch(success());
                 dispatch(getPortfolio());

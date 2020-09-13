@@ -4,7 +4,8 @@ export const userService = {
     getUser,
     login,
     signUp,
-    logout
+    logout,
+    oauthLogin
 }
 
 function getUser(){
@@ -47,6 +48,20 @@ function signUp(user){
 
     return fetch(`/api/user/signup`, requestOptions)
         .then(handleResponse);
+}
+
+function oauthLogin(providerCode, code){
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ providerCode, code })
+    };
+
+    return fetch(`/api/user/oauth`, requestOptions)
+        .then(handleResponse)
+        .then(token => {
+            localStorage.setItem('token', token);
+        });
 }
 
 const handleResponse = (httpResponse) => {
