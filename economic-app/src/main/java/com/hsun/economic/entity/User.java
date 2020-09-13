@@ -31,7 +31,10 @@ public class User implements Serializable {
 	@Column(name="last_name")
 	private String lastName;
 
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany
 	@JoinColumn(name="user_name")
 	private List<UserPortfolio> userPortfolioList;
+
+	@OneToMany(orphanRemoval = true, mappedBy = "id.userName")
+	private List<OauthToken> oauthTokenList;
 }

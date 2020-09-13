@@ -51,14 +51,14 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Override
     public void updatePortfolio(String userName, Integer portfolioId, UserPortfolio userPortfolio) {
         User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
-        user.getUserPortfolioList()
+        UserPortfolio dbUserPortfolio= user.getUserPortfolioList()
                 .stream().filter((data)->data.getPortfolioId() == portfolioId)
                 .findAny().orElseThrow(()->new ApiClientException("Portfolio not found."));
         if(StringUtils.isEmpty(userPortfolio.getPortfolioName())){
             throw new ApiClientException("Portfolio name can't be empty.");
         }
-        userPortfolio.setPortfolioId(portfolioId);
-        repository.save(userPortfolio);
+        dbUserPortfolio.setPortfolioName(userPortfolio.getPortfolioName());
+        repository.save(dbUserPortfolio);
     }
 
     @Override

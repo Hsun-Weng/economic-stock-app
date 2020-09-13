@@ -30,7 +30,6 @@ public class Futures implements Serializable {
     @JoinColumn(name="index_code")
 	private StockIndex stockIndex;
 
-	@OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name="futures_code")
+	@OneToMany(cascade=CascadeType.ALL, orphanRemoval = true, mappedBy = "id.futuresCode")
 	private List<FuturesContract> futuresContractList;
 }

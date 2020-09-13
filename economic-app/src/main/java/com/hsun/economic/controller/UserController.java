@@ -1,5 +1,6 @@
 package com.hsun.economic.controller;
 
+import com.hsun.economic.bean.RequestOauthBean;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class UserController {
     
     @Autowired
     private UserService service;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -57,6 +58,18 @@ public class UserController {
         }catch(DataIntegrityViolationException e){
             throw new ApiClientException("Duplicate User Name");
         }catch(Exception e) {
+            throw new ApiServerException();
+        }
+        return responseBean;
+    }
+
+    @PostMapping("/user/oauth")
+    public ResponseBean oauth(@RequestBody RequestOauthBean requestOauthBean){
+        ResponseBean responseBean = new ResponseBean();
+        try {
+            responseBean.setData(service.oauth(requestOauthBean));
+        }catch(Exception e) {
+            e.printStackTrace();
             throw new ApiServerException();
         }
         return responseBean;

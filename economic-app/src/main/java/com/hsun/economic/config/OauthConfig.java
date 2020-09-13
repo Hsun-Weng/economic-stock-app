@@ -4,11 +4,11 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
-@ConfigurationProperties("security.oauth2.client.registration.facebook")
+@ConfigurationProperties("security.oauth2")
 @Data
-public class OauthFacebookConfig {
-    private String clientId;
-    private String clientSecret;
-    private String accessTokenUri;
+public class OauthConfig {
+    private List<OauthClientConfig> clients;
 }
