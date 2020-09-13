@@ -103,7 +103,7 @@ const RouteComponent = () => (
                 return(<div />)
             }
         })}
-        <Route paht="/oauth/:providerCode" exact={false}><OauthRedirect /></Route>
+        <Route path="/oauth/:providerCode" children={<OauthRedirect/>} />
         <Route path="/stock/:stockCode" children={<StockChart />} />
         <Route path="/index/:indexCode" children={<StockIndexChart />} />
     </div>

@@ -7,6 +7,8 @@ import clsx from 'clsx';
 import { Grid, Paper, IconButton, FormControl, Select, InputLabel, Menu, MenuItem, ListItemIcon, ListItemText, Box, Table, TableCell
     , TableContainer, TableHead, TableRow, Divider } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import PortfolioTableBody from './PortfolioTableBody';
@@ -77,6 +79,9 @@ const Portfolio = () => {
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
     const portfolio = useSelector(state=>state.portfolio.portfolios.data);
+    const adding = useSelector(state=>state.portfolio.addPortfolio.loading);
+    const editing = useSelector(state=>state.portfolio.updatePortfolio.loading);
+    const deleting = useSelector(state=>state.portfolio.deletePortfolio.loading);
     
     const [ portfolioId, setPortfolioId ] = useState(0);
     const [ portfolioName, setPortfolioName ] = useState("");
@@ -114,6 +119,24 @@ const Portfolio = () => {
         }
     }, [ portfolio ])
 
+    useEffect(()=>{
+        if(!adding){
+            handleOpenAddPortfolioClose();
+        }
+    }, [ adding ]);
+
+    useEffect(()=>{
+        if(!editing){
+            handleOpenEditPortfolioClose();
+        }
+    }, [ editing ]);
+
+    useEffect(()=>{
+        if(!deleting){
+            handleOpenDeletePortfolioClose();
+        }
+    }, [ deleting ]);
+
     return (
         <React.Fragment>
             <Grid container spacing={3}>
@@ -136,29 +159,17 @@ const Portfolio = () => {
                                 onClose={handleActionMenuClose}
                                 >
                                 <MenuItem onClick={handleOpenAddPortfolio}>
-                                    <ListItemIcon>
-                                        <AddIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>
-                                        新增投資組合
-                                    </ListItemText>
+                                    <ListItemIcon><AddIcon /></ListItemIcon>
+                                    <ListItemText>新增投資組合</ListItemText>
                                 </MenuItem>
                                 <Divider />
                                 <MenuItem onClick={handleOpenEditPortfolio}>
-                                    <ListItemIcon>
-                                        <AddIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>
-                                        修改
-                                    </ListItemText>
+                                    <ListItemIcon><EditIcon /></ListItemIcon>
+                                    <ListItemText>修改</ListItemText>
                                 </MenuItem>
                                 <MenuItem onClick={handleOpenDeletePortfolio}>
-                                    <ListItemIcon>
-                                        <AddIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>
-                                        刪除
-                                    </ListItemText>
+                                    <ListItemIcon><DeleteIcon /></ListItemIcon>
+                                    <ListItemText>刪除</ListItemText>
                                 </MenuItem>
                             </Menu>
                         </Box>

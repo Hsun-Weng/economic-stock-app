@@ -16,12 +16,6 @@ const AddPortoflioDialog = ({ open, handleClose }) => {
         dispatch(portfolioAction.addPortfolio(portfolio))
     };
 
-    useEffect(()=>{
-        if(!loading){
-            handleClose();
-        }
-    }, [ loading ]);
-
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>新增投資組合</DialogTitle>
@@ -64,12 +58,6 @@ const EditPortoflioDialog = ({ open, handleClose, portfolioId, portfolioName }) 
         setUpdatePortfolioName(portfolioName);
     }, [ portfolioName ]);
 
-    useEffect(()=>{
-        if(!loading){
-            handleClose();
-        }
-    }, [ loading ]);
-
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>重新命名</DialogTitle>
@@ -101,12 +89,6 @@ const DeletePortfolioDialog = ({ open, handleClose, portfolioId, portfolioName }
     const deletePortfolio = () => {
         dispatch(portfolioAction.deletePortfolio(portfolioId))
     };
-
-    useEffect(()=>{
-        if(!loading){
-            handleClose();
-        }
-    }, [ loading ]);
 
     return (
         <Dialog open={open} onClose={handleClose}>
