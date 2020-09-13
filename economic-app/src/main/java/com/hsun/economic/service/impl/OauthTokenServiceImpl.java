@@ -60,7 +60,6 @@ public class OauthTokenServiceImpl implements OauthTokenService {
                 tokenType.substring(0, 1).toUpperCase() +
                             tokenType.substring(1)
                         + " " + accessToken);
-        System.out.println(httpHeaders);
 
         Map<String, Object> queryParamsMap = new HashMap<String, Object>();
         queryParamsMap.put("fields", String.join(",", oauthClientConfig.getFields()));
