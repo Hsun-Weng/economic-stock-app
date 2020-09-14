@@ -11,7 +11,7 @@ import EconomicData from './components/EconomicData';
 import StockChart from './components/StockChart';
 import StockIndexChart from './components/StockIndexChart';
 
-import FuturesChip from './components/taiwan-stock/FuturesChip';
+import FuturesChip from './components/FuturesChip';
 
 import Portfolio from './components/Portfolio';
 

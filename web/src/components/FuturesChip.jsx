@@ -8,10 +8,10 @@ import { Skeleton } from '@material-ui/lab';
 
 import FuturesChipChart from './FuturesChipChart';
 
-import { futuresAction } from '../../actions/futures.action';
-import { stockAction } from '../../actions/stock.action';
+import { futuresAction } from '../actions/futures.action';
+import { stockAction } from '../actions/stock.action';
 
-import investor from '../../data/investor.json'
+import investor from '../data/investor.json'
 
 const useStyles = makeStyles(theme => ({
     formControl: {

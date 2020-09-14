@@ -32,6 +32,7 @@ const FuturesChipChart = ({ data }) =>{
                 <Line yAxisId="left" dataKey="close" stroke="#ff7300" />
                 <YAxis yAxisId="left" domain={['auto', 'auto']} />
                 <YAxis yAxisId="right" orientation="right" domain={[-30, 30]}
+                        ticks={[-30, -20, -10, 0, 10, 20, 30]}
                         tickFormatter={(tickValue)=>tickValue+"%"}/>
                 <Tooltip content={<ChartTooltip />} />
                 {/* <Legend /> */}
