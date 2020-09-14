@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { user, login, signUp } from './user.reducer';
+import { user, login, signUp, oauthLogin } from './user.reducer';
 import { notification } from './notification.reducer';
 import { stock } from './stock.reducer';
 import { futures } from './futures.reducer';
@@ -10,6 +10,7 @@ const rootReducer = combineReducers({
     user,
     login,
     signUp,
+    oauthLogin,
     stock,
     futures,
     portfolio,

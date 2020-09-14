@@ -2,36 +2,17 @@
 import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, CircularProgress } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { Button, CssBaseline, TextField, Grid, CircularProgress } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { userAction } from '../actions';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -52,7 +33,6 @@ export default function SignUpForm() {
   const [ lastName, setLastName ] = useState("");
 
   const loading = useSelector(state=>state.signUp.loading);
-  const signUpError = useSelector(state=>state.signUp.error);
   
   const handleSubmit = ( event ) => {
     event.preventDefault();
@@ -64,26 +44,15 @@ export default function SignUpForm() {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
+    <React.Fragment>
       <CssBaseline />
-      {signUpError ?
-        <Alert severity="error">{signUpError}</Alert>
-        :<div/>
-      }
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
         <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="fname"
                 variant="outlined"
-                required
                 fullWidth
                 label="First Name"
                 value={firstName}
@@ -106,7 +75,7 @@ export default function SignUpForm() {
                 variant="outlined"
                 required
                 fullWidth
-                label="User Name"
+                label="EMail"
                 value={userName}
                 onChange={event=>setUserName(event.target.value)}
               />
@@ -127,7 +96,7 @@ export default function SignUpForm() {
             type="submit"
             fullWidth
             variant="contained"
-            color="primary"
+            color="secondary"
             disabled={loading}
             className={classes.submit}>
             {loading && <CircularProgress size={24} />}
@@ -135,9 +104,6 @@ export default function SignUpForm() {
           </Button>
         </form>
       </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
-    </Container>
+    </React.Fragment>
   );
 }

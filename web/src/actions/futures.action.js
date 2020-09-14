@@ -1,5 +1,6 @@
 import fururesConstants from '../constants/futures.constants';
 import { futuresService } from '../services';
+import { notificationActions } from './';
 
 export const futuresAction = {
     getFutures,
@@ -15,13 +16,14 @@ function getFutures() {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: fururesConstants.GET_FUTURES_REQUEST } }
     function success(data) { return { type: fururesConstants.GET_FUTURES_SUCCESS, data } }
-    function failure(error) { return { type: fururesConstants.GET_FUTURES_FAILURE, error } }
+    function failure() { return { type: fururesConstants.GET_FUTURES_FAILURE } }
 }
 
 function getFuturesChip(futuresCode, investorCode, startDate, endDate) {
@@ -33,11 +35,12 @@ function getFuturesChip(futuresCode, investorCode, startDate, endDate) {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: fururesConstants.GET_FUTURES_CHIP_REQUEST } }
     function success(data) { return { type: fururesConstants.GET_FUTURES_CHIP_SUCCESS, data } }
-    function failure(error) { return { type: fururesConstants.GET_FUTURES_CHIP_FAILURE, error } }
+    function failure() { return { type: fururesConstants.GET_FUTURES_CHIP_FAILURE } }
 }

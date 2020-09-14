@@ -1,5 +1,6 @@
 import stockConstants from '../constants/stock.constants';
 import { stockService } from '../services';
+import { notificationActions } from './';
 
 export const stockAction = {
     getAllStocks,
@@ -23,13 +24,14 @@ function getAllStocks() {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: stockConstants.GET_ALL_STOCKS_REQUEST } }
     function success(data) { return { type: stockConstants.GET_ALL_STOCKS_SUCCESS, data } }
-    function failure(error) { return { type: stockConstants.GET_ALL_STOCKS_FAILURE, error } }
+    function failure() { return { type: stockConstants.GET_ALL_STOCKS_FAILURE } }
 }
 
 function getCategories() {
@@ -41,13 +43,14 @@ function getCategories() {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: stockConstants.GET_CATEGORIES_REQUEST } }
     function success(data) { return { type: stockConstants.GET_CATEGORIES_SUCCESS, data } }
-    function failure(error) { return { type: stockConstants.GET_CATEGORIES_FAILURE, error } }
+    function failure() { return { type: stockConstants.GET_CATEGORIES_FAILURE } }
 }
 
 function getCategoryStocks(categoryCode) {
@@ -59,13 +62,14 @@ function getCategoryStocks(categoryCode) {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: stockConstants.GET_CATEGORY_STOCKS_REQUEST } }
     function success(data) { return { type: stockConstants.GET_CATEGORY_STOCKS_SUCCESS, data } }
-    function failure(error) { return { type: stockConstants.GET_CATEGORY_STOCKS_FAILURE, error } }
+    function failure() { return { type: stockConstants.GET_CATEGORY_STOCKS_FAILURE } }
 }
 
 function getStockPrices(stockCode, startDate, endDate) {
@@ -77,13 +81,14 @@ function getStockPrices(stockCode, startDate, endDate) {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: stockConstants.GET_STOCK_PRICES_REQUEST } }
     function success(data) { return { type: stockConstants.GET_STOCK_PRICES_SUCCESS, data } }
-    function failure(error) { return { type: stockConstants.GET_STOCK_PRICES_FAILURE, error } }
+    function failure() { return { type: stockConstants.GET_STOCK_PRICES_FAILURE } }
 }
 
 function getStockIndex(indexCode, startDate, endDate) {
@@ -95,13 +100,14 @@ function getStockIndex(indexCode, startDate, endDate) {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: stockConstants.GET_STOCK_INDEX_REQUEST } }
     function success(data) { return { type: stockConstants.GET_STOCK_INDEX_SUCCESS, data } }
-    function failure(error) { return { type: stockConstants.GET_STOCK_INDEX_FAILURE, error } }
+    function failure() { return { type: stockConstants.GET_STOCK_INDEX_FAILURE } }
 }
 
 function getLatestStockPrice(products) {
@@ -120,13 +126,14 @@ function getLatestStockPrice(products) {
                 dispatch(success(result));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: stockConstants.GET_LATEST_STOCK_PRICES_REQUEST } }
     function success(data) { return { type: stockConstants.GET_LATEST_STOCK_PRICES_SUCCESS, data } }
-    function failure(error) { return { type: stockConstants.GET_LATEST_STOCK_PRICES_FAILURE, error } }
+    function failure() { return { type: stockConstants.GET_LATEST_STOCK_PRICES_FAILURE } }
 }
 
 function getAllStockIndexes() {
@@ -138,13 +145,14 @@ function getAllStockIndexes() {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: stockConstants.GET_ALL_STOCK_INDEXES_REQUEST } }
     function success(data) { return { type: stockConstants.GET_ALL_STOCK_INDEXES_SUCCESS, data } }
-    function failure(error) { return { type: stockConstants.GET_ALL_STOCK_INDEXES_FAILURE, error } }
+    function failure() { return { type: stockConstants.GET_ALL_STOCK_INDEXES_FAILURE } }
 }
 
 function getLatestStockIndexPrice(products) {
@@ -163,13 +171,14 @@ function getLatestStockIndexPrice(products) {
                 dispatch(success(result));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: stockConstants.GET_LATEST_STOCK_INDEX_PRICES_REQUEST } }
     function success(data) { return { type: stockConstants.GET_LATEST_STOCK_INDEX_PRICES_SUCCESS, data } }
-    function failure(error) { return { type: stockConstants.GET_LATEST_STOCK_INDEX_PRICES_FAILURE, error } }
+    function failure() { return { type: stockConstants.GET_LATEST_STOCK_INDEX_PRICES_FAILURE } }
 }
 
 function getStockChip(stockCode, startDate, endDate) {
@@ -181,13 +190,14 @@ function getStockChip(stockCode, startDate, endDate) {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: stockConstants.GET_STOCK_CHIP_REQUEST } }
     function success(data) { return { type: stockConstants.GET_STOCK_CHIP_SUCCESS, data } }
-    function failure(error) { return { type: stockConstants.GET_STOCK_CHIP_FAILURE, error } }
+    function failure() { return { type: stockConstants.GET_STOCK_CHIP_FAILURE } }
 }
 
 function getStockMargin(stockCode, startDate, endDate) {
@@ -199,11 +209,12 @@ function getStockMargin(stockCode, startDate, endDate) {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: stockConstants.GET_STOCK_MARGIN_REQUEST } }
     function success(data) { return { type: stockConstants.GET_STOCK_MARGIN_SUCCESS, data } }
-    function failure(error) { return { type: stockConstants.GET_STOCK_MARGIN_FAILURE, error } }
+    function failure() { return { type: stockConstants.GET_STOCK_MARGIN_FAILURE } }
 }
