@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Avatar, Button, CssBaseline, TextField, Link, CircularProgress, Box, Typography, Container, makeStyles, Divider } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import FacebookIcon from '@material-ui/icons/Facebook';
 
@@ -81,7 +80,6 @@ export default function LoginForm() {
   const [ password, setPassword ] = useState("");
 
   const loading = useSelector(state => state.login.loading);
-  const loginError = useSelector(state => state.login.error);
 
   const dispatch = useDispatch();
 
@@ -93,10 +91,6 @@ export default function LoginForm() {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      {loginError ?
-        <Alert severity="error">{loginError.message}</Alert>
-        :<div/>
-      }
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
@@ -138,6 +132,9 @@ export default function LoginForm() {
               {loading && <CircularProgress size={24} />}
               <Typography>Sign In</Typography>
             </Button>
+            <Typography align="center" >
+              or <Link href={"/user/signUp"}>Sign Up</Link>
+            </Typography>
           </div>
           <div className={classes.wrapper}>
             <Divider />

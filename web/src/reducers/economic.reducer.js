@@ -1,7 +1,6 @@
 import economicConstants from '../constants/economic.constants';
 
 const initState = {
-    error: null,
     data: { loading: false, data: [] },
     value: { loading: false, data: [] },
     chartData: { loading: false, data: [] }
@@ -20,7 +19,7 @@ export const economic = (state=initState, action) => {
             };
         case economicConstants.GET_ECONOMIC_DATA_FAILURE:
             return {...state, 
-                error: action.error 
+                data: { loading: false, data: [] },
             };
         // economic value
         case economicConstants.GET_ECONOMIC_VALUE_REQUEST: 
@@ -33,7 +32,7 @@ export const economic = (state=initState, action) => {
             };
         case economicConstants.GET_ECONOMIC_VALUE_FAILURE:
             return {...state, 
-                error: action.error 
+                value: { loading: false, data: [] },
             };
         // chart data
         case economicConstants.GET_ECONOMIC_CHART_DATA_REQUEST: 
@@ -46,7 +45,7 @@ export const economic = (state=initState, action) => {
             };
         case economicConstants.GET_ECONOMIC_CHART_DATA_FAILURE:
             return {...state, 
-                chartData: action.error 
+                chartData: { loading: false, data: [] },
             };
         default: 
             return state;

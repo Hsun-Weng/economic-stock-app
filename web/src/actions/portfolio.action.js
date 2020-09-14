@@ -22,13 +22,14 @@ function getPortfolio() {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: portfolioConstants.GET_PORTFOLIO_REQUEST } }
     function success(data) { return { type: portfolioConstants.GET_PORTFOLIO_SUCCESS, data } }
-    function failure(error) { return { type: portfolioConstants.GET_PORTFOLIO_FAILURE, error } }
+    function failure() { return { type: portfolioConstants.GET_PORTFOLIO_FAILURE } }
 }
 
 function addPortfolio(portfolio) {
@@ -39,22 +40,17 @@ function addPortfolio(portfolio) {
             .then(()=>{
                 dispatch(success());
                 dispatch(getPortfolio());
-                dispatch(notificationActions.enqueueNotification({
-                    message: `新增成功：投資組合 ${portfolio.portfolioName}`,
-                    options: {
-                        key: new Date().getTime() + Math.random(),
-                        variant: 'success',
-                    },
-                }))
+                dispatch(notificationActions.enqueueSuccess(`新增成功：投資組合 ${portfolio.portfolioName}`))
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     }
 
     function request() { return { type: portfolioConstants.ADD_PORTFOLIO_REQUEST } }
     function success() { return { type: portfolioConstants.ADD_PORTFOLIO_SUCCESS } }
-    function failure(error) { return { type: portfolioConstants.ADD_PORTFOLIO_FAILURE, error } }
+    function failure() { return { type: portfolioConstants.ADD_PORTFOLIO_FAILURE } }
 }
 
 function deletePortfolio(portfolioId) {
@@ -65,23 +61,17 @@ function deletePortfolio(portfolioId) {
             .then(()=>{
                 dispatch(success());
                 dispatch(getPortfolio());
-                dispatch(notificationActions.enqueueNotification({
-                    message: `刪除成功`,
-                    options: {
-                        key: new Date().getTime() + Math.random(),
-                        variant: 'success',
-                    },
-                }))
+                dispatch(notificationActions.enqueueSuccess(`刪除成功`))
             },
             error=>{
-                console.log(error);
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     }
 
     function request() { return { type: portfolioConstants.DELETE_PORTFOLIO_REQUEST } }
     function success() { return { type: portfolioConstants.DELETE_PORTFOLIO_SUCCESS } }
-    function failure(error) { return { type: portfolioConstants.DELETE_PORTFOLIO_FAILURE, error } }
+    function failure() { return { type: portfolioConstants.DELETE_PORTFOLIO_FAILURE } }
 }
 
 function updatePortfolio(portfolioId, portfolio) {
@@ -92,22 +82,17 @@ function updatePortfolio(portfolioId, portfolio) {
             .then(()=>{
                 dispatch(success());
                 dispatch(getPortfolio());
-                dispatch(notificationActions.enqueueNotification({
-                    message: `修改成功`,
-                    options: {
-                        key: new Date().getTime() + Math.random(),
-                        variant: 'success',
-                    },
-                }))
+                dispatch(notificationActions.enqueueSuccess(`修改成功`))
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     }
 
     function request() { return { type: portfolioConstants.UPDATE_PORTFOLIO_REQUEST } }
     function success() { return { type: portfolioConstants.UPDATE_PORTFOLIO_SUCCESS } }
-    function failure(error) { return { type: portfolioConstants.UPDATE_PORTFOLIO_FAILURE, error } }
+    function failure() { return { type: portfolioConstants.UPDATE_PORTFOLIO_FAILURE } }
 }
 
 function getPortfolioProducts(portfolioId) {
@@ -119,13 +104,14 @@ function getPortfolioProducts(portfolioId) {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCTS_REQUEST } }
     function success(data) { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCTS_SUCCESS, data } }
-    function failure(error) { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCTS_FAILURE, error } }
+    function failure() { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCTS_FAILURE } }
 }
 
 function addPortfolioProduct(portfolioId, portfolioProduct) {
@@ -137,13 +123,14 @@ function addPortfolioProduct(portfolioId, portfolioProduct) {
                 dispatch(success());
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     }
 
     function request() { return { type: portfolioConstants.ADD_PORTFOLIO_PRODUCT_REQUEST } }
     function success() { return { type: portfolioConstants.ADD_PORTFOLIO_PRODUCT_SUCCESS } }
-    function failure(error) { return { type: portfolioConstants.ADD_PORTFOLIO_PRODUCT_FAILURE, error } }
+    function failure() { return { type: portfolioConstants.ADD_PORTFOLIO_PRODUCT_FAILURE } }
 }
 
 function updatePortfolioProducts(portfolioId, portfolioProducts) {
@@ -155,11 +142,12 @@ function updatePortfolioProducts(portfolioId, portfolioProducts) {
                 dispatch(success());
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     }
 
     function request() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_REQUEST } }
     function success() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_SUCCESS } }
-    function failure(error) { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_FAILURE, error } }
+    function failure() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_FAILURE } }
 }

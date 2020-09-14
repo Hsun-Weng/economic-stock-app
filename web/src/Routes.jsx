@@ -15,6 +15,7 @@ import FuturesChip from './components/FuturesChip';
 
 import Portfolio from './components/Portfolio';
 
+import SignUp from './components/SignUp';
 import OauthRedirect from './components/OauthRedirect';
 
 export const mainItemRoutes = [
@@ -103,6 +104,7 @@ const RouteComponent = () => (
                 return(<div />)
             }
         })}
+        <Route path="/user/signUp" ><SignUp /></Route>
         <Route path="/oauth/:providerCode" children={<OauthRedirect/>} />
         <Route path="/stock/:stockCode" children={<StockChart />} />
         <Route path="/index/:indexCode" children={<StockIndexChart />} />

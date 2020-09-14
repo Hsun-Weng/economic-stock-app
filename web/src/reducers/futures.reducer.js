@@ -1,7 +1,6 @@
 import futuresConstants from '../constants/futures.constants';
 
 const initState = {
-    error: null,
     futures: {loading : false, data: []},
     chips: {loading: false, data: []} 
 };
@@ -19,7 +18,7 @@ export const futures = (state=initState, action) => {
             };
         case futuresConstants.GET_FUTURES_FAILURE:
             return { ...state,
-                error: action.error 
+                futures: {loading : false, data: []},
             };
         // chips
         case futuresConstants.GET_FUTURES_CHIP_REQUEST: 
@@ -32,7 +31,8 @@ export const futures = (state=initState, action) => {
             };
         case futuresConstants.GET_FUTURES_CHIP_FAILURE:
             return { ...state,
-                error: action.error };
+                chips: {loading: false, data: []},
+            };
         
         default: 
             return state;

@@ -20,14 +20,17 @@ function getUser() {
                     dispatch(portfolioAction.getPortfolio());
                 },
                 error=>{
-                    dispatch(failure(error));
+                    dispatch(failure());
+                    dispatch(notificationActions.enqueueError(error.message));
                 })
+        }else{
+            dispatch(failure());
         }
     };
 
     function request() { return { type: userConstants.GET_USER_REQUEST } }
     function success(user) { return { type: userConstants.GET_USER_SUCCESS, user } }
-    function failure(error) { return { type: userConstants.GET_USER_FAILURE, error } }
+    function failure() { return { type: userConstants.GET_USER_FAILURE } }
 }
 
 function login(userName, password) {
@@ -41,19 +44,18 @@ function login(userName, password) {
                 },
                 error => {
                     dispatch(failure(error));
+                    if(error){
+                        dispatch(notificationActions.enqueueError(error.message));
+                    }else{
+                        console.log('no error body')
+                    }
                 }
             );
     }
 
-    function request() {
-        return {type: userConstants.LOGIN_REQUEST};
-    }
-    function success() {
-        return {type: userConstants.LOGIN_SUCCESS};
-    }
-    function failure(error) {
-        return {type: userConstants.LOGIN_FAILURE, error};
-    }
+    function request() {return {type: userConstants.LOGIN_REQUEST}}
+    function success() {return {type: userConstants.LOGIN_SUCCESS}}
+    function failure() {return {type: userConstants.LOGIN_FAILURE}}
 }
 
 function logout() {
@@ -75,23 +77,18 @@ function signUp(user) {
             .then(
                 () => { 
                     dispatch(success());
-                    dispatch(notificationActions.enqueueNotification({
-                        message: `Sign Up Success, Now you can login as ${user.userName}`,
-                        options: {
-                            key: new Date().getTime() + Math.random(),
-                            variant: 'success',
-                        },
-                    }))
+                    dispatch(notificationActions.enqueueSuccess(`Sign Up Success, Now you can login as ${user.userName}`));
                 },
                 error => {
-                    dispatch(failure(error));
+                    dispatch(failure());
+                    dispatch(notificationActions.enqueueError(error));
                 }
             );
     };
 
     function request () { return { type: userConstants.SIGNUP_REQUEST } }
     function success () { return { type: userConstants.SIGNUP_SUCCESS } }
-    function failure (error) { return { type: userConstants.SIGNUP_FAILURE, error } }
+    function failure () { return { type: userConstants.SIGNUP_FAILURE }}
 }
 
 function oauthLogin(providerCode, code) {
@@ -101,7 +98,7 @@ function oauthLogin(providerCode, code) {
         userService.oauthLogin(providerCode, code)
             .then(() => {
                     dispatch(success());
-                    dispatch(getUser());
+                    // dispatch(getUser());
                 },
                 error => {
                     dispatch(failure(error));
@@ -109,13 +106,7 @@ function oauthLogin(providerCode, code) {
             );
     }
 
-    function request() {
-        return {type: userConstants.LOGIN_REQUEST};
-    }
-    function success() {
-        return {type: userConstants.LOGIN_SUCCESS};
-    }
-    function failure(error) {
-        return {type: userConstants.LOGIN_FAILURE, error};
-    }
+    function request() {return {type: userConstants.OAUTH_LOGIN_REQUEST}}
+    function success() {return {type: userConstants.OAUTH_LOGIN_SUCCESS}}
+    function failure() {return {type: userConstants.OAUTH_LOGIN_FAILURE}}
 }

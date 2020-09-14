@@ -1,7 +1,6 @@
 import stockConstants from '../constants/stock.constants';
 
 const initState = {
-    error: null,
     categories: {loading : false, data: []}, 
     price: {loading: false, data: []}, 
     categoryStocks: {loading: false, data:[] },
@@ -27,7 +26,8 @@ export const stock = (state=initState, action) => {
             }
         case stockConstants.GET_ALL_STOCKS_FAILURE:
             return { ...state,  
-                error: action.error };
+                allStocks: { loading: false, data: [] },
+            };
         // categories
         case stockConstants.GET_CATEGORIES_REQUEST: 
             return {...state,
@@ -39,7 +39,7 @@ export const stock = (state=initState, action) => {
             };
         case stockConstants.GET_CATEGORIES_FAILURE:
             return {...state,
-                error: action.error 
+                categories: { loading: false, data: [] },
             };
         // category stocks
         case stockConstants.GET_CATEGORY_STOCKS_REQUEST: 
@@ -52,7 +52,8 @@ export const stock = (state=initState, action) => {
             }
         case stockConstants.GET_CATEGORY_STOCKS_FAILURE:
             return { ...state,  
-                error: action.error };
+                categoryStocks: { loading: false, data: [] },
+            };
         // stock price
         case stockConstants.GET_STOCK_PRICES_REQUEST: 
             return { ...state,
@@ -64,7 +65,7 @@ export const stock = (state=initState, action) => {
             }
         case stockConstants.GET_STOCK_PRICES_FAILURE:
             return { ...state,
-                error: action.error 
+                price: { loading: false, data: [] },
             };
         // stock index
         case stockConstants.GET_STOCK_INDEX_REQUEST: 
@@ -77,7 +78,7 @@ export const stock = (state=initState, action) => {
             }
         case stockConstants.GET_STOCK_INDEX_FAILURE:
             return { ...state,
-                error: action.error 
+                index: { loading: false, data: [] },
             };
         // batch stock price
         case stockConstants.GET_LATEST_STOCK_PRICES_REQUEST: 
@@ -90,7 +91,7 @@ export const stock = (state=initState, action) => {
             }
         case stockConstants.GET_LATEST_STOCK_PRICES_FAILURE:
             return { ...state,
-                latestPrices: action.error 
+                latestPrices: { loading: false, data: [] },
             };
         // all stock indexes
         case stockConstants.GET_ALL_STOCK_INDEXES_REQUEST: 
@@ -103,7 +104,8 @@ export const stock = (state=initState, action) => {
             }
         case stockConstants.GET_ALL_STOCK_INDEXES_FAILURE:
             return { ...state,  
-                error: action.error };
+                allStockIndexes: { loading: false, data: [] },
+            };
         // batch stock index price
         case stockConstants.GET_LATEST_STOCK_INDEX_PRICES_REQUEST: 
             return { ...state,
@@ -115,7 +117,7 @@ export const stock = (state=initState, action) => {
             }
         case stockConstants.GET_LATEST_STOCK_INDEX_PRICES_FAILURE:
             return { ...state,
-                latestIndexPrices: action.error 
+                latestIndexPrices: { loading: false, data: [] },
             };
         // chips
         case stockConstants.GET_STOCK_CHIP_REQUEST: 
@@ -128,7 +130,8 @@ export const stock = (state=initState, action) => {
             };
         case stockConstants.GET_STOCK_CHIP_FAILURE:
             return { ...state,
-                error: action.error };
+                chips: { loading: false, data: [] },
+            };
         // margins
         case stockConstants.GET_STOCK_MARGIN_REQUEST: 
             return {...state,
@@ -140,7 +143,8 @@ export const stock = (state=initState, action) => {
             };
         case stockConstants.GET_STOCK_MARGIN_FAILURE:
             return { ...state,
-                error: action.error };
+                margins: { loading: false, data: [] },
+            };
         default: 
             return state;
     }
