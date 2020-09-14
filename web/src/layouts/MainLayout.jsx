@@ -16,7 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MainListItems from '../components/layout-menus/MainListItems';
 import UserListItems from '../components/layout-menus/UserListItems';
 import RouteComponent from '../Routes';
-import UserAvatar from '../components/UserAvatar';
+import User from '../components/User';
 import Notification from '../components/Notification';
 import SearchBar from '../components/SearchBar';
 
@@ -152,7 +152,7 @@ export default function Dashboard() {
               <FormControlLabel
                 control={<SwitchButton size="small" checked={isDarkMode} color="default" onChange={handleDarkMode}/>}
               />
-              <UserAvatar />
+              <User />
             </Toolbar>
           </AppBar>
         <Drawer

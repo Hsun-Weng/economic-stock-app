@@ -1,5 +1,6 @@
 import economicConstants from '../constants/economic.constants';
 import { economicService } from '../services';
+import { notificationActions } from './';
 
 export const economicAction = {
     getEconomicData,
@@ -16,13 +17,14 @@ function getEconomicData(countryCode) {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: economicConstants.GET_ECONOMIC_DATA_REQUEST } }
     function success(data) { return { type: economicConstants.GET_ECONOMIC_DATA_SUCCESS, data } }
-    function failure(error) { return { type: economicConstants.GET_ECONOMIC_DATA_FAILURE, error } }
+    function failure() { return { type: economicConstants.GET_ECONOMIC_DATA_FAILURE } }
 }
 
 function getEconomicValue(countryCode, dataId) {
@@ -34,13 +36,14 @@ function getEconomicValue(countryCode, dataId) {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: economicConstants.GET_ECONOMIC_VALUE_REQUEST } }
     function success(data) { return { type: economicConstants.GET_ECONOMIC_VALUE_SUCCESS, data } }
-    function failure(error) { return { type: economicConstants.GET_ECONOMIC_VALUE_FAILURE, error } }
+    function failure() { return { type: economicConstants.GET_ECONOMIC_VALUE_FAILURE } }
 }
 
 function getEconomicChartData(unitCode, data) {
@@ -52,11 +55,12 @@ function getEconomicChartData(unitCode, data) {
                 dispatch(success(data));
             },
             error=>{
-                dispatch(failure(error));
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
             })
     };
 
     function request() { return { type: economicConstants.GET_ECONOMIC_CHART_DATA_REQUEST } }
     function success(data) { return { type: economicConstants.GET_ECONOMIC_CHART_DATA_SUCCESS, data } }
-    function failure(error) { return { type: economicConstants.GET_ECONOMIC_CHART_DATA_FAILURE, error } }
+    function failure() { return { type: economicConstants.GET_ECONOMIC_CHART_DATA_FAILURE } }
 }

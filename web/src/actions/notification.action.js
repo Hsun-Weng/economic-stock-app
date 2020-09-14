@@ -3,7 +3,11 @@ import notificationConstants from '../constants/notification.constants';
 export const notificationActions = {
     enqueueNotification,
     closeNotification,
-    removeNotification
+    removeNotification,
+    enqueueSuccess,
+    enqueueError,
+    enqueueWarning,
+    enqueueInfo
 }
 
 function enqueueNotification(notification) {
@@ -30,4 +34,44 @@ function removeNotification(key) {
         type: notificationConstants.NOTIFICATION_REMOVE,
         key,
     }
+}
+
+function enqueueSuccess(message) {
+    return enqueueNotification({
+        message: message,
+        options: {
+            key: new Date().getTime() + Math.random(),
+            variant: 'success',
+        }
+    });
+}
+
+function enqueueError(message) {
+    return enqueueNotification({
+        message: message,
+        options: {
+            key: new Date().getTime() + Math.random(),
+            variant: 'error',
+        }
+    });
+}
+
+function enqueueWarning(message) {
+    return enqueueNotification({
+        message: message,
+        options: {
+            key: new Date().getTime() + Math.random(),
+            variant: 'warning',
+        }
+    });
+}
+
+function enqueueInfo(message) {
+    return enqueueNotification({
+        message: message,
+        options: {
+            key: new Date().getTime() + Math.random(),
+            variant: 'info',
+        }
+    });
 }

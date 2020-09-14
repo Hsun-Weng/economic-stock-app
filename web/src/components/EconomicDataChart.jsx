@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Grid, Box, Button, ButtonGroup } from '@material-ui/core'
+import { Grid, Box, Button, ButtonGroup, Typography } from '@material-ui/core'
 import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Brush } from 'recharts';
 
 import { economicAction } from '../actions';
@@ -52,23 +52,33 @@ const EconomicDataChart = ({ data }) => {
             <Brush dataKey="date" height={30} stroke="red" />
         </LineChart>
     )
-
-    return (
-        <Box>
-            <Grid container spacing={3}>
-                <Grid item md={12}>
-                    <Box display="flex" justifyContent="left">
-                        <UnitButtonGroup />
-                    </Box>
+    
+    if(data.length>0){
+        return (
+            <Box>
+                <Grid container spacing={3}>
+                    <Grid item md={12}>
+                        <Box display="flex" justifyContent="left">
+                            <UnitButtonGroup />
+                        </Box>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Box display="flex" justifyContent="center">
-                <Box width={950} height={400}>
-                    <Chart />
+                <Box display="flex" justifyContent="center">
+                    <Box width={950} height={400}>
+                        <Chart />
+                    </Box>
                 </Box>
             </Box>
-        </Box>
-    );
+        );
+    }else{
+        return(
+            <Box align="center">
+                <Typography variant="h4" color="error">
+                    查無資料
+                </Typography>
+            </Box>
+        )
+    }
 }
 
 export default EconomicDataChart;

@@ -1,7 +1,6 @@
 import userConstants from '../constants/user.constants';
 
 const userInitState = {
-  error: null,
   loading: false,
   data: null
 };
@@ -15,16 +14,17 @@ export const user = (state=userInitState, action) =>{
       };
     case userConstants.GET_USER_SUCCESS:
       return {...state,
-        loading: true, 
+        loading: false, 
         data: action.user
       }
     case userConstants.GET_USER_FAILURE:
       return {...state,
-        error: action.error,
+        loading: false,
         data: null
       };
     case userConstants.LOGOUT:
       return {...state,
+        loading: false,
         data: null
       };
     default:
@@ -33,7 +33,6 @@ export const user = (state=userInitState, action) =>{
 }
 
 const loginInitState = {
-  error: null,
   loading: false
 }
 
@@ -46,12 +45,10 @@ export const login = (state=loginInitState, action) => {
     case userConstants.LOGIN_SUCCESS:
       return {...state,
         loading: false,
-        error: null
       };
     case userConstants.LOGIN_FAILURE:
       return {...state,
         loading: false,
-        error: action.error
       };
     default:
       return state;
@@ -59,7 +56,6 @@ export const login = (state=loginInitState, action) => {
 }
 
 const signUpInitState = {
-  error: null,
   loading: false,
   result: false
 }
@@ -73,14 +69,35 @@ export const signUp = (state=signUpInitState, action) => {
     case userConstants.SIGNUP_SUCCESS:
       return {...state,
         loading: false,
-        result: true,
-        error: null
+        result: true
       };
     case userConstants.SIGNUP_FAILURE:
       return {...state,
         result: false,
+        loading: false
+      };
+    default:
+      return state;
+  }
+}
+
+const oauthLoginInitState = {
+  loading: false
+}
+
+export const oauthLogin = (state=oauthLoginInitState, action) => {
+  switch (action.type) {
+    case userConstants.OAUTH_LOGIN_REQUEST:
+      return {...state,
+        loading: true,
+      };
+    case userConstants.OAUTH_LOGIN_SUCCESS:
+      return {...state,
         loading: false,
-        error: action.error
+      };
+    case userConstants.OAUTH_LOGIN_FAILURE:
+      return {...state,
+        loading: false,
       };
     default:
       return state;
