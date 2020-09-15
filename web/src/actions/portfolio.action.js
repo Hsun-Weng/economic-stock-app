@@ -10,7 +10,8 @@ export const portfolioAction = {
     updatePortfolio,
     getPortfolioProducts,
     addPortfolioProduct,
-    updatePortfolioProducts
+    updatePortfolioProducts,
+    deletePortfolioProducts
 }
 
 function getPortfolio() {
@@ -150,4 +151,24 @@ function updatePortfolioProducts(portfolioId, portfolioProducts) {
     function request() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_REQUEST } }
     function success() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_SUCCESS } }
     function failure() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_FAILURE } }
+}
+
+function deletePortfolioProducts(portfolioId, portfolioProduct) {
+    return dispatch => {
+        dispatch(request());
+
+        portfolioService.deletePortfolioProduct(portfolioId, portfolioProduct)
+            .then(()=>{
+                dispatch(success());
+                dispatch(getPortfolioProducts(portfolioId));
+            },
+            error=>{
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
+            })
+    }
+
+    function request() { return { type: portfolioConstants.DELETE_PORTFOLIO_PRODUCT_REQUEST } }
+    function success() { return { type: portfolioConstants.DELETE_PORTFOLIO_PRODUCT_SUCCESS } }
+    function failure() { return { type: portfolioConstants.DELETE_PORTFOLIO_PRODUCT_FAILURE } }
 }

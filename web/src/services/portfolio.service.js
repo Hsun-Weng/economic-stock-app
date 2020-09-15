@@ -7,7 +7,8 @@ export const portfolioService = {
     updatePortfolio,
     getPortfolioProducts,
     addPortfolioProduct,
-    updatePortfolioProducts
+    updatePortfolioProducts,
+    deletePortfolioProduct
 }
 
 function getPortfolio(){
@@ -101,6 +102,21 @@ function updatePortfolioProducts(portfolioId, portfolioProducts) {
     };
 
     return fetch(`/api/portfolio/${portfolioId}/products`, requestOptions)
+        .then((httpResponse) => {
+            if (!httpResponse.ok) {
+                const error = httpResponse;
+                return Promise.reject(error);
+            }
+        })
+}
+
+function deletePortfolioProduct(portfolioId, portfolioProduct) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`/api/portfolio/${portfolioId}/product/${portfolioProduct.productType}/${portfolioProduct.productCode}`, requestOptions)
         .then((httpResponse) => {
             if (!httpResponse.ok) {
                 const error = httpResponse;

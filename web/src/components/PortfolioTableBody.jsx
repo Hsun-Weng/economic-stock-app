@@ -5,8 +5,9 @@ import { useHistory } from 'react-router-dom';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 
-import { TableBody, TableCell, TableRow, Link, Box} from '@material-ui/core'
+import { TableBody, TableCell, TableRow, Link, Box, IconButton } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { portfolioAction, stockAction } from '../actions'
 
@@ -34,6 +35,14 @@ const PortfolioTableBody = ({ portfolioId }) => {
         });
         setProductPrices(resortedProducts);
         dispatch(portfolioAction.updatePortfolioProducts(portfolioId, updateProducts));
+    };
+
+    const deleteProduct = ( productCode, productType ) => {
+        let portfolioProduct = {
+            productType: productType,
+            productCode: productCode
+        }
+        dispatch(portfolioAction.deletePortfolioProducts(portfolioId, portfolioProduct));
     };
 
     const redirectStockChart = ( event, productCode, productType ) => {
@@ -73,6 +82,11 @@ const PortfolioTableBody = ({ portfolioId }) => {
         }
 
         return (<TableRow >
+            <TableCell>
+                <IconButton onClick={event=>deleteProduct(product.productCode, product.productType)}>
+                    <CloseIcon />
+                </IconButton>
+            </TableCell>
             <TableCell>
                 <Link href="#" onClick={event=>redirectStockChart(event, product.productCode, product.productType)}>
                     {product.productCode}
