@@ -20,6 +20,9 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserPortfolioRepository userPortfolioRepository;
+
     @Override
     public void addPortfolioProduct(String userName, Integer portfolioId, PortfolioProduct portfolioProduct) {
         User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
@@ -53,5 +56,21 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
                 }).collect(Collectors.toList());
 
         repository.saveAll(entityList);
+    }
+
+    @Override
+    public void deletePortfolioProduct(String userName, Integer portfolioId, Integer productType, String productCode) {
+        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
+        user.getUserPortfolioList().stream()
+                .filter((userPortfolio->userPortfolio.getPortfolioId()
+                        .equals(portfolioId))).findAny()
+                .orElseThrow(()->new ApiClientException("Portfolio not found."));
+
+        PortfolioProductPK portfolioProductPK = new PortfolioProductPK();
+        portfolioProductPK.setPortfolioId(portfolioId);
+        portfolioProductPK.setProductType(productType);
+        portfolioProductPK.setProductCode(productCode);
+
+        repository.deleteById(portfolioProductPK);
     }
 }

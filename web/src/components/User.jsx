@@ -42,7 +42,6 @@ const User = () => {
     const oauthLogining = useSelector(state => state.oauthLogin.loading);
     
     useEffect(()=>{
-        console.log(oauthLogining)
         if(!oauthLogining){
             dispatch(userAction.getUser())
         }

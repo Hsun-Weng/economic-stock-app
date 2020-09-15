@@ -78,6 +78,10 @@ const StockIndexChart = () => {
     );
 
     useEffect(()=>{
+        dispatch(portfolioAction.getPortfolio());
+    }, [ dispatch ])
+
+    useEffect(()=>{
         if( portfolios.length > 0){
             setPortfolioId(portfolios[0].portfolioId);
         }
