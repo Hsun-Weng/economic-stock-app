@@ -152,4 +152,19 @@ public class UserPortfolioController {
         }
         return responseBean;
     }
+
+    @DeleteMapping("/portfolio/{portfolioId}/product/{productType}/{productCode}")
+    public ResponseBean deletePortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
+            , @PathVariable Integer productType, @PathVariable String productCode) {
+        ResponseBean responseBean = new ResponseBean();
+        try{
+            portfolioProductService
+                    .deletePortfolioProduct(authentication.getName(), portfolioId, productType, productCode);
+        }catch(ApiClientException e){
+            throw e;
+        }catch(Exception e){
+            throw new ApiServerException();
+        }
+        return responseBean;
+    }
 }
