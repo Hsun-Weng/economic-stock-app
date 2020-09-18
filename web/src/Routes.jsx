@@ -10,7 +10,8 @@ import Dashbaord from './components/Dashboard'
 import EconomicData from './components/EconomicData';
 import StockChart from './components/StockChart';
 import StockIndexChart from './components/StockIndexChart';
-
+import StockCategory from './components/StockCategory';
+import StockCategoryTable from './components/StockCategoryTable';
 import FuturesChip from './components/FuturesChip';
 
 import Portfolio from './components/Portfolio';
@@ -44,10 +45,18 @@ export const mainItemRoutes = [
     //     itemType: 0
     // },
     {
-        path: '/taiwan/stock/futuresChip',
+        path: '/futuresChip',
         itemName: "期貨籌碼多空比",
         icon: AccessibleIcon,
         component: FuturesChip,
+        exact: false,
+        itemType: 0
+    },
+    {
+        path: '/stockCategories',
+        itemName: "個股類別",
+        icon: AccessibleIcon,
+        component: StockCategory,
         exact: false,
         itemType: 0
     },
@@ -107,6 +116,7 @@ const RouteComponent = () => (
         <Route path="/user/signUp" ><SignUp /></Route>
         <Route path="/oauth/:providerCode" children={<OauthRedirect/>} />
         <Route path="/stock/:stockCode" children={<StockChart />} />
+        <Route path="/stockCategory/:categoryCode" children={<StockCategoryTable />} />
         <Route path="/index/:indexCode" children={<StockIndexChart />} />
     </div>
 );

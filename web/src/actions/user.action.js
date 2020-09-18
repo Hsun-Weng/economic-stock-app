@@ -29,7 +29,12 @@ function getUser() {
 
     function request() { return { type: userConstants.GET_USER_REQUEST } }
     function success(user) { return { type: userConstants.GET_USER_SUCCESS, user } }
-    function failure() { return { type: userConstants.GET_USER_FAILURE } }
+    function failure() { 
+        localStorage.removeItem('token');
+        return { 
+            type: userConstants.GET_USER_FAILURE
+        } 
+    }
 }
 
 function login(userName, password) {

@@ -105,11 +105,6 @@ const SearchBar = () => {
         setProducts(allProducts);
     }, [ allStocks, allStockIndexes ]);
 
-    // useEffect(() => {
-        
-    //     setProducts(products.concat(stockIndexProducts));
-    // }, [ allStockIndexes ]);
-
     return (
         <div className={classes.search}>
             <div className={classes.searchIcon}>

@@ -110,20 +110,19 @@ function getStockIndex(indexCode, startDate, endDate) {
     function failure() { return { type: stockConstants.GET_STOCK_INDEX_FAILURE } }
 }
 
-function getLatestStockPrice(products) {
+function getLatestStockPrice(stocks) {
     return dispatch => {
+        let stockCodes = stocks.map((stock)=>stock.stockCode);
         dispatch(request());
 
-        stockService.getLatestStockPrice(products)
+        stockService.getLatestStockPrice(stockCodes)
             .then(data=>{
-                let result = data.map((detail)=>{
+                let stockPrices = data.map((detail)=>{
                     return {...detail,
-                        productCode: detail.stockCode,
-                        productName: products.find((stock)=>stock.productCode===detail.stockCode).productName,
-                        sort: products.find((stock)=>stock.productCode===detail.stockCode).sort
+                        stockName: stocks.find((stock)=>stock.stockCode===detail.stockCode).stockName
                     };
                 })
-                dispatch(success(result));
+                dispatch(success(stockPrices));
             },
             error=>{
                 dispatch(failure());
@@ -155,20 +154,19 @@ function getAllStockIndexes() {
     function failure() { return { type: stockConstants.GET_ALL_STOCK_INDEXES_FAILURE } }
 }
 
-function getLatestStockIndexPrice(products) {
+function getLatestStockIndexPrice(indexes) {
     return dispatch => {
+        let indexCodes = indexes.map((index)=>index.indexCode);
         dispatch(request());
 
-        stockService.getLatestStockIndexPrice(products)
+        stockService.getLatestStockIndexPrice(indexCodes)
             .then(data=>{
-                let result = data.map((detail)=>{
+                let stockIndexPrices = data.map((detail)=>{
                     return {...detail,
-                        productCode: detail.indexCode,
-                        productName: products.find((index)=>index.productCode===detail.indexCode).productName,
-                        sort: products.find((index)=>index.productCode===detail.indexCode).sort
+                        indexName: indexes.find((stockIndex)=>stockIndex.indexCode===detail.indexCode).indexName
                     };
                 })
-                dispatch(success(result));
+                dispatch(success(stockIndexPrices));
             },
             error=>{
                 dispatch(failure());
