@@ -1,40 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import arrayMove from 'array-move';
 
 import { TableBody, TableCell, TableRow, Link, Box, IconButton } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
 
-import { portfolioAction, stockAction } from '../actions'
+import { portfolioAction } from '../actions'
 
 const PortfolioTableBody = ({ portfolioId }) => {
     const dispatch = useDispatch();
     const history = useHistory();
 
     const portfolioProducts = useSelector(state=>state.portfolio.products.data);
-    const stockLatestPrices = useSelector(state=>state.stock.latestPrices.data);
-    const stockIndexLatestPrices = useSelector(state=>state.stock.latestIndexPrices.data);
-    
-    const [ productPrices, setProductPrices ] = useState([]);
+    const portfolioProductPrices = useSelector(state=>state.portfolio.productPrices.data);
 
     const onSortEnd = async ({oldIndex, newIndex}) => {
-        let resortedProducts = arrayMove(productPrices, oldIndex, newIndex);
-        let resortIndex = 0;
-        let updateProducts = resortedProducts.map((product)=>{
-            return {
-                id: {
-                    productType: product.productType,
-                    productCode: product.productCode
-                },
-                sort: ++resortIndex
-            };
-        });
-        setProductPrices(resortedProducts);
-        dispatch(portfolioAction.updatePortfolioProducts(portfolioId, updateProducts));
+        dispatch(portfolioAction.resortPortfolioProducts(portfolioId, portfolioProductPrices, oldIndex, newIndex));
     };
 
     const deleteProduct = ( productCode, productType ) => {
@@ -147,24 +131,12 @@ const PortfolioTableBody = ({ portfolioId }) => {
         }
     }, [ dispatch, portfolioId ])
 
-    useEffect(()=>{
-        dispatch(stockAction.getLatestStockPrice(portfolioProducts));
-        dispatch(stockAction.getLatestStockIndexPrice(portfolioProducts));
+    useEffect(()=> {
+        dispatch(portfolioAction.getLatestProductPrice(portfolioProducts));
     }, [ dispatch, portfolioProducts ]);
 
-    useEffect(()=> {
-        let stockIndexPrices = stockIndexLatestPrices.map((data)=>{
-            return {...data, productType: 0} 
-         });
-        let stockPrices = stockLatestPrices.map((data)=>{
-           return {...data, productType: 1} 
-        });
-        setProductPrices(stockIndexPrices.concat(stockPrices)
-            .sort((product1,product2)=>product1.sort-product2.sort));
-    }, [ stockLatestPrices, stockIndexLatestPrices ]);
-    
     return (<StockTable onSortEnd={onSortEnd} useDragHandle>
-            {productPrices.map((prop, key)=>
+            {portfolioProductPrices.map((prop, key)=>
               <StockRow key={key} index={key} product={prop} />  
             )}
         </StockTable>)

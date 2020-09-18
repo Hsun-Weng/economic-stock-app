@@ -7,7 +7,8 @@ const initState = {
     addPortfolioProduct: {loading: false},
     updatePortfolio: {loading: false},
     updatePortfolioProduct: {loading: false},
-    deletePortfolio: {loading: false}
+    deletePortfolio: {loading: false},
+    productPrices: {loading: false, data:[]}
 }
 
 export const portfolio = (state=initState, action) => {
@@ -103,7 +104,30 @@ export const portfolio = (state=initState, action) => {
             return {...state,
                 updatePortfolioProduct:{ loading: false },
             };
+        // product prices
+        case portfolioConstants.GET_PORTFOLIO_PRODUCT_PRICES_REQUEST:
+            return {...state,
+                productPrices: {loading: true, data: []}
+            }
+        case portfolioConstants.GET_PORTFOLIO_PRODUCT_PRICES_SUCCESS:
+            return {...state,
+                productPrices: {loading: false, data: action.data}
+            };
+        case portfolioConstants.GET_PORTFOLIO_PRODUCT_PRICES_FAILURE:
+            return {...state,
+                productPrices: {loading: false, data: []},
+            };
+        // resort prices
+        case portfolioConstants.RESORT_PORTFOLIO_PRODUCTS_REQUEST:
+            return {...state}
+        case portfolioConstants.RESORT_PORTFOLIO_PRODUCTS_SUCCESS:
+            return {...state,
+                productPrices: {data: action.data}
+            };
+        case portfolioConstants.RESORT_PORTFOLIO_PRODUCTS_FAILURE:
+            return {...state };
         default:
             return state;
     }
 }
+

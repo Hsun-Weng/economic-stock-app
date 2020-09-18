@@ -1,7 +1,10 @@
 import portfolioConstants from '../constants/portfolio.constants';
 import { portfolioService } from '../services';
+import { stockService } from '../services';
 
 import { notificationActions } from './';
+
+import arrayMove from 'array-move';
 
 export const portfolioAction = {
     getPortfolio,
@@ -10,8 +13,9 @@ export const portfolioAction = {
     updatePortfolio,
     getPortfolioProducts,
     addPortfolioProduct,
-    updatePortfolioProducts,
-    deletePortfolioProducts
+    deletePortfolioProducts,
+    getLatestProductPrice,
+    resortPortfolioProducts
 }
 
 function getPortfolio() {
@@ -134,25 +138,6 @@ function addPortfolioProduct(portfolioId, portfolioProduct) {
     function failure() { return { type: portfolioConstants.ADD_PORTFOLIO_PRODUCT_FAILURE } }
 }
 
-function updatePortfolioProducts(portfolioId, portfolioProducts) {
-    return dispatch => {
-        dispatch(request());
-
-        portfolioService.updatePortfolioProducts(portfolioId, portfolioProducts)
-            .then(()=>{
-                dispatch(success());
-            },
-            error=>{
-                dispatch(failure());
-                dispatch(notificationActions.enqueueError(error));
-            })
-    }
-
-    function request() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_REQUEST } }
-    function success() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_SUCCESS } }
-    function failure() { return { type: portfolioConstants.UPDATE_PORTFOLIO_PRODUCTS_FAILURE } }
-}
-
 function deletePortfolioProducts(portfolioId, portfolioProduct) {
     return dispatch => {
         dispatch(request());
@@ -171,4 +156,92 @@ function deletePortfolioProducts(portfolioId, portfolioProduct) {
     function request() { return { type: portfolioConstants.DELETE_PORTFOLIO_PRODUCT_REQUEST } }
     function success() { return { type: portfolioConstants.DELETE_PORTFOLIO_PRODUCT_SUCCESS } }
     function failure() { return { type: portfolioConstants.DELETE_PORTFOLIO_PRODUCT_FAILURE } }
+}
+
+function getLatestProductPrice(portfolioProducts) {
+    return dispatch => {
+        let portfolioPorductPrices = [];
+
+        let indexCodes = Object.assign([], portfolioProducts)
+                    .filter((data)=>data.productType===0)
+                    .map((data)=>data.productCode);
+
+        let stockCodes = Object.assign([], portfolioProducts)
+                        .filter((data)=>data.productType===1)
+                        .map((data)=>data.productCode);
+        
+        dispatch(request());
+
+        stockService.getLatestStockIndexPrice(indexCodes)
+            .then(data=>{
+                let stockIndexPrices = data.map((detail)=>{
+                    return {...detail,
+                        productCode: detail.indexCode,
+                        productName: portfolioProducts.find((product)=>product.productCode===detail.indexCode).productName,
+                        sort: portfolioProducts.find((product)=>product.productCode===detail.indexCode).sort,
+                        productType: 0
+                    };
+                })
+                portfolioPorductPrices = portfolioPorductPrices.concat(stockIndexPrices)
+                    .sort((product1,product2)=>product1.sort-product2.sort);
+                dispatch(success(portfolioPorductPrices))
+            },
+            error=>{
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
+            });
+
+        stockService.getLatestStockPrice(stockCodes)
+            .then(data=>{
+                    let stockPrices = data.map((detail)=>{
+                        return {...detail,
+                            productCode: detail.stockCode,
+                            productName: portfolioProducts.find((product)=>product.productCode===detail.stockCode).productName,
+                            sort: portfolioProducts.find((product)=>product.productCode===detail.stockCode).sort,
+                            productType: 1
+                        };
+                    });
+                    portfolioPorductPrices = portfolioPorductPrices.concat(stockPrices)
+                        .sort((product1,product2)=>product1.sort-product2.sort);
+                    dispatch(success(portfolioPorductPrices))
+                },
+                error=>{
+                    dispatch(failure());
+                    dispatch(notificationActions.enqueueError(error));
+            });
+        
+    }
+
+    function request() { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCT_PRICES_REQUEST } }
+    function success(data) { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCT_PRICES_SUCCESS, data } }
+    function failure() { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCT_PRICES_FAILURE } }
+}
+
+function resortPortfolioProducts(portfolioId, portfolioProducts, oldIndex, newIndex) {
+    return dispatch => {
+        let resortedProducts = arrayMove(portfolioProducts, oldIndex, newIndex);
+        let resortIndex = 0;
+        let updateProducts = resortedProducts.map((product)=>{
+            return {
+                id: {
+                    productType: product.productType,
+                    productCode: product.productCode
+                },
+                sort: ++resortIndex
+            };
+        });
+
+        dispatch(request());
+        dispatch(success(resortedProducts));
+
+        portfolioService.updatePortfolioProducts(portfolioId, updateProducts)
+            .then(()=>{},
+            error=>{
+                dispatch(failure());
+            })
+    }
+
+    function request() { return { type: portfolioConstants.RESORT_PORTFOLIO_PRODUCTS_REQUEST } }
+    function success(data) { return { type: portfolioConstants.RESORT_PORTFOLIO_PRODUCTS_SUCCESS, data } }
+    function failure() { return { type: portfolioConstants.RESORT_PORTFOLIO_PRODUCTS_FAILURE } }
 }

@@ -62,11 +62,7 @@ function getStockIndex(indexCode, startDate, endDate) {
         .then(handleResponse)
 }
 
-function getLatestStockPrice(products){
-    let stockCodes = Object.assign([], products)
-                    .filter((data)=>data.productType===1)
-                    .map((data)=>data.productCode);
-
+function getLatestStockPrice(stockCodes){
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -88,11 +84,7 @@ function getAllStockIndexes(){
         .then(handleResponse)
 }
 
-function getLatestStockIndexPrice(products){
-    let indexCodes = Object.assign([], products)
-                    .filter((data)=>data.productType===0)
-                    .map((data)=>data.productCode);
-
+function getLatestStockIndexPrice(indexCodes){
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
