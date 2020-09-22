@@ -29,4 +29,8 @@ public class Stock {
     private Double close;
     @Field("volume")
     private Integer volume;
+    @Field("change")
+    private Float change;
+    @Field("change_percent")
+    private Float changePercent;
 }

@@ -5,8 +5,11 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -36,59 +39,26 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<Map<String, Object>> getBatchLatestPriceList(List<String> stockCodeList) {
-        List<Map<String, Object>> batchLatestPriceList = new ArrayList<Map<String, Object>>(stockCodeList.size());
+    public List<Stock> getBatchLatestPriceList(List<String> stockCodeList) {
+        List<Stock> batchLatestPriceList = new ArrayList<Stock>(stockCodeList.size());
 
         Query query = null;
-
+        
         for(String stockCode : stockCodeList){
             query = new Query(Criteria.where("stock_code").is(stockCode))
-                    .with(Sort.by(Sort.Order.desc("date"))).limit(2);
-            List<Stock> priceList = mongoTemplate.find(query, Stock.class);
+                    .with(Sort.by(Sort.Order.desc("date"))).limit(1);
 
-            if(priceList.size() > 0) {
-                batchLatestPriceList.add(convertStockListToMap(priceList));
-            }
+            batchLatestPriceList.add(mongoTemplate.findOne(query, Stock.class));
         }
 
         return batchLatestPriceList;
     }
-    
-    private Map<String, Object> convertStockListToMap(List<Stock> priceList) {
-        Map<String, Object> priceMap = new HashMap<String, Object>();
-        Stock latestPrice = priceList.get(0);
-        Stock previousPrice = null;
 
-        final BigDecimal percentage = new BigDecimal(100);
-
-        BigDecimal change;
-        BigDecimal changePercent;
-        BigDecimal previousPriceBigDecimal = null;
-        BigDecimal latestPriceBigDecimal = null;
-        switch (priceList.size()) {
-            case 1:
-                previousPriceBigDecimal = new BigDecimal(latestPrice.getOpen().toString());
-                latestPriceBigDecimal = new BigDecimal(latestPrice.getClose().toString());
-                break;
-            case 2:
-                previousPrice = priceList.get(1);
-                previousPriceBigDecimal = new BigDecimal(previousPrice.getClose().toString());
-                latestPriceBigDecimal = new BigDecimal(latestPrice.getClose().toString());
-                break;
-        }
-        change = latestPriceBigDecimal.subtract(previousPriceBigDecimal);
-        changePercent = change.divide(previousPriceBigDecimal,4, RoundingMode.HALF_UP).multiply(percentage);
-        priceMap.put("stockCode", latestPrice.getStockCode());
-        priceMap.put("date", latestPrice.getDate());
-        priceMap.put("open", latestPrice.getOpen());
-        priceMap.put("low", latestPrice.getLow());
-        priceMap.put("high", latestPrice.getHigh());
-        priceMap.put("close", latestPrice.getClose());
-        priceMap.put("volume", latestPrice.getVolume());
-        priceMap.put("change", change);
-        priceMap.put("changePercent", changePercent);
-        return priceMap;
+    @Override
+    public Page<Stock> getStockSortedPage(PageRequest pageRequest) {
+        LocalDate today = LocalDate.now().minusDays(1);
+        Date queryStartDate = Date.from(today.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(today.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+        return repository.findByDateBetween(queryStartDate, queryEndDate, pageRequest);
     }
-
-
 }
