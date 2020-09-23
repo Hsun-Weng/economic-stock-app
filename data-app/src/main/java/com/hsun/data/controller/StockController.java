@@ -1,9 +1,6 @@
 package com.hsun.data.controller;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.hsun.data.exception.ApiServerException;
@@ -32,8 +29,8 @@ public class StockController {
         List<Map<String, Object>> dataList = null;
         try {
             stockList = service.getStockByCodeAndDateBetween(stockCode, startDate, endDate);
-            
-            dataList = stockList.stream().map((data)->{
+
+            dataList = stockList.stream().sorted(Comparator.comparing(Stock::getDate)).map((data)->{
                 Map<String, Object> dataMap = new HashMap<String, Object>();
                 dataMap.put("date", data.getDate());
                 dataMap.put("stockCode", data.getStockCode());
