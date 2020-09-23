@@ -63,7 +63,7 @@ def format_stock_data(date, stock_raw_data):
 
         format_stock_data['change'] = convert_change_text(stock_raw_data[8])
         ## 前一天收盤價
-        previous_close = format_stock_data['close'] + format_stock_data['change']
+        previous_close = format_stock_data['close'] - format_stock_data['change']
         format_stock_data['change_percent'] = round(format_stock_data['change'] / previous_close, 4)
     else: 
         format_stock_data['open'] = None
