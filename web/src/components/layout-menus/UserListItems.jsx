@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation} from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
-import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { ListItem, ListItemText } from '@material-ui/core';
 
 import { userItemRoutes } from '../../Routes';
 import FoldListItem from './FoldMenuListItem';
@@ -33,16 +33,13 @@ const UserListItems = () => {
           to={prop.path}
           selected={isSelected(prop.path)}
           key={key}>
-          <ListItemIcon>
-            <prop.icon />
-          </ListItemIcon>
           <ListItemText primary={prop.itemName} />
         </ListItem>
       )
     }else if (prop.itemType === 1){
       const _children = prop.children;
       return (
-        <FoldListItem key={key} groupName={prop.itemName} groupIcon={prop.icon}>
+        <FoldListItem key={key} groupName={prop.itemName} >
           {_children.map((item, itemKey)=>{
             return (
               <ListItem button 
@@ -52,9 +49,6 @@ const UserListItems = () => {
                 key={itemKey}
                 className={classes.nested}
                 >
-                <ListItemIcon>
-                  <item.icon />
-                </ListItemIcon>
                 <ListItemText primary={item.itemName} />
               </ListItem>);
           })}

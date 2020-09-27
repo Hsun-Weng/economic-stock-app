@@ -1,11 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import ShowChartIcon from '@material-ui/icons/ShowChart';
-import AccessibleIcon from '@material-ui/icons/Accessible'
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-
 import Dashbaord from './components/Dashboard'
 import EconomicData from './components/EconomicData';
 import StockChart from './components/StockChart';
@@ -23,7 +18,6 @@ export const mainItemRoutes = [
     {
         path: '/',
         itemName: '儀表板',
-        icon: DashboardIcon,
         component: Dashbaord,
         exact: true,
         itemType: 0
@@ -31,7 +25,6 @@ export const mainItemRoutes = [
     {
         path: '/economicdata',
         itemName: '經濟數據',
-        icon: ShowChartIcon,
         component: EconomicData,
         exact: false,
         itemType: 0
@@ -39,7 +32,6 @@ export const mainItemRoutes = [
     // {
     //     path: '/worldeconomic',
     //     itemName: "World Economic",
-    //     icon: MapIcon,
     //     component: WorldEconomic,
     //     exact: false,
     //     itemType: 0
@@ -47,7 +39,6 @@ export const mainItemRoutes = [
     {
         path: '/futuresChip',
         itemName: "期貨籌碼多空比",
-        icon: AccessibleIcon,
         component: FuturesChip,
         exact: false,
         itemType: 0
@@ -55,7 +46,6 @@ export const mainItemRoutes = [
     {
         path: '/stockCategories',
         itemName: "個股類別",
-        icon: AccessibleIcon,
         component: StockCategory,
         exact: false,
         itemType: 0
@@ -66,7 +56,6 @@ export const userItemRoutes = [
     {
         path: '/portfolio',
         itemName: "投資組合",
-        icon: AccountBalanceWalletIcon,
         component: Portfolio,
         exact: false,
         itemType: 0

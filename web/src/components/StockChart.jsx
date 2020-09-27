@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 const StockChart = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.data);
-    const portfolios = useSelector(state => state.portfolio.portfolios.data);
+    const portfolios = useSelector(state => state.portfolio.data);
     const prices = useSelector(state=>state.stockPrice.data);
     const pricesLoading = useSelector(state=>state.stockPrice.loading);
 
