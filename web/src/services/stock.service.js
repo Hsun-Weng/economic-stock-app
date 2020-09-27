@@ -9,7 +9,8 @@ export const stockService = {
     getAllStockIndexes,
     getLatestStockIndexPrice,
     getStockChip,
-    getStockMargin
+    getStockMargin,
+    getStockRank
 }
 
 function getAllStocks(){
@@ -124,6 +125,16 @@ function getStockMargin(stockCode, startDate, endDate){
                 return a.date > b.date ? -1 : 1;
             })
         )
+}
+
+function getStockRank(sortColumn, page, size, direction) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json'},
+    }
+
+    return fetch(`/stock/sort/${sortColumn}/${page}/${size}/${direction}`, requestOptions)
+        .then(handleResponse);
 }
 
 const handleResponse = (httpResponse) => {

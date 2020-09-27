@@ -61,8 +61,8 @@ const ChipRow = ({data}) => {
 const StockChipChart = ({ stockCode, chartHeight }) => {
     const dispatch = useDispatch();
 
-    const chipData = useSelector(state=>state.stock.chips.data);
-    const chipDataLoading = useSelector(state=>state.stock.chips.loading);
+    const chipData = useSelector(state=>state.stockChip.data);
+    const chipDataLoading = useSelector(state=>state.stockChip.loading);
 
     const formatDate = date => date.toISOString().slice(0,10);
 

@@ -40,7 +40,7 @@ const StockIndexChart = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.data);
     const portfolios = useSelector(state => state.portfolio.portfolios.data);
-    const prices = useSelector(state=>state.stock.index.data);
+    const prices = useSelector(state=>state.stockIndexPrice.data);
 
     const classes = useStyles();
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);

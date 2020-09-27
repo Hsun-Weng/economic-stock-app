@@ -83,11 +83,11 @@ const Portfolio = () => {
     const classes = useStyles();
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
-    const portfolio = useSelector(state=>state.portfolio.portfolios.data);
-    const loading = useSelector(state=>state.portfolio.portfolios.loading);
-    const adding = useSelector(state=>state.portfolio.addPortfolio.loading);
-    const editing = useSelector(state=>state.portfolio.updatePortfolio.loading);
-    const deleting = useSelector(state=>state.portfolio.deletePortfolio.loading);
+    const portfolio = useSelector(state=>state.portfolio.data);
+    const loading = useSelector(state=>state.portfolio.loading);
+    const adding = useSelector(state=>state.portfolio.adding);
+    const editing = useSelector(state=>state.portfolio.updating);
+    const deleting = useSelector(state=>state.portfolio.deleting);
     
     const [ portfolioId, setPortfolioId ] = useState(0);
     
@@ -95,6 +95,8 @@ const Portfolio = () => {
     const [ openAddPortfolio, setOpenAddPortfolio ] = useState(false);
     const [ openEditPortfolio, setOpenEditPortfolio ] = useState(false);
     const [ openDeletePortfolio, setOpenDeletePortfolio ] = useState(false);
+
+    const menuOpen = Boolean(anchorEl);
 
     const handleActionMenuAnchor = (event) => {
         setAnchorEl(event.currentTarget);
@@ -113,13 +115,22 @@ const Portfolio = () => {
     };
 
     const handleOpenAddPortfolioClose = () => setOpenAddPortfolio(false);
-    const handleOpenAddPortfolio = () => setOpenAddPortfolio(true);
+    const handleOpenAddPortfolio = () => { 
+        handleActionMenuClose();
+        setOpenAddPortfolio(true);
+    };
 
     const handleOpenDeletePortfolioClose = () => setOpenDeletePortfolio(false);
-    const handleOpenDeletePortfolio = () => {setOpenDeletePortfolio(true)}
+    const handleOpenDeletePortfolio = () => {
+        handleActionMenuClose();
+        setOpenDeletePortfolio(true)
+    };
 
     const handleOpenEditPortfolioClose = () => setOpenEditPortfolio(false);
-    const handleOpenEditPortfolio = () => {setOpenEditPortfolio(true)}
+    const handleOpenEditPortfolio = () => {
+        handleActionMenuClose();
+        setOpenEditPortfolio(true);
+    };
 
     const handleChangePortfolio = (event) => {
         setPortfolioId(event.target.value);
@@ -154,7 +165,6 @@ const Portfolio = () => {
             handleOpenDeletePortfolioClose();
         }
     }, [ deleting ]);
-
     return (
         <React.Fragment>
             <Grid container spacing={3}>
@@ -175,7 +185,7 @@ const Portfolio = () => {
                                     <MoreVertIcon />
                                 </IconButton>
                                 <Menu anchorEl={anchorEl}
-                                    open={Boolean(anchorEl)}
+                                    open={menuOpen}
                                     onClose={handleActionMenuClose}
                                     >
                                     <MenuItem onClick={handleOpenAddPortfolio}>

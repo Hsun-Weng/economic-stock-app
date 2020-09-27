@@ -8,7 +8,7 @@ import { portfolioAction } from '../actions/'
 const AddPortoflioDialog = ({ open, handleClose }) => {
     const dispatch = useDispatch();
 
-    const loading = useSelector(state=>state.portfolio.addPortfolio.loading);
+    const loading = useSelector(state=>state.portfolio.adding);
     const [ addPorftolioName, setAddPortfolioName ] = useState("");
 
     const addPortfolio = () => {
@@ -42,7 +42,7 @@ const AddPortoflioDialog = ({ open, handleClose }) => {
 const EditPortoflioDialog = ({ open, handleClose, portfolioId, portfolioName }) => {
     const dispatch = useDispatch();
 
-    const loading = useSelector(state=>state.portfolio.updatePortfolio.loading);
+    const loading = useSelector(state=>state.portfolio.updating);
     const [ updatePortfolioName, setUpdatePortfolioName ] = useState("");
 
     const updatePortfolio = () => {
@@ -84,17 +84,23 @@ const EditPortoflioDialog = ({ open, handleClose, portfolioId, portfolioName }) 
 const DeletePortfolioDialog = ({ open, handleClose, portfolioId, portfolioName }) => {
     const dispatch = useDispatch();
 
-    const loading = useSelector(state=>state.portfolio.deletePortfolio.loading);
+    const loading = useSelector(state=>state.portfolio.deleting);
+
+    const [ deletePortfolioName, setDeletePortfolioName ] = useState("");
 
     const deletePortfolio = () => {
         dispatch(portfolioAction.deletePortfolio(portfolioId))
     };
 
+    useEffect(()=>{
+        setDeletePortfolioName(portfolioName);
+    }, [ portfolioName ])
+
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>刪除</DialogTitle>
             <DialogContent>
-                確定刪除 {portfolioName} ?
+                確定刪除 {deletePortfolioName} ?
             </DialogContent>
             <DialogActions>
                 <Button color="primary" disabled={loading} onClick={deletePortfolio}>

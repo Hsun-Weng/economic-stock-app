@@ -64,8 +64,8 @@ const StockCategory = () => {
     const classes = useStyles();
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
-    const loading = useSelector(state=>state.stock.categories.loading);
-    const categories = useSelector(state=>state.stock.categories.data);
+    const loading = useSelector(state=>state.stockCategory.loading);
+    const categories = useSelector(state=>state.stockCategory.data);
 
     useEffect(()=>{
         dispatch(stockAction.getCategories());

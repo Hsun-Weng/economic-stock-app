@@ -14,8 +14,8 @@ const PortfolioTableBody = ({ portfolioId }) => {
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const portfolioProducts = useSelector(state=>state.portfolio.products.data);
-    const portfolioProductPrices = useSelector(state=>state.portfolio.productPrices.data);
+    const portfolioProducts = useSelector(state=>state.portfolioProduct.data);
+    const portfolioProductPrices = useSelector(state=>state.portfolioProduct.price);
 
     const onSortEnd = async ({oldIndex, newIndex}) => {
         dispatch(portfolioAction.resortPortfolioProducts(portfolioId, portfolioProductPrices, oldIndex, newIndex));

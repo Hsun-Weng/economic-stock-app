@@ -38,11 +38,11 @@ const FuturesChip = () => {
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
     const dispatch = useDispatch();
-    const futures = useSelector(state=>state.futures.futures.data);
-    const indexDataset = useSelector(state=>state.stock.index.data);
-    const futuresChipDataset = useSelector(state=>state.futures.chips.data);
+    const futures = useSelector(state=>state.futures.data);
+    const indexDataset = useSelector(state=>state.stockIndexPrice.data);
+    const futuresChipDataset = useSelector(state=>state.futuresChip.data);
 
-    const futuresLoading = useSelector(state=>state.futures.futures.loading);
+    const futuresLoading = useSelector(state=>state.futures.loading);
 
     const [investorCode, setInvestorCode] = useState('RI');
     const [futuresCode, setFuturesCode] = useState("MTX");

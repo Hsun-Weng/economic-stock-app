@@ -5,20 +5,20 @@ const initState = {
     data: []
 };
 
-export const futures = (state=initState, action) => {
+export const futuresChip = (state=initState, action) => {
     switch(action.type) {
-        // futures
-        case futuresConstants.GET_FUTURES_REQUEST: 
+        // chip
+        case futuresConstants.GET_FUTURES_CHIP_REQUEST: 
             return {...state,
                 loading: true,
                 data: []
             };
-        case futuresConstants.GET_FUTURES_SUCCESS:
+        case futuresConstants.GET_FUTURES_CHIP_SUCCESS:
             return {...state,
                 loading: false,
                 data: action.data
             };
-        case futuresConstants.GET_FUTURES_FAILURE:
+        case futuresConstants.GET_FUTURES_CHIP_FAILURE:
             return { ...state,
                 loading: false,
                 data: []

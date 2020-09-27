@@ -49,8 +49,8 @@ const MarginRow = ({data}) => {
 const StockMarginChart = ({ stockCode, chartHeight }) => {
     const dispatch = useDispatch();
 
-    const marginData = useSelector(state=>state.stock.margins.data);
-    const marginDataLoading = useSelector(state=>state.stock.margins.loading);
+    const marginData = useSelector(state=>state.stockMargin.data);
+    const marginDataLoading = useSelector(state=>state.stockMargin.loading);
 
     const formatDate = date => date.toISOString().slice(0,10);
 

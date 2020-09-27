@@ -12,7 +12,8 @@ export const stockAction = {
     getAllStockIndexes,
     getLatestStockIndexPrice,
     getStockChip,
-    getStockMargin
+    getStockMargin,
+    getStockRank
 }
 
 function getAllStocks() {
@@ -29,9 +30,9 @@ function getAllStocks() {
             })
     };
 
-    function request() { return { type: stockConstants.GET_ALL_STOCKS_REQUEST } }
-    function success(data) { return { type: stockConstants.GET_ALL_STOCKS_SUCCESS, data } }
-    function failure() { return { type: stockConstants.GET_ALL_STOCKS_FAILURE } }
+    function request() { return { type: stockConstants.GET_STOCK_REQUEST } }
+    function success(data) { return { type: stockConstants.GET_STOCK_SUCCESS, data } }
+    function failure() { return { type: stockConstants.GET_STOCK_FAILURE } }
 }
 
 function getCategories() {
@@ -105,9 +106,9 @@ function getStockIndex(indexCode, startDate, endDate) {
             })
     };
 
-    function request() { return { type: stockConstants.GET_STOCK_INDEX_REQUEST } }
-    function success(data) { return { type: stockConstants.GET_STOCK_INDEX_SUCCESS, data } }
-    function failure() { return { type: stockConstants.GET_STOCK_INDEX_FAILURE } }
+    function request() { return { type: stockConstants.GET_STOCK_INDEX_PRICE_REQUEST } }
+    function success(data) { return { type: stockConstants.GET_STOCK_INDEX_PRICE_SUCCESS, data } }
+    function failure() { return { type: stockConstants.GET_STOCK_INDEX_PRICE_FAILURE } }
 }
 
 function getLatestStockPrice(stocks) {
@@ -149,9 +150,9 @@ function getAllStockIndexes() {
             })
     };
 
-    function request() { return { type: stockConstants.GET_ALL_STOCK_INDEXES_REQUEST } }
-    function success(data) { return { type: stockConstants.GET_ALL_STOCK_INDEXES_SUCCESS, data } }
-    function failure() { return { type: stockConstants.GET_ALL_STOCK_INDEXES_FAILURE } }
+    function request() { return { type: stockConstants.GET_STOCK_INDEX_REQUEST } }
+    function success(data) { return { type: stockConstants.GET_STOCK_INDEX_SUCCESS, data } }
+    function failure() { return { type: stockConstants.GET_STOCK_INDEX_FAILURE } }
 }
 
 function getLatestStockIndexPrice(indexes) {
@@ -215,4 +216,23 @@ function getStockMargin(stockCode, startDate, endDate) {
     function request() { return { type: stockConstants.GET_STOCK_MARGIN_REQUEST } }
     function success(data) { return { type: stockConstants.GET_STOCK_MARGIN_SUCCESS, data } }
     function failure() { return { type: stockConstants.GET_STOCK_MARGIN_FAILURE } }
+}
+
+function getStockRank(sortColumn, page, size, direction) {
+    return dispatch => {
+        dispatch(request());
+
+        stockService.getStockRank(sortColumn, page, size, direction)
+            .then(data=>{
+                dispatch(success(data));
+            },
+            error=>{
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
+            })
+    };
+
+    function request() { return { type: stockConstants.GET_STOCK_RANK_REQUEST } }
+    function success(data) { return { type: stockConstants.GET_STOCK_RANK_SUCCESS, data } }
+    function failure() { return { type: stockConstants.GET_STOCK_RANK_FAILURE } }
 }

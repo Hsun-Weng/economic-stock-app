@@ -8,7 +8,7 @@ import { economicAction } from '../actions';
 
 const EconomicDataChart = ({ data }) => {
     const dispatch = useDispatch();
-    const chartData = useSelector(state=>state.economic.chartData.data);
+    const chartData = useSelector(state=>state.economicValue.chartData);
 
     const [ unitCode, setUnitCode ] = useState("TOTAL");
 

@@ -53,8 +53,8 @@ const useStyles = makeStyles(theme => ({
 const SearchBar = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const allStocks = useSelector(state=> state.stock.allStocks.data);
-    const allStockIndexes = useSelector(state=> state.stock.allStockIndexes.data);
+    const allStocks = useSelector(state=> state.stock.data);
+    const allStockIndexes = useSelector(state=> state.stockIndex.data);
     const [ products, setProducts ] = useState([]);
     
     const [ product, setProduct ] = useState(null);

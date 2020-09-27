@@ -31,57 +31,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const EconomicData = () => {
+const SortColumnSelect = () => (
+  <FormControl className={classes.formControl}>
+      <InputLabel>Investor</InputLabel>
+      <Select
+          value={investorCode}
+          onChange={handleChangeInvestor}>
+          <MenuItem value={"volume"}>成交量</MenuItem>
+          <MenuItem value={"chg"}>價格變化</MenuItem>
+      </Select>
+  </FormControl>
+);
+
+const StockSort = () => {
   const classes = useStyles();
   const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
   const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
   const dispatch = useDispatch();
-  const economicData = useSelector(state=>state.economicData.data);
-  const economicDataValue = useSelector(state=>state.economicValue.data);
-  const dataLoading = useSelector(state=>state.economicData.loading);
-  const valueLoading = useSelector(state=>state.economicValue.loading);
-
-  const [countryCode, setCountryCode] = useState("USA");
-  const [dataCode, setDataCode] = useState("NONFARM");
-
-  const handleChangeCountry = event => {
-    setCountryCode(event.target.value);
-  };
-
-  const handleChangeEconomicData = event => {
-    setDataCode(event.target.value);
-  };
-
-  const CountrySelect = () => (
-    <FormControl className={classes.formControl}>
-      <InputLabel>Country</InputLabel>
-      <Select
-        value={countryCode}
-        onChange={handleChangeCountry}>
-          {countries.map((prop, key)=><MenuItem key={key} value={prop.countryCode}>{prop.countryName}</MenuItem>)}
-      </Select>
-    </FormControl>
-  )
-
-  const EconomicDataSelect = () => (
-    <FormControl className={classes.formControl}>
-      <InputLabel>Economic Data</InputLabel>
-      <Select
-        value={dataCode}
-        onChange={handleChangeEconomicData}>
-          {economicData.map((prop, key)=><MenuItem key={key} value={prop.dataCode}>{prop.dataName}</MenuItem>)}
-      </Select>
-    </FormControl>
-  )
-
-  useEffect(() => {
-    dispatch(economicAction.getEconomicData(countryCode));
-  }, [ dispatch, countryCode ])
-
-  useEffect(() => {
-    dispatch(economicAction.getEconomicValue(countryCode, dataCode));
-  }, [ dispatch, countryCode, dataCode]);
 
   return (
     <React.Fragment>
@@ -91,8 +58,7 @@ const EconomicData = () => {
             <Skeleton variant="text" className={fixedInputSkeletonHeight}/>:
             <Paper>
               <Box>
-                <CountrySelect />
-                <EconomicDataSelect />
+                <SortColumnSelect />
               </Box>
             </Paper>
           }
@@ -110,4 +76,4 @@ const EconomicData = () => {
   );
 }
 
-export default EconomicData;
+export default StockSort;

@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 const StockTable = ({ stocks }) => {
     const dispatch = useDispatch();
 
-    const prices = useSelector(state=>state.stock.latestPrices.data);
+    const prices = useSelector(state=>state.stockPrice.latest);
 
     useEffect(()=>{
         dispatch(stockAction.getLatestStockPrice(stocks))
@@ -151,8 +151,8 @@ const StockCategory = () => {
     const { categoryCode } = useParams();
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
-    const loading = useSelector(state=>state.stock.categoryStocks.loading);
-    const stocks = useSelector(state=>state.stock.categoryStocks.data);
+    const loading = useSelector(state=>state.stockCategory.loading);
+    const stocks = useSelector(state=>state.stockCategory.stocks);
 
     useEffect(()=>{
         dispatch(stockAction.getCategoryStocks(categoryCode));

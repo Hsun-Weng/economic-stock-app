@@ -1,25 +1,25 @@
-import futuresConstants from '../constants/futures.constants';
+import stockConstants from '../constants/stock.constants';
 
 const initState = {
     loading: false,
     data: []
 };
 
-export const futures = (state=initState, action) => {
+export const stockIndex = (state=initState, action) => {
     switch(action.type) {
-        // futures
-        case futuresConstants.GET_FUTURES_REQUEST: 
+        // all stock indexes
+        case stockConstants.GET_STOCK_INDEX_REQUEST: 
             return {...state,
                 loading: true,
                 data: []
-            };
-        case futuresConstants.GET_FUTURES_SUCCESS:
+            }
+        case stockConstants.GET_STOCK_INDEX_SUCCESS:
             return {...state,
                 loading: false,
                 data: action.data
-            };
-        case futuresConstants.GET_FUTURES_FAILURE:
-            return { ...state,
+            }
+        case stockConstants.GET_STOCK_INDEX_FAILURE:
+            return { ...state,  
                 loading: false,
                 data: []
             };
