@@ -133,7 +133,7 @@ function getStockRank(sortColumn, page, size, direction) {
         headers: { 'Content-Type': 'application/json'},
     }
 
-    return fetch(`/stock/sort/${sortColumn}/${page}/${size}/${direction}`, requestOptions)
+    return fetch(`/data/stock/latest/rank?sortColumn=${sortColumn}&page=${page}&size=${size}&direction=${direction}`, requestOptions)
         .then(handleResponse);
 }
 

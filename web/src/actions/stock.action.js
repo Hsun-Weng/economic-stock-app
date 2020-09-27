@@ -233,6 +233,14 @@ function getStockRank(sortColumn, page, size, direction) {
     };
 
     function request() { return { type: stockConstants.GET_STOCK_RANK_REQUEST } }
-    function success(data) { return { type: stockConstants.GET_STOCK_RANK_SUCCESS, data } }
+    function success(data) { 
+        let page = {
+            page: data.pageable.page,
+            size: data.pageable.size,
+            totalSize: data.total
+        };
+        let stocks = data.content;
+        return { type: stockConstants.GET_STOCK_RANK_SUCCESS, data: stocks, page } 
+    }
     function failure() { return { type: stockConstants.GET_STOCK_RANK_FAILURE } }
 }

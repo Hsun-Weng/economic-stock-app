@@ -7,6 +7,7 @@ import StockChart from './components/StockChart';
 import StockIndexChart from './components/StockIndexChart';
 import StockCategory from './components/StockCategory';
 import StockCategoryTable from './components/StockCategoryTable';
+import StockRank from './components/StockRank';
 import FuturesChip from './components/FuturesChip';
 
 import Portfolio from './components/Portfolio';
@@ -50,6 +51,12 @@ export const mainItemRoutes = [
         exact: false,
         itemType: 0
     },
+    {
+        path: '/stockRank',
+        itemName: "個股成交排行",
+        component: StockRank,
+        itemType: 0
+    }
 ]
 
 export const userItemRoutes = [
