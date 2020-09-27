@@ -79,15 +79,15 @@ public class StockController {
         return result;
     }
 
-    @GetMapping("/stock/sort/{sortColumn}/{page}/{size}/{direction}")
-    public Map<String, Object> getBatchLatest(@PathVariable String sortColumn, @PathVariable Integer page,
-                                              @PathVariable Integer size,@PathVariable String direction) {
+    @GetMapping("/stock/latest/rank")
+    public Map<String, Object> getRankLatest(@RequestParam String sortColumn, @RequestParam Integer page,
+                                              @RequestParam Integer size, @RequestParam String direction) {
         Map<String, Object> result = new HashMap<String, Object>();
         PageRequest pageRequest = null;
         Page<Stock> stockPage = null;
         Page<Map<String, Object>> dataPage;
         try{
-            pageRequest = PageRequest.of(page - 1, size, Sort.Direction.valueOf(direction), sortColumn);
+            pageRequest = PageRequest.of(page, size, Sort.Direction.valueOf(direction), sortColumn);
             stockPage = service.getStockSortedPage(pageRequest);
 
             dataPage = stockPage.map((stock)->{

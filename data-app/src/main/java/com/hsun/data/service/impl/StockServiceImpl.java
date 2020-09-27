@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.hsun.data.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,25 +41,20 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<Stock> getBatchLatestPriceList(List<String> stockCodeList) {
-        List<Stock> batchLatestPriceList = new ArrayList<Stock>(stockCodeList.size());
+        Stock latestStock = repository.findFirstByOrderByDateDesc().orElseThrow(()->new ApiServerException("Not found"));
+        LocalDate localLatestDate = latestStock.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Date queryStartDate = Date.from(localLatestDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(localLatestDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
 
-        Query query = null;
-        
-        for(String stockCode : stockCodeList){
-            query = new Query(Criteria.where("stock_code").is(stockCode))
-                    .with(Sort.by(Sort.Order.desc("date"))).limit(1);
-
-            batchLatestPriceList.add(mongoTemplate.findOne(query, Stock.class));
-        }
-
-        return batchLatestPriceList;
+        return repository.findByStockCodeInAndDateBetween(stockCodeList, queryStartDate, queryEndDate);
     }
 
     @Override
     public Page<Stock> getStockSortedPage(PageRequest pageRequest) {
-        LocalDate today = LocalDate.now().minusDays(1);
-        Date queryStartDate = Date.from(today.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-        Date queryEndDate = Date.from(today.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+        Stock latestStock = repository.findFirstByOrderByDateDesc().orElseThrow(()->new ApiServerException("Not found"));
+        LocalDate localLatestDate = latestStock.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Date queryStartDate = Date.from(localLatestDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(localLatestDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
         return repository.findByDateBetween(queryStartDate, queryEndDate, pageRequest);
     }
 }
