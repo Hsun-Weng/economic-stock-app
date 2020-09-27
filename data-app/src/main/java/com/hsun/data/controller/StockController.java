@@ -68,12 +68,13 @@ public class StockController {
                 dataMap.put("close", data.getClose());
                 dataMap.put("volume", data.getVolume());
                 dataMap.put("change", data.getChange());
-                dataMap.put("changePercent", data.getChangePercent() * 100);
+                dataMap.put("changePercent", data.getChangePercent()!=null?data.getChangePercent() * 100:0);
                 return dataMap;
             }).collect(Collectors.toList());
 
             result.put("data", dataList);
         }catch(Exception e){
+            e.printStackTrace();
             throw new ApiServerException();
         }
         return result;
@@ -97,9 +98,7 @@ public class StockController {
             });
 
             result.put("data", dataPage);
-
         }catch(Exception e){
-            e.printStackTrace();
             throw new ApiServerException();
         }
         return result;
