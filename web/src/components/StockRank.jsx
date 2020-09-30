@@ -73,7 +73,8 @@ const StockRank = () => {
 
   const dispatch = useDispatch();
   const loading = useSelector(state=>state.stockRank.loading);
-  const stocks = useSelector(state=>state.stockRank.data);
+  const stocks = useSelector(state=>state.stock.data);
+  const stockRanks = useSelector(state=>state.stockRank.data);
   const totalSize = useSelector(state=>state.stockRank.page.totalSize);
 
   const [ sortColumn, setSortColumn ] = useState("volume");
@@ -99,8 +100,8 @@ const StockRank = () => {
   };
 
   useEffect(()=>{
-    dispatch(stockAction.getStockRank(sortColumn, page, size, direction))
-  }, [ dispatch, sortColumn, page, size, direction ])
+    dispatch(stockAction.getStockRank(stocks, sortColumn, page, size, direction))
+  }, [ dispatch, stocks, sortColumn, page, size, direction ])
 
   const SortColumnSelect = () => (
     <FormControl className={classes.formControl}>
@@ -130,7 +131,7 @@ const StockRank = () => {
     <TableContainer>
       <Table>
         <StockRankTableHeading />
-        <StockRankTableBody stocks={stocks} />
+        <StockRankTableBody stocks={stockRanks} />
         <TableFooter>
           <TableRow>
             <TablePagination

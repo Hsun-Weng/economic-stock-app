@@ -218,7 +218,7 @@ function getStockMargin(stockCode, startDate, endDate) {
     function failure() { return { type: stockConstants.GET_STOCK_MARGIN_FAILURE } }
 }
 
-function getStockRank(sortColumn, page, size, direction) {
+function getStockRank(allStocks, sortColumn, page, size, direction) {
     return dispatch => {
         dispatch(request());
 
@@ -239,7 +239,14 @@ function getStockRank(sortColumn, page, size, direction) {
             size: data.pageable.size,
             totalSize: data.total
         };
-        let stocks = data.content;
+        let stocks = data.content.map((detail)=>{
+            let stock = allStocks.find((stock)=>stock.stockCode===detail.stockCode);
+            let stockName = stock?stock.stockName:"";
+            return {...detail,
+                stockName: stockName
+            };
+        });
+
         return { type: stockConstants.GET_STOCK_RANK_SUCCESS, data: stocks, page } 
     }
     function failure() { return { type: stockConstants.GET_STOCK_RANK_FAILURE } }
