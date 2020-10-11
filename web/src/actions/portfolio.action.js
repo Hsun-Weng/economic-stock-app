@@ -28,7 +28,6 @@ function getPortfolio() {
             },
             error=>{
                 dispatch(failure());
-                dispatch(notificationActions.enqueueError(error));
             })
     };
 
