@@ -267,16 +267,16 @@ function getCategoriesProportion() {
                 }
                 stockService.getLatestStockPrice(stockCodes)
                     .then(price=>{
-                        for(const category of data){
+                        data = data.map((category)=>{
                             category.children = category.children.map((stock)=>{
                                 let stockPrice = price.find((data)=>data.stockCode===stock.stockCode);
-                                let changePercent = stockPrice?stockPrice.changePercent:0;
+                                let changePercent = stockPrice?Math.round(stockPrice.changePercent* 100)/100:0;
                                 return {...stock,
-                                        changePercent: changePercent
+                                        changePercent: changePercent,
                                     }
                             })
-                            
-                        }       
+                            return category;
+                        })
                         dispatch(success(data));
                     });
             },

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import Dashbaord from './components/Dashboard'
 import StockTreeMap from './components/StockTreeMap';
 import EconomicData from './components/EconomicData';
 import StockChart from './components/StockChart';

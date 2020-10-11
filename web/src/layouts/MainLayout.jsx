@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -10,8 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
-import SwitchButton from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MenuIcon from '@material-ui/icons/Menu';
 import MainListItems from '../components/layout-menus/MainListItems';
 import UserListItems from '../components/layout-menus/UserListItems';
@@ -110,28 +108,14 @@ const Copyright = () => (
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [isDarkMode, setDarkMode] = React.useState(false);
-
-  const theme = React.useMemo(
-    ()=>
-      createMuiTheme({
-        palette: {
-          type: isDarkMode ? 'dark' : 'light'
-        }
-      }),
-      [isDarkMode]
-  );
 
   const handleDrawer = () => {
     setOpen(!open);
   };
-  const handleDarkMode = () => {
-    setDarkMode((darkMode)=> !darkMode);
-  }
 
   return (
     <div  className={classes.root}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider>
         <Notification />
         <CssBaseline />
           <AppBar position="absolute" className={clsx(classes.appBar)}>
@@ -149,9 +133,6 @@ export default function Dashboard() {
               </Typography>
               <SearchBar />
               <div className={classes.grow} />
-              <FormControlLabel
-                control={<SwitchButton size="small" checked={isDarkMode} color="default" onChange={handleDarkMode}/>}
-              />
               <User />
             </Toolbar>
           </AppBar>
