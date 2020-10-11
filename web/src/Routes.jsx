@@ -2,6 +2,7 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 
 import Dashbaord from './components/Dashboard'
+import StockTreeMap from './components/StockTreeMap';
 import EconomicData from './components/EconomicData';
 import StockChart from './components/StockChart';
 import StockIndexChart from './components/StockIndexChart';
@@ -19,7 +20,7 @@ export const mainItemRoutes = [
     {
         path: '/',
         itemName: '儀表板',
-        component: Dashbaord,
+        component: StockTreeMap,
         exact: true,
         itemType: 0
     },

@@ -10,7 +10,8 @@ export const stockService = {
     getLatestStockIndexPrice,
     getStockChip,
     getStockMargin,
-    getStockRank
+    getStockRank,
+    getCategoriesProportion
 }
 
 function getAllStocks(){
@@ -134,6 +135,16 @@ function getStockRank(sortColumn, page, size, direction) {
     }
 
     return fetch(`/data/stock/latest/rank?sortColumn=${sortColumn}&page=${page}&size=${size}&direction=${direction}`, requestOptions)
+        .then(handleResponse);
+}
+
+function getCategoriesProportion(){
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    };
+
+    return fetch(`/api/categories/proportion`, requestOptions)
         .then(handleResponse);
 }
 

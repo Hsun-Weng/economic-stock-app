@@ -3,7 +3,7 @@ import stockConstants from '../constants/stock.constants';
 const initState = {
     loading: false,
     data: [],
-    stocks: [],
+    stocks: []
 };
 
 export const stockCategory = (state=initState, action) => {

@@ -13,7 +13,8 @@ export const stockAction = {
     getLatestStockIndexPrice,
     getStockChip,
     getStockMargin,
-    getStockRank
+    getStockRank,
+    getCategoriesProportion
 }
 
 function getAllStocks() {
@@ -250,4 +251,42 @@ function getStockRank(allStocks, sortColumn, page, size, direction) {
         return { type: stockConstants.GET_STOCK_RANK_SUCCESS, data: stocks, page } 
     }
     function failure() { return { type: stockConstants.GET_STOCK_RANK_FAILURE } }
+}
+
+function getCategoriesProportion() {
+    return dispatch => {
+        dispatch(request());
+
+        stockService.getCategoriesProportion()
+            .then(data=>{
+                let stockCodes = [];
+                for(const category of data){
+                    for(const categoryStock of category.children){
+                        stockCodes.push(categoryStock.stockCode);
+                    }
+                }
+                stockService.getLatestStockPrice(stockCodes)
+                    .then(price=>{
+                        for(const category of data){
+                            category.children = category.children.map((stock)=>{
+                                let stockPrice = price.find((data)=>data.stockCode===stock.stockCode);
+                                let changePercent = stockPrice?stockPrice.changePercent:0;
+                                return {...stock,
+                                        changePercent: changePercent
+                                    }
+                            })
+                            
+                        }       
+                        dispatch(success(data));
+                    });
+            },
+            error=>{
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error));
+            })
+    };
+
+    function request() { return { type: stockConstants.GET_CATEGORIES_PROPORTION_REQUEST } }
+    function success(data) { return { type: stockConstants.GET_CATEGORIES_PROPORTION_SUCCESS, data } }
+    function failure() { return { type: stockConstants.GET_CATEGORIES_PROPORTION_FAILURE } }
 }
