@@ -2,7 +2,6 @@ package com.hsun.economic.controller;
 
 import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.entity.PortfolioProduct;
-import com.hsun.economic.entity.User;
 import com.hsun.economic.entity.UserPortfolio;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.exception.ApiServerException;
@@ -14,10 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 public class UserPortfolioController {
@@ -32,21 +28,10 @@ public class UserPortfolioController {
     private PortfolioProductService portfolioProductService;
 
     @GetMapping("/portfolio")
-    public ResponseBean getPortfolioProductByPortfolioId(Authentication authentication){
+    public ResponseBean getPortfolioList(Authentication authentication){
         ResponseBean responseBean = new ResponseBean();
-        User user = null;
-        List<Map<String, Object>> dataList = null;
         try{
-            user = userService.findUserByName(authentication.getName());
-
-            dataList = user.getUserPortfolioList().stream().map((data)->{
-                Map<String, Object> dataMap = new HashMap<String, Object>();
-                dataMap.put("portfolioId", data.getPortfolioId());
-                dataMap.put("portfolioName", data.getPortfolioName());
-                return dataMap;
-            }).collect(Collectors.toList());
-
-            responseBean.setData(dataList);
+            responseBean.setData(service.getPortfolioList(authentication.getName()));
         }catch(Exception e){
             throw new ApiServerException();
         }
@@ -56,24 +41,8 @@ public class UserPortfolioController {
     @GetMapping("/portfolio/{portfolioId}/products")
     public ResponseBean getPortfolioProductListById(Authentication authentication, @PathVariable Integer portfolioId){
         ResponseBean responseBean = new ResponseBean();
-        List<Map<String, Object>> dataList = null;
-        List<PortfolioProduct> portfolioProductList;
         try{
-
-            portfolioProductList = service.findUserPortfolioProductList(authentication.getName(), portfolioId);
-
-            dataList = portfolioProductList
-                    .stream().map((data)->{
-                        Map<String, Object> dataMap = new HashMap<String, Object>();
-                        dataMap.put("productType", data.getId().getProductType());
-                        dataMap.put("productCode", data.getId().getProductCode());
-                        dataMap.put("productName", data.getProductName());
-                        dataMap.put("sort", data.getSort());
-                        return dataMap;
-                    }).collect(Collectors.toList());
-
-            responseBean.setData(dataList);
-
+            responseBean.setData(service.getProductList(authentication.getName(), portfolioId));
         }catch(ApiClientException e){
             throw e;
         }catch(Exception e){

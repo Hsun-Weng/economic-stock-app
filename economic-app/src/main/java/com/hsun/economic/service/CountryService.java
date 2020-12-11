@@ -1,10 +1,11 @@
 package com.hsun.economic.service;
 
+import com.hsun.economic.bean.CountryBean;
+import com.hsun.economic.bean.EconomicDataBean;
+
 import java.util.List;
 
-import com.hsun.economic.entity.Country;
-
 public interface CountryService {
-    List<Country> getAllCountries();
-    Country getCountryByCode(String countryCode);
+    List<CountryBean> getCountryList();
+    List<EconomicDataBean> getEconomicDataList(String countryCode);
 }

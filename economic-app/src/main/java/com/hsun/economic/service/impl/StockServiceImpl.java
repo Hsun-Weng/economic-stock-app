@@ -1,13 +1,13 @@
 package com.hsun.economic.service.impl;
 
-import java.util.List;
-
+import com.hsun.economic.bean.StockBean;
+import com.hsun.economic.repository.StockRepository;
+import com.hsun.economic.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hsun.economic.entity.Stock;
-import com.hsun.economic.repository.StockRepository;
-import com.hsun.economic.service.StockService;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StockServiceImpl implements StockService {
@@ -16,8 +16,12 @@ public class StockServiceImpl implements StockService {
     private StockRepository repository;
 
     @Override
-    public List<Stock> getAllStocks() {
-        return repository.findAll();
+    public List<StockBean> getStockList() {
+        return repository.findAll()
+                .stream()
+                .map((stock)->
+                        new StockBean(stock.getStockCode(), stock.getStockName()))
+                .collect(Collectors.toList());
     }
 
 }

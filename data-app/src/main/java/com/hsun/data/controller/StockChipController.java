@@ -27,22 +27,8 @@ public class StockChipController {
     public Map<String, Object> getStockChipByCodeAndDateBetween(@PathVariable String stockCode,
             @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date startDate, @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date endDate){
         Map<String, Object> result = new HashMap<String, Object>();
-        List<StockChip> stockChipList = null;
-        List<Map<String, Object>> dataList = null;
         try {
-            stockChipList = service.getStockChipByCodeAndDateBetween(stockCode, startDate, endDate);
-            
-            dataList = stockChipList.stream().map((data)->{
-                Map<String, Object> dataMap = new HashMap<String, Object>();
-                dataMap.put("date", data.getDate());
-                dataMap.put("stockCode", data.getStockCode());
-                dataMap.put("netShare", data.getNetShare());
-                dataMap.put("investorChip", data.getInvestorStockChip());
-                return dataMap;
-            }).collect(Collectors.toList());
-            
-            result.put("data", dataList);
-            
+            result.put("data", service.getStockChipList(stockCode, startDate, endDate));
         }catch(Exception e) {
             throw new ApiServerException();
         }

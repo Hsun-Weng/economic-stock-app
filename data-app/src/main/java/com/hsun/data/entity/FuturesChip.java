@@ -23,6 +23,4 @@ public class FuturesChip {
     private Date date;
     @Field("investor_chip")
     private List<InvestorFuturesChip> investorFuturesChip;
-    @Transient
-    private Integer openInterestLot;
 }

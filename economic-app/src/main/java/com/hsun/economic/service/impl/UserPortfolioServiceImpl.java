@@ -1,5 +1,7 @@
 package com.hsun.economic.service.impl;
 
+import com.hsun.economic.bean.PortfolioBean;
+import com.hsun.economic.bean.PortfolioProductBean;
 import com.hsun.economic.entity.*;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.repository.*;
@@ -28,6 +30,17 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
 
     @Autowired
     private StockIndexRepository stockIndexRepository;
+
+    @Override
+    public List<PortfolioBean> getPortfolioList(String userName) {
+        return userRepository.findById(userName)
+                .get()
+                .getUserPortfolioList()
+                .stream()
+                .map((userPortfolio ->
+                        new PortfolioBean(userPortfolio.getPortfolioId(), userPortfolio.getPortfolioName())))
+                .collect(Collectors.toList());
+    }
 
     @Override
     public void addPortfolio(String userName, UserPortfolio userPortfolio) {
@@ -62,34 +75,40 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     }
 
     @Override
-    public List<PortfolioProduct> findUserPortfolioProductList(String userName, Integer portfolioId) {
-        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
+    public List<PortfolioProductBean> getProductList(String userName, Integer portfolioId) {
+        User user = userRepository.findById(userName)
+                .orElseThrow(()->new ApiClientException("User not found."));
         UserPortfolio userPortfolio = user.getUserPortfolioList()
-                .stream().filter((data)->data.getPortfolioId() == portfolioId)
-                .findAny().orElseThrow(()->new ApiClientException("Portfolio not found."));
+                .stream()
+                .filter((data)->data.getPortfolioId() == portfolioId)
+                .findAny()
+                .orElseThrow(()->new ApiClientException("Portfolio not found."));
 
         return userPortfolio.getPortfolioProductList()
-                .stream().map((portfolioProduct)->{
-                    String productCode = null;
+                .stream()
+                .map((portfolioProduct)->{
+                    String productName = null;
                     switch(portfolioProduct.getId().getProductType()){
                         case 0: //index
                             StockIndex stockIndex = stockIndexRepository.findById(portfolioProduct.getId().getProductCode())
                                     .orElse(new StockIndex());
-                            portfolioProduct.setProductCode(stockIndex.getIndexCode());
-                            portfolioProduct.setProductName(stockIndex.getIndexName());
+                            productName = stockIndex.getIndexName();
                             break;
                         case 1: //stock
                             Stock stock = stockRepository.findById(portfolioProduct.getId().getProductCode())
                                     .orElse(new Stock());
-                            portfolioProduct.setProductCode(stock.getStockCode());
-                            portfolioProduct.setProductName(stock.getStockName());
+                            productName = stock.getStockName();
                             break;
                         case 3: //futures
                             break;
-                        default:
-                            throw new ApiClientException("Can't add this product.");
                     }
-                    return portfolioProduct;
+                    return PortfolioProductBean
+                            .builder()
+                            .productType(portfolioProduct.getId().getProductType())
+                            .productCode(portfolioProduct.getProductCode())
+                            .productName(productName)
+                            .sort(portfolioProduct.getSort())
+                            .build();
                 }).collect(Collectors.toList());
     }
 }

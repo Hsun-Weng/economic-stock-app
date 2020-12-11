@@ -24,20 +24,8 @@ public class EconomicDataController {
     public Map<String, Object> getEconomicDataByDataCode(@PathVariable String countryCode,
             @PathVariable String dataCode) {
         Map<String, Object> result = new HashMap<String, Object>();
-        List<EconomicData> economicDataList = null;
-        List<Map<String, Object>> dataList = null;
         try {
-            economicDataList = service.getDataByCodeAndCountryCode(countryCode, dataCode);
-            
-            dataList = economicDataList.stream().map((data)->{
-                Map<String, Object> dataMap = new HashMap<String, Object>();
-                dataMap.put("date", data.getDate());
-                dataMap.put("value", data.getValue());
-                return dataMap;
-            }).collect(Collectors.toList());
-             
-            result.put("data", dataList);
-            
+            result.put("data", service.getDataByCodeAndCountryCode(countryCode, dataCode));
         }catch(Exception e) {
             throw new ApiServerException();
         }

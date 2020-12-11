@@ -1,10 +1,9 @@
 package com.hsun.economic.service;
 
+import com.hsun.economic.bean.StockBean;
+
 import java.util.List;
 
-import com.hsun.economic.entity.Stock;
-
 public interface StockService {
-    
-    List<Stock> getAllStocks();
+    List<StockBean> getStockList();
 }

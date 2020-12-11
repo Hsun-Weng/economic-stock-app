@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.hsun.data.bean.StockPriceBean;
 import com.hsun.data.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,40 +33,61 @@ public class StockServiceImpl implements StockService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<Stock> getStockByCodeAndDateBetween(String stockCode, Date startDate, Date endDate) {
+    public List<StockPriceBean> getStockPriceList(String stockCode, Date startDate, Date endDate) {
         LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Date queryStartDate = Date.from(localStartDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
         LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Date queryEndDate = Date.from(localEndDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
-        return repository.findByStockCodeAndDateBetween(stockCode, queryStartDate, queryEndDate);
+        return repository.findByStockCodeAndDateBetween(stockCode, queryStartDate, queryEndDate)
+                .stream()
+                .map((price)->StockPriceBean.builder()
+                .date(price.getDate())
+                .stockCode(price.getStockCode())
+                .open(price.getOpen())
+                .low(price.getLow())
+                .high(price.getHigh())
+                .close(price.getClose())
+                .change(price.getChange())
+                .changePercent(Optional.ofNullable(price.getChangePercent())
+                        .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
     }
 
     @Override
-    public List<Stock> getBatchLatestPriceList(List<String> stockCodeList) {
+    public List<StockPriceBean> getBatchStockLatestPriceList(List<String> stockCodeList) {
         Stock latestStock = repository.findFirstByOrderByDateDesc().orElseThrow(()->new ApiServerException("Not found"));
         LocalDate localLatestDate = latestStock.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Date queryStartDate = Date.from(localLatestDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
         Date queryEndDate = Date.from(localLatestDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
-
-        // 紀錄input排序
-        Map<String, Integer> sortStockMap = new HashMap<String, Integer>(stockCodeList.size());
-        for(int i = 0; i < stockCodeList.size(); i++){
-            sortStockMap.put(stockCodeList.get(i), i);
-        }
-        //按照input排序重新排序返回資料
-        List<Stock> stockList = repository.findByStockCodeInAndDateBetween(stockCodeList, queryStartDate, queryEndDate);
-        stockList.sort(Comparator.comparing(Stock::getStockCode, (stockCode1, stockCode2)->
-            sortStockMap.get(stockCode1).compareTo(sortStockMap.get(stockCode2))
-        ));
-        return stockList;
+        return repository.findByStockCodeInAndDateBetween(stockCodeList, queryStartDate, queryEndDate)
+                .stream()
+                .map((price)->StockPriceBean.builder()
+                .date(price.getDate())
+                .stockCode(price.getStockCode())
+                .open(price.getOpen())
+                .low(price.getLow())
+                .high(price.getHigh())
+                .close(price.getClose())
+                .change(price.getChange())
+                .changePercent(Optional.ofNullable(price.getChangePercent())
+                        .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
     }
 
     @Override
-    public Page<Stock> getStockSortedPage(PageRequest pageRequest) {
+    public Page<StockPriceBean> getStockSortedPage(PageRequest pageRequest) {
         Stock latestStock = repository.findFirstByOrderByDateDesc().orElseThrow(()->new ApiServerException("Not found"));
         LocalDate localLatestDate = latestStock.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Date queryStartDate = Date.from(localLatestDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
         Date queryEndDate = Date.from(localLatestDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
-        return repository.findByDateBetween(queryStartDate, queryEndDate, pageRequest);
+        return repository.findByDateBetween(queryStartDate, queryEndDate, pageRequest)
+                .map((price)->StockPriceBean.builder()
+                        .date(price.getDate())
+                        .stockCode(price.getStockCode())
+                        .open(price.getOpen())
+                        .low(price.getLow())
+                        .high(price.getHigh())
+                        .close(price.getClose())
+                        .change(price.getChange())
+                        .changePercent(Optional.ofNullable(price.getChangePercent())
+                                .map(changePercent->changePercent*100).orElse(0f)).build());
     }
 }

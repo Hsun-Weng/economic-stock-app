@@ -1,14 +1,14 @@
 package com.hsun.economic.service.impl;
 
+import com.hsun.economic.bean.StockBean;
+import com.hsun.economic.bean.StockCategoryBean;
 import com.hsun.economic.entity.StockCategory;
 import com.hsun.economic.repository.StockCategoryRepository;
 import com.hsun.economic.service.StockCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,13 +18,27 @@ public class StockCategoryServiceImpl implements StockCategoryService {
     private StockCategoryRepository repository;
 
     @Override
-    public List<StockCategory> getAllCategories() {
-        return repository.findAll();
+    public List<StockCategoryBean> getCategoryList() {
+        return repository.findAll()
+                .stream()
+                .map((category)->
+                        new StockCategoryBean(category.getCategoryCode(), category.getCategoryName()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public StockCategory getCategoryByCode(String categoryCode) {
-        return repository.findById(categoryCode).orElse(null);
+    public List<StockBean> getStockList(String categoryCode) {
+        List<StockBean> stockList = Collections.emptyList();
+        Optional<StockCategory> stockCategoryOptional = repository.findById(categoryCode);
+        if(stockCategoryOptional.isPresent()){
+            stockList = stockCategoryOptional.get()
+                    .getStockList()
+                    .stream()
+                    .map((stock)->
+                            new StockBean(stock.getStockCode(), stock.getStockName()))
+                    .collect(Collectors.toList());
+        }
+        return stockList;
     }
 
     @Override

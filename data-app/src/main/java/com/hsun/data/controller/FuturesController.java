@@ -28,26 +28,8 @@ public class FuturesController {
     public Map<String, Object> getFuturesChipByCodeAndDateBetween(@PathVariable String futuresCode,@RequestParam String contractDate,
             @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date startDate, @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date endDate){
         Map<String, Object> result = new HashMap<String, Object>();
-        List<Futures> futuresList = null;
-        List<Map<String, Object>> dataList = null;
         try {
-            futuresList = service.getFuturesByCodeAndContractDateAndDateBetween(futuresCode, contractDate, startDate, endDate);
-            
-            dataList = futuresList.stream().map((data)->{
-                Map<String, Object> dataMap = new HashMap<String, Object>();
-                dataMap.put("date", data.getDate());
-                dataMap.put("futuresCode", data.getFuturesCode());
-                dataMap.put("contractDate", data.getContractDate());
-                dataMap.put("open", data.getOpen());
-                dataMap.put("low", data.getLow());
-                dataMap.put("high", data.getHigh());
-                dataMap.put("close", data.getClose());
-                dataMap.put("volume", data.getVolume());
-                return dataMap;
-            }).collect(Collectors.toList());
-            
-            result.put("data", dataList);
-            
+            result.put("data", service.getFuturesPriceList(futuresCode, contractDate, startDate, endDate));
         }catch(Exception e) {
             throw new ApiServerException();
         }

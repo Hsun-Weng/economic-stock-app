@@ -26,28 +26,12 @@ public class FuturesChipController {
     private FuturesChipService service;
     
     @GetMapping("/futures/{futuresCode}/chip")
-    public Map<String, Object> getFuturesChipByCodeAndDateBetween(@PathVariable String futuresCode,
-            @RequestParam(required=false) String investorCode, @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date startDate, @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date endDate){
+    public Map<String, Object> getFuturesChipByCodeAndDateBetween(@PathVariable String futuresCode
+            , @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date startDate
+            , @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date endDate){
         Map<String, Object> result = new HashMap<String, Object>();
-        List<FuturesChip> futuresChipList = null;
-        List<Map<String, Object>> dataList = null;
         try {
-            futuresChipList = service.getFuturesChipByCodeAndDateBetween(futuresCode, startDate, endDate);
-            
-            dataList = futuresChipList.stream().map((data)->{
-                Map<String, Object> dataMap = new HashMap<String, Object>();
-                dataMap.put("date", data.getDate());
-                dataMap.put("futuresCode", data.getFuturesCode());
-                dataMap.put("openInterestLot", data.getOpenInterestLot());
-                dataMap.put("investorChip", data.getInvestorFuturesChip().stream()
-                        .filter((chip)->StringUtils.isEmpty(investorCode)
-                                ||chip.getInvestorCode().equals(investorCode))
-                        .collect(Collectors.toList()));
-                return dataMap;
-            }).collect(Collectors.toList());
-            
-            result.put("data", dataList);
-            
+            result.put("data", service.getFuturesChipList(futuresCode, startDate, endDate));
         }catch(Exception e) {
             throw new ApiServerException();
         }

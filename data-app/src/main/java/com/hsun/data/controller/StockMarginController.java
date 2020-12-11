@@ -27,25 +27,8 @@ public class StockMarginController {
     public Map<String, Object> getStockMarginByCodeAndDateBetween(@PathVariable String stockCode,
             @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date startDate, @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date endDate){
         Map<String, Object> result = new HashMap<String, Object>();
-        List<StockMargin> stockMarginList = null;
-        List<Map<String, Object>> dataList = null;
         try {
-            stockMarginList = service.getStockMarginByCodeAndDateBetween(stockCode, startDate, endDate);
-            
-            dataList = stockMarginList.stream().map((data)->{
-                Map<String, Object> dataMap = new HashMap<String, Object>();
-                dataMap.put("date", data.getDate());
-                dataMap.put("stockCode", data.getStockCode());
-                dataMap.put("longShare", data.getLongShare());
-                dataMap.put("shortShare", data.getShortShare());
-                dataMap.put("totalLongShare", data.getTotalLongShare());
-                dataMap.put("totalShortShare", data.getTotalShortShare());
-                dataMap.put("dayShare", data.getDayShare());
-                return dataMap;
-            }).collect(Collectors.toList());
-            
-            result.put("data", dataList);
-            
+            result.put("data", service.getStockMarginList(stockCode, startDate, endDate));
         }catch(Exception e) {
             throw new ApiServerException();
         }

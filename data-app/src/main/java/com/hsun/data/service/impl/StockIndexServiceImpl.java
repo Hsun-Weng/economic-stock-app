@@ -5,7 +5,9 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import com.hsun.data.bean.StockIndexPriceBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,19 +29,29 @@ public class StockIndexServiceImpl implements StockIndexService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<StockIndex> getStockIndexByCodeAndDateBetween(String indexCode, Date startDate,
-                                                                         Date endDate) {
+    public List<StockIndexPriceBean> getStockIndexByCodeAndDateBetween(String indexCode, Date startDate,
+                                                                       Date endDate) {
         // 設置查詢起訖時間移至最早 & 最晚
         LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Date queryStartDate = Date.from(localStartDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
         LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Date queryEndDate = Date.from(localEndDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
-        return repository.findByIndexCodeAndDateBetween(indexCode, queryStartDate, queryEndDate);
+        return repository.findByIndexCodeAndDateBetween(indexCode, queryStartDate, queryEndDate)
+                .stream()
+                .map((price)-> StockIndexPriceBean.builder()
+                        .date(price.getDate())
+                        .indexCode(price.getIndexCode())
+                        .open(price.getOpen())
+                        .low(price.getLow())
+                        .high(price.getHigh())
+                        .close(price.getClose())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Map<String, Object>> getBatchLatestPriceList(List<String> indexCodeList) {
-        List<Map<String, Object>> batchLatestPriceList = new ArrayList<Map<String, Object>>(indexCodeList.size());
+    public List<StockIndexPriceBean> getBatchLatestPriceList(List<String> indexCodeList) {
+        List<StockIndexPriceBean> batchLatestPriceList = new ArrayList<>(indexCodeList.size());
 
         Query query = null;
 
@@ -56,9 +68,8 @@ public class StockIndexServiceImpl implements StockIndexService {
         return batchLatestPriceList;
     }
 
-    private Map<String, Object> convertStockIndexListToMap(List<StockIndex> priceList) {
-        Map<String, Object> priceMap = new HashMap<String, Object>();
-        StockIndex latestPrice = priceList.get(0);
+    private StockIndexPriceBean convertStockIndexListToMap(List<StockIndex> priceList) {
+        StockIndex price = priceList.get(0);
         StockIndex previousPrice = null;
 
         final BigDecimal percentage = new BigDecimal(100);
@@ -69,27 +80,29 @@ public class StockIndexServiceImpl implements StockIndexService {
         BigDecimal latestPriceBigDecimal = null;
         switch (priceList.size()) {
             case 1:
-                previousPriceBigDecimal = new BigDecimal(latestPrice.getOpen().toString());
-                latestPriceBigDecimal = new BigDecimal(latestPrice.getClose().toString());
+                previousPriceBigDecimal = new BigDecimal(price.getOpen().toString());
+                latestPriceBigDecimal = new BigDecimal(price.getClose().toString());
                 break;
             case 2:
                 previousPrice = priceList.get(1);
                 previousPriceBigDecimal = new BigDecimal(previousPrice.getClose().toString());
-                latestPriceBigDecimal = new BigDecimal(latestPrice.getClose().toString());
+                latestPriceBigDecimal = new BigDecimal(price.getClose().toString());
                 break;
         }
         change = latestPriceBigDecimal.subtract(previousPriceBigDecimal);
-        changePercent = change.divide(previousPriceBigDecimal,4, RoundingMode.HALF_UP).multiply(percentage);
-        priceMap.put("indexCode", latestPrice.getIndexCode());
-        priceMap.put("date", latestPrice.getDate());
-        priceMap.put("open", latestPrice.getOpen());
-        priceMap.put("low", latestPrice.getLow());
-        priceMap.put("high", latestPrice.getHigh());
-        priceMap.put("close", latestPrice.getClose());
-        priceMap.put("volume", latestPrice.getVolume());
-        priceMap.put("change", change);
-        priceMap.put("changePercent", changePercent);
-        return priceMap;
+        changePercent = change.divide(previousPriceBigDecimal,4, RoundingMode.HALF_UP)
+                .multiply(percentage);
+
+        return StockIndexPriceBean.builder()
+                .date(price.getDate())
+                .indexCode(price.getIndexCode())
+                .open(price.getOpen())
+                .low(price.getLow())
+                .high(price.getHigh())
+                .close(price.getClose())
+                .change(change.floatValue())
+                .changePercent(changePercent.floatValue())
+                .build();
     }
 
 
