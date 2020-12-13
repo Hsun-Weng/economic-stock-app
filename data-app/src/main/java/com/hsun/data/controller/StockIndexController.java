@@ -34,8 +34,8 @@ public class StockIndexController {
         return result;
     }
 
-    @GetMapping("/stock/{indexCode}/latest")
-    public Map<String, Object> getLatestPrice(@RequestBody String indexCode) {
+    @GetMapping("/stock/index/{indexCode}/latest")
+    public Map<String, Object> getLatestPrice(@PathVariable String indexCode) {
         Map<String, Object> result = new HashMap<String, Object>();
         try{
             result.put("data", service.getStockIndexLatestPrice(indexCode));

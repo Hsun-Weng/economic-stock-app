@@ -1,8 +1,6 @@
 package com.hsun.economic.service.impl;
 
-import com.hsun.economic.bean.PortfolioBean;
-import com.hsun.economic.bean.PortfolioProductBean;
-import com.hsun.economic.bean.ProductPriceBean;
+import com.hsun.economic.bean.*;
 import com.hsun.economic.constants.ProductType;
 import com.hsun.economic.entity.*;
 import com.hsun.economic.exception.ApiClientException;
@@ -133,84 +131,43 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
                 .findAny()
                 .orElseThrow(()->new ApiClientException("Portfolio not found."));
         List<PortfolioProduct> portfolioProductList = userPortfolio.getPortfolioProductList();
-        List<ProductPriceBean> priceBeanList = new ArrayList<>(portfolioProductList.size());
-        Map<String, Integer> productSortMap = portfolioProductList.stream()
-                .collect(Collectors.toMap((portfolioProduct -> portfolioProduct.getId().getProductCode()
-                        ), PortfolioProduct::getSort));
 
-        List<String> indexCodeList = portfolioProductList.stream().filter((portfolioProduct -> portfolioProduct.getId()
-                .getProductType() == ProductType.INDEX.getValue())).map((portfolioProduct ->
-                portfolioProduct.getId().getProductCode())).collect(Collectors.toList());
-
-        List<String> stockCodeList = portfolioProductList.stream().filter((portfolioProduct -> portfolioProduct.getId()
-                .getProductType() == ProductType.STOCK.getValue())).map((portfolioProduct ->
-                portfolioProduct.getId().getProductCode())).collect(Collectors.toList());
-
-        List<String> futuresCodeList = portfolioProductList.stream().filter((portfolioProduct -> portfolioProduct.getId()
-                .getProductType() == ProductType.FUTURES.getValue())).map((portfolioProduct ->
-                portfolioProduct.getId().getProductCode())).collect(Collectors.toList());
-
-        priceBeanList.addAll(getStockIndexPriceList(indexCodeList));
-        priceBeanList.addAll(getStockPriceList(stockCodeList));
-
-        return priceBeanList.stream()
-                .map((productPrice)->{
-                    productPrice.setSort(productSortMap.get(productPrice.getProductCode()));
-                    return productPrice;
-                })
+        return portfolioProductList
+                .parallelStream()
+                .map((portfolioProduct -> {
+                    PortfolioProductBean portfolioProductBean = null;
+                    String productCode = portfolioProduct.getId().getProductCode();
+                    String productName = null;
+                    ProductType productType = ProductType.fromValue(portfolioProduct.getId().getProductType());
+                    PriceBean priceBean = null;
+                    switch(productType){
+                        case INDEX:
+                            productName = stockIndexRepository.findById(productCode).get().getIndexName();
+                            priceBean = stockIndexPriceResource.getLatestPrice(productCode)
+                                    .getData();
+                            break;
+                        case STOCK:
+                            productName = stockRepository.findById(productCode).get().getStockName();
+                            priceBean = stockPriceResource.getLatestPrice(productCode).getData();
+                            break;
+                        case FUTURES:
+                            break;
+                    }
+                    return ProductPriceBean.builder()
+                            .date(priceBean.getDate())
+                            .productCode(productCode)
+                            .productName(productName)
+                            .open(priceBean.getOpen())
+                            .low(priceBean.getLow())
+                            .high(priceBean.getHigh())
+                            .close(priceBean.getClose())
+                            .volume(priceBean.getVolume())
+                            .change(priceBean.getChange())
+                            .changePercent(priceBean.getChangePercent())
+                            .sort(portfolioProduct.getSort())
+                            .build();
+                }))
                 .sorted(Comparator.comparing(ProductPriceBean::getSort))
                 .collect(Collectors.toList());
-    }
-
-    private List<ProductPriceBean> getStockPriceList(List<String> stockCodeList){
-        if(stockCodeList.size()==0) {
-            return Collections.EMPTY_LIST;
-        }
-        Map<String, String> stockNameMap = stockRepository.findByStockCodeIn(stockCodeList).stream()
-                .collect(Collectors.toMap(Stock::getStockCode, Stock::getStockName));
-
-        return stockPriceResource.getBatchLatestPriceList(stockCodeList)
-                .getData()
-                .stream()
-                .map((stockPrice)-> ProductPriceBean.builder()
-                        .date(stockPrice.getDate())
-                        .productType(ProductType.STOCK.getValue())
-                        .productCode(stockPrice.getStockCode())
-                        .productName(stockNameMap.get(stockPrice.getStockCode()))
-                        .open(stockPrice.getOpen())
-                        .low(stockPrice.getLow())
-                        .high(stockPrice.getHigh())
-                        .close(stockPrice.getClose())
-                        .volume(stockPrice.getVolume())
-                        .change(stockPrice.getChange())
-                        .changePercent(stockPrice.getChangePercent())
-                        .build()
-                ).collect(Collectors.toList());
-    }
-
-    private List<ProductPriceBean> getStockIndexPriceList(List<String> indexCodeList){
-        if(indexCodeList.size()==0) {
-            return Collections.EMPTY_LIST;
-        }
-        Map<String, String> indexNameMap = stockIndexRepository.findByIndexCodeIn(indexCodeList).stream()
-                .collect(Collectors.toMap(StockIndex::getIndexCode, StockIndex::getIndexName));
-
-        return stockIndexPriceResource.getBatchLatestPriceList(indexCodeList)
-                .getData()
-                .stream()
-                .map((indexPrice)-> ProductPriceBean.builder()
-                        .date(indexPrice.getDate())
-                        .productType(ProductType.INDEX.getValue())
-                        .productCode(indexPrice.getIndexCode())
-                        .productName(indexNameMap.get(indexPrice.getIndexCode()))
-                        .open(indexPrice.getOpen())
-                        .low(indexPrice.getLow())
-                        .high(indexPrice.getHigh())
-                        .close(indexPrice.getClose())
-                        .volume(indexPrice.getVolume())
-                        .change(indexPrice.getChange())
-                        .changePercent(indexPrice.getChangePercent())
-                        .build()
-                ).collect(Collectors.toList());
     }
 }
