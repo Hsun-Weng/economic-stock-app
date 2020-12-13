@@ -11,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -62,11 +63,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         User user = new User();
         user.setUserName(authResult.getName());
 
-        String token = jwtUtil.generateToken(user);
-        
-        ResponseBean responseBean = new ResponseBean();
-        responseBean.setData(token);
+        Cookie cookie = new Cookie("token", jwtUtil.generateToken(user));
+        cookie.setMaxAge(365*24*60*60);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
 
+        ResponseBean responseBean = new ResponseBean();
+        response.addCookie(cookie);
         response.getWriter().write(new Gson().toJson(responseBean));
         response.getWriter().flush();
     }

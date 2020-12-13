@@ -1,5 +1,6 @@
 package com.hsun.economic.service.impl;
 
+import com.hsun.economic.bean.PortfolioProductBean;
 import com.hsun.economic.entity.*;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.repository.*;
@@ -24,38 +25,51 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
     private UserPortfolioRepository userPortfolioRepository;
 
     @Override
-    public void addPortfolioProduct(String userName, Integer portfolioId, PortfolioProduct portfolioProduct) {
+    public void addPortfolioProduct(String userName, Integer portfolioId, PortfolioProductBean portfolioProductBean) {
         User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
         UserPortfolio userPortfolio = user.getUserPortfolioList().stream()
                 .filter((portfolio->portfolio.getPortfolioId()
                         .equals(portfolioId))).findFirst()
                 .orElseThrow(()->new ApiClientException("Portfolio not found."));
 
-        portfolioProduct.getId().setPortfolioId(portfolioId);
+        PortfolioProduct portfolioProduct = new PortfolioProduct();
+        PortfolioProductPK portfolioProductId = new PortfolioProductPK();
+        portfolioProductId.setPortfolioId(portfolioId);
+        portfolioProductId.setProductType(portfolioProductBean.getProductType());
+        portfolioProductId.setProductCode(portfolioProductBean.getProductCode());
+
         Integer maxSort = userPortfolio.getPortfolioProductList()
                 .stream()
                 .mapToInt(PortfolioProduct::getSort).max().orElse(0);
-        portfolioProduct.setSort(maxSort+1);
+
+        portfolioProduct.setId(portfolioProductId);
+        portfolioProduct.setSort(++maxSort);
         repository.save(portfolioProduct);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void savePortfolioProducts(String userName, Integer portfolioId
-            , List<PortfolioProduct> portfolioProductList) {
+            , List<PortfolioProductBean> portfolioProductBeanList) {
         User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
-        user.getUserPortfolioList().stream()
-                .filter((userPortfolio->userPortfolio.getPortfolioId()
+        UserPortfolio userPortfolio = user.getUserPortfolioList().stream()
+                .filter((entity->entity.getPortfolioId()
                         .equals(portfolioId))).findAny()
                 .orElseThrow(()->new ApiClientException("Portfolio not found."));
-
-        List<PortfolioProduct> entityList = portfolioProductList.stream()
-                .map((portfolioProduct)->{
-                    portfolioProduct.getId().setPortfolioId(portfolioId);
+        List<PortfolioProduct> portfolioProductList = portfolioProductBeanList
+                .parallelStream()
+                .map((portfolioProductBean -> {
+                    PortfolioProduct portfolioProduct = new PortfolioProduct();
+                    PortfolioProductPK portfolioProductId = new PortfolioProductPK();
+                    portfolioProductId.setPortfolioId(portfolioId);
+                    portfolioProductId.setProductType(portfolioProductBean.getProductType());
+                    portfolioProductId.setProductCode(portfolioProductBean.getProductCode());
+                    portfolioProduct.setSort(portfolioProductBean.getSort());
+                    portfolioProduct.setId(portfolioProductId);
                     return portfolioProduct;
-                }).collect(Collectors.toList());
-
-        repository.saveAll(entityList);
+                })).collect(Collectors.toList());
+        userPortfolio.setPortfolioProductList(portfolioProductList);
+        userPortfolioRepository.save(userPortfolio);
     }
 
     @Override

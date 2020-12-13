@@ -1,11 +1,12 @@
 package com.hsun.economic.entity;
 
-import java.io.Serializable;
-import java.util.List;
+import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
-
-import lombok.Data;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -31,10 +32,13 @@ public class User implements Serializable {
 	@Column(name="last_name")
 	private String lastName;
 
-	@OneToMany
+	@OneToMany(orphanRemoval = true)
 	@JoinColumn(name="user_name")
-	private List<UserPortfolio> userPortfolioList;
+	@ToString.Exclude
+	private List<UserPortfolio> userPortfolioList = new ArrayList<>();
 
-	@OneToMany(orphanRemoval = true, mappedBy = "id.userName")
-	private List<OauthToken> oauthTokenList;
+	@OneToMany(orphanRemoval = true)
+	@JoinColumn(name="user_name")
+	@ToString.Exclude
+	private List<OauthToken> oauthTokenList = new ArrayList<>();
 }

@@ -3,6 +3,6 @@ package com.hsun.economic.bean;
 import lombok.Data;
 
 @Data
-public class ResponseBean {
-    private Object data;
+public class ResponseBean<T> {
+    private T data;
 }

@@ -50,6 +50,15 @@ public class StockIndexServiceImpl implements StockIndexService {
     }
 
     @Override
+    public StockIndexPriceBean getStockIndexLatestPrice(String indexCode) {
+        Query query = new Query(Criteria.where("index_code").is(indexCode))
+                .with(Sort.by(Sort.Order.desc("date"))).limit(2);
+        List<StockIndex> priceList = mongoTemplate.find(query, StockIndex.class);
+
+        return convertStockIndexListToBean(priceList);
+    }
+
+    @Override
     public List<StockIndexPriceBean> getBatchLatestPriceList(List<String> indexCodeList) {
         List<StockIndexPriceBean> batchLatestPriceList = new ArrayList<>(indexCodeList.size());
 
@@ -61,14 +70,14 @@ public class StockIndexServiceImpl implements StockIndexService {
             List<StockIndex> priceList = mongoTemplate.find(query, StockIndex.class);
 
             if(priceList.size() > 0) {
-                batchLatestPriceList.add(convertStockIndexListToMap(priceList));
+                batchLatestPriceList.add(convertStockIndexListToBean(priceList));
             }
         }
 
         return batchLatestPriceList;
     }
 
-    private StockIndexPriceBean convertStockIndexListToMap(List<StockIndex> priceList) {
+    private StockIndexPriceBean convertStockIndexListToBean(List<StockIndex> priceList) {
         StockIndex price = priceList.get(0);
         StockIndex previousPrice = null;
 

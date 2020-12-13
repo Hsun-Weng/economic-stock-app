@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 
 public interface StockService {
     List<StockPriceBean> getStockPriceList(String stockCode, Date startDate, Date endDate);
+    StockPriceBean getStockLatestPrice(String stockCode);
     List<StockPriceBean> getBatchStockLatestPriceList(List<String> stockCodeList);
     Page<StockPriceBean> getStockSortedPage(PageRequest pageRequest);
 }

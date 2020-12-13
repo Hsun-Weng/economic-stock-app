@@ -3,6 +3,7 @@ package com.hsun.economic.service.impl;
 import com.hsun.economic.bean.OauthUser;
 import com.hsun.economic.bean.RequestOauthBean;
 import com.hsun.economic.bean.ResponseOauthBean;
+import com.hsun.economic.bean.UserBean;
 import com.hsun.economic.entity.OauthToken;
 import com.hsun.economic.entity.OauthTokenPK;
 import com.hsun.economic.entity.User;
@@ -31,13 +32,21 @@ public class UserServiceImpl implements UserService {
     private JwtUtil jwtUtil;
 
     @Override
-    public void saveUser(User user) {
+    public void saveUser(UserBean userBean) {
+        User user = new User();
+        user.setUserName(userBean.getUserName());
+        user.setPassword(userBean.getPassword());
+        user.setFirstName(userBean.getFirstName());
+        user.setLastName(userBean.getLastName());
         repository.save(user);
     }
 
     @Override
-    public User findUserByName(String userName) {
-        return repository.findById(userName).orElse(null);
+    public UserBean findUserByName(String userName) {
+        return repository.findById(userName)
+                .map((user)->new UserBean(user.getUserName(), null
+                        , user.getFirstName(), user.getLastName()))
+                .orElse(null);
     }
 
     @Override

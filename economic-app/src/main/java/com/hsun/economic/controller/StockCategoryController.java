@@ -1,7 +1,6 @@
 package com.hsun.economic.controller;
 
 import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.entity.StockCategory;
 import com.hsun.economic.exception.ApiServerException;
 import com.hsun.economic.service.StockCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ public class StockCategoryController {
     @GetMapping("/categories")
     public ResponseBean getCategoryList() {
         ResponseBean responseBean = new ResponseBean();
-        List<StockCategory> categoryList = null;
-        List<Map<String, Object>> dataList = null;
         try {
             responseBean.setData(service.getCategoryList());
         }catch(Exception e) {
@@ -35,7 +32,7 @@ public class StockCategoryController {
     public ResponseBean getCategoryStockList(@PathVariable String categoryCode) {
         ResponseBean responseBean = new ResponseBean();
         try {
-            responseBean.setData(service.getStockList(categoryCode));
+            responseBean.setData(service.getStockPriceList(categoryCode));
         }catch(Exception e) {
             throw new ApiServerException();
         }

@@ -9,5 +9,6 @@ import com.hsun.data.entity.StockIndex;
 
 public interface StockIndexService {
     List<StockIndexPriceBean> getStockIndexByCodeAndDateBetween(String indexCode, Date startDate, Date endDate);
+    StockIndexPriceBean getStockIndexLatestPrice(String indexCode);
     List<StockIndexPriceBean> getBatchLatestPriceList(List<String> indexCodeList);
 }

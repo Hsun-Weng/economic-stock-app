@@ -31,7 +31,9 @@ dependencies {
 	implementation 'com.auth0:java-jwt:3.9.0'
 	
 	implementation 'com.google.code.gson:gson:2.8.6'
-	
+	implementation 'com.github.lianjiatech:retrofit-spring-boot-starter:2.2.2'
+	implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	

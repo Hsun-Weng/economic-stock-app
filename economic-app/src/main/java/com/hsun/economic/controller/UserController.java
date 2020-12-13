@@ -1,8 +1,11 @@
 package com.hsun.economic.controller;
 
 import com.hsun.economic.bean.RequestOauthBean;
+import com.hsun.economic.bean.ResponseBean;
+import com.hsun.economic.bean.UserBean;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
@@ -12,12 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.entity.User;
-import com.hsun.economic.service.UserService;
-
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class UserController {
@@ -29,20 +28,10 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/user")
-    public ResponseBean getUser(Authentication authentication){
+    public ResponseBean<UserBean> getUser(Authentication authentication){
         ResponseBean responseBean = new ResponseBean();
-        User user = null;
-
         try{
-            user = service.findUserByName(authentication.getName());
-
-            Map<String, Object> dataMap = new HashMap<String, Object>();
-            dataMap.put("userName", user.getUserName());
-            dataMap.put("firstName", user.getFirstName());
-            dataMap.put("lastName", user.getLastName());
-
-            responseBean.setData(dataMap);
-
+            responseBean.setData(service.findUserByName(authentication.getName()));
         }catch(Exception e) {
             throw new ApiServerException();
         }
@@ -50,11 +39,11 @@ public class UserController {
     }
     
     @PostMapping("/user/signup")
-    public ResponseBean saveUser(@RequestBody User user){
+    public ResponseBean saveUser(@RequestBody UserBean userBean){
         ResponseBean responseBean = new ResponseBean();
         try {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            service.saveUser(user);
+            userBean.setPassword(passwordEncoder.encode(userBean.getPassword()));
+            service.saveUser(userBean);
         }catch(DataIntegrityViolationException e){
             throw new ApiClientException("Duplicate User Name");
         }catch(Exception e) {
@@ -64,14 +53,30 @@ public class UserController {
     }
 
     @PostMapping("/user/oauth")
-    public ResponseBean oauth(@RequestBody RequestOauthBean requestOauthBean){
+    public ResponseBean oauth(@RequestBody RequestOauthBean requestOauthBean, HttpServletResponse response){
         ResponseBean responseBean = new ResponseBean();
         try {
-            responseBean.setData(service.oauth(requestOauthBean));
+            Cookie cookie = new Cookie("token", service.oauth(requestOauthBean));
+            cookie.setMaxAge(365*24*60*60);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
         }catch(Exception e) {
             e.printStackTrace();
             throw new ApiServerException();
         }
         return responseBean;
+    }
+
+    @PostMapping("/user/logout")
+    public void logout(HttpServletResponse response){
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+//        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
     }
 }

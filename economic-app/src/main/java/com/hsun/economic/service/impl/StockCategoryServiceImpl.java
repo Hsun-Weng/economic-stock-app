@@ -1,9 +1,11 @@
 package com.hsun.economic.service.impl;
 
-import com.hsun.economic.bean.StockBean;
 import com.hsun.economic.bean.StockCategoryBean;
+import com.hsun.economic.bean.StockPriceBean;
+import com.hsun.economic.entity.Stock;
 import com.hsun.economic.entity.StockCategory;
 import com.hsun.economic.repository.StockCategoryRepository;
+import com.hsun.economic.resource.StockPriceResource;
 import com.hsun.economic.service.StockCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ public class StockCategoryServiceImpl implements StockCategoryService {
     @Autowired
     private StockCategoryRepository repository;
 
+    @Autowired
+    private StockPriceResource stockPriceResource;
+
     @Override
     public List<StockCategoryBean> getCategoryList() {
         return repository.findAll()
@@ -27,18 +32,25 @@ public class StockCategoryServiceImpl implements StockCategoryService {
     }
 
     @Override
-    public List<StockBean> getStockList(String categoryCode) {
-        List<StockBean> stockList = Collections.emptyList();
+    public List<StockPriceBean> getStockPriceList(String categoryCode) {
+        List<StockPriceBean> stockPriceList = Collections.emptyList();
         Optional<StockCategory> stockCategoryOptional = repository.findById(categoryCode);
         if(stockCategoryOptional.isPresent()){
-            stockList = stockCategoryOptional.get()
+            Map<String, String> stockCodeMap = stockCategoryOptional.get()
                     .getStockList()
                     .stream()
-                    .map((stock)->
-                            new StockBean(stock.getStockCode(), stock.getStockName()))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toMap(Stock::getStockCode, Stock::getStockName));
+            stockPriceList = stockPriceResource.getBatchLatestPriceList(stockCodeMap.keySet()
+                        .stream()
+                        .collect(Collectors.toList()))
+                    .getData()
+                    .stream()
+                    .map((stockPrice)->{
+                        stockPrice.setStockName(stockCodeMap.get(stockPrice.getStockCode()));
+                        return stockPrice;
+                    }).collect(Collectors.toList());
         }
-        return stockList;
+        return stockPriceList;
     }
 
     @Override

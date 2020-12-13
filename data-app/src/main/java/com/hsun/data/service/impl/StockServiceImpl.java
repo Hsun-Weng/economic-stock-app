@@ -53,6 +53,21 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public StockPriceBean getStockLatestPrice(String stockCode) {
+        Stock price = repository.findFirstByOrderByDateDesc().orElseThrow(()->new ApiServerException("Not found"));
+        return StockPriceBean.builder()
+                .date(price.getDate())
+                .stockCode(price.getStockCode())
+                .open(price.getOpen())
+                .low(price.getLow())
+                .high(price.getHigh())
+                .close(price.getClose())
+                .change(price.getChange())
+                .changePercent(Optional.ofNullable(price.getChangePercent())
+                        .map(changePercent->changePercent*100).orElse(0f)).build();
+    }
+
+    @Override
     public List<StockPriceBean> getBatchStockLatestPriceList(List<String> stockCodeList) {
         Stock latestStock = repository.findFirstByOrderByDateDesc().orElseThrow(()->new ApiServerException("Not found"));
         LocalDate localLatestDate = latestStock.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();

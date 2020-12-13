@@ -33,8 +33,20 @@ public class StockController {
         return result;
     }
 
+    @GetMapping("/stock/{stockCode}/latest")
+    public Map<String, Object> getLatestPrice(@RequestBody String stockCode) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try{
+            result.put("data", service.getStockLatestPrice(stockCode));
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new ApiServerException();
+        }
+        return result;
+    }
+
     @PostMapping("/stock/latest")
-    public Map<String, Object> getBatchLatest(@RequestBody List<String> stockCodeList) {
+    public Map<String, Object> getBatchLatestPrice(@RequestBody List<String> stockCodeList) {
         Map<String, Object> result = new HashMap<String, Object>();
         try{
             result.put("data", service.getBatchStockLatestPriceList(stockCodeList));

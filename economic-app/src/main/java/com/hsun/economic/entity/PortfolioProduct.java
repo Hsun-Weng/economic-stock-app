@@ -17,10 +17,4 @@ public class PortfolioProduct implements Serializable {
 
     @Column(name="sort")
     private Integer sort;
-
-    @Transient
-    private String productCode;
-
-    @Transient
-    private String productName;
 }
