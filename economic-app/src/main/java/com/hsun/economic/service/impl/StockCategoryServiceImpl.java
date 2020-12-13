@@ -1,8 +1,9 @@
 package com.hsun.economic.service.impl;
 
 import com.hsun.economic.bean.StockCategoryBean;
+import com.hsun.economic.bean.StockCategoryProportionBean;
 import com.hsun.economic.bean.StockPriceBean;
-import com.hsun.economic.entity.Stock;
+import com.hsun.economic.bean.StockProportionBean;
 import com.hsun.economic.entity.StockCategory;
 import com.hsun.economic.repository.StockCategoryRepository;
 import com.hsun.economic.resource.StockPriceResource;
@@ -33,39 +34,44 @@ public class StockCategoryServiceImpl implements StockCategoryService {
 
     @Override
     public List<StockPriceBean> getStockPriceList(String categoryCode) {
-        List<StockPriceBean> stockPriceList = Collections.emptyList();
         Optional<StockCategory> stockCategoryOptional = repository.findById(categoryCode);
         if(stockCategoryOptional.isPresent()){
-            Map<String, String> stockCodeMap = stockCategoryOptional.get()
-                    .getStockList()
-                    .stream()
-                    .collect(Collectors.toMap(Stock::getStockCode, Stock::getStockName));
-            stockPriceList = stockPriceResource.getBatchLatestPriceList(stockCodeMap.keySet()
-                        .stream()
-                        .collect(Collectors.toList()))
-                    .getData()
-                    .stream()
-                    .map((stockPrice)->{
-                        stockPrice.setStockName(stockCodeMap.get(stockPrice.getStockCode()));
-                        return stockPrice;
-                    }).collect(Collectors.toList());
+            return Collections.EMPTY_LIST;
         }
-        return stockPriceList;
+        return stockCategoryOptional.get()
+                .getStockList()
+                .parallelStream()
+                .map((stock)->{
+                    StockPriceBean priceBean = stockPriceResource.getLatestPrice(stock.getStockCode()).getData();
+                    priceBean.setStockName(stock.getStockName());
+                    return priceBean;
+                }).collect(Collectors.toList());
     }
 
     @Override
-    public List<Map<String, Object>> getCategoriesStockProportionRanked() {
+    public List<StockCategoryProportionBean> getCategoriesStockProportionRanked() {
         List<StockCategory> categoryList = repository.findAll();
-        return categoryList.stream().map((category)->{
-            Map<String, Object> categoryMap = new HashMap<String, Object>();
-            List<Map<String, Object>> stockList = repository.findByCategoryCodeOrderByProportionDescLimited(category.getCategoryCode(), 5);
-            if(stockList.size()==0){
+        return categoryList.parallelStream()
+                .map((category)->{
+            List<Map<String, Object>> stockProportionList = repository
+                    .findByCategoryCodeOrderByProportionDescLimited(category.getCategoryCode(), 5);
+            if(stockProportionList.size()==0){
                 return null;
             }
-            categoryMap.put("categoryCode", category.getCategoryCode());
-            categoryMap.put("name", category.getCategoryName());
-            categoryMap.put("children", stockList);
-            return categoryMap;
+            return StockCategoryProportionBean.builder()
+                    .categoryCode(category.getCategoryCode())
+                    .name(category.getCategoryName())
+                    .children(stockProportionList
+                            .parallelStream()
+                            .map((stockProportionMap)->new StockProportionBean((String)stockProportionMap.get("stockCode"),
+                                    (String) stockProportionMap.get("stockName")
+                                    , (Float)stockProportionMap.get("proportion"), null))
+                            .map((stockProportion -> {
+                                stockProportion.setChangePercent(stockPriceResource
+                                        .getLatestPrice(stockProportion.getStockCode()).getData().getChangePercent());
+                                return stockProportion;
+                            })).collect(Collectors.toList()))
+                    .build();
         }).filter((category)->category!=null).collect(Collectors.toList());
     }
 

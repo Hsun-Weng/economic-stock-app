@@ -70,8 +70,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         ResponseBean responseBean = new ResponseBean();
         response.addCookie(cookie);
-        response.getWriter().write(new Gson().toJson(responseBean));
-        response.getWriter().flush();
     }
     
 }

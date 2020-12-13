@@ -28,8 +28,8 @@ public class StockCategoryController {
         return responseBean;
     }
     
-    @GetMapping("/category/{categoryCode}/stocks")
-    public ResponseBean getCategoryStockList(@PathVariable String categoryCode) {
+    @GetMapping("/category/{categoryCode}/stocks/prices")
+    public ResponseBean getCategoryStockPriceList(@PathVariable String categoryCode) {
         ResponseBean responseBean = new ResponseBean();
         try {
             responseBean.setData(service.getStockPriceList(categoryCode));
@@ -44,10 +44,7 @@ public class StockCategoryController {
         ResponseBean responseBean = new ResponseBean();
         List<Map<String, Object>> dataList = null;
         try {
-            dataList = service.getCategoriesStockProportionRanked();
-
-            responseBean.setData(dataList);
-
+            responseBean.setData(service.getCategoriesStockProportionRanked());
         }catch(Exception e) {
             e.printStackTrace();
             throw new ApiServerException();
