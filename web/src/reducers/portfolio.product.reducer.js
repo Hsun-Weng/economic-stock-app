@@ -64,7 +64,7 @@ export const portfolioProduct = (state=initState, action) => {
         case portfolioConstants.RESORT_PORTFOLIO_PRODUCTS_SUCCESS:
             return {...state,
                 updating: false,
-                price: {data: action.data}
+                price: action.data
             };
         case portfolioConstants.RESORT_PORTFOLIO_PRODUCTS_FAILURE:
             return {...state ,

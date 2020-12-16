@@ -8,7 +8,8 @@ export const portfolioService = {
     getPortfolioProducts,
     addPortfolioProduct,
     updatePortfolioProducts,
-    deletePortfolioProduct
+    deletePortfolioProduct,
+    getLatestProductPrice
 }
 
 function getPortfolio(){
@@ -68,11 +69,11 @@ function updatePortfolio(portfolioId, portfolio){
         })
 }
 
-function addPortfolioProduct(portfolioId, portfolioProduct) {
+function addPortfolioProduct(portfolioId, productType, productCode) {
     const requestOptions = {
         method: 'POST',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(portfolioProduct)
+        body: JSON.stringify({productType: productType, productCode: productCode})
     };
 
     return fetch(`/api/portfolio/${portfolioId}/product`, requestOptions)
@@ -123,6 +124,16 @@ function deletePortfolioProduct(portfolioId, portfolioProduct) {
                 return Promise.reject(error);
             }
         })
+}
+
+function getLatestProductPrice(portfolioId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+    };
+
+    return fetch(`/api/portfolio/${portfolioId}/product/prices`, requestOptions)
+        .then(handleResponse)
 }
 
 const handleResponse = (httpResponse) => {

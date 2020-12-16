@@ -56,15 +56,8 @@ const StockIndexChart = () => {
     }
 
     const addPortfolioProduct = ( event ) => {
-        let portfolioProduct = {
-            id: {
-                productType: 0,
-                productCode: indexCode
-            },
-        }
-        dispatch(portfolioAction.addPortfolioProduct(portfolioId, portfolioProduct));
+        dispatch(portfolioAction.addPortfolioProduct(portfolioId, 0, indexCode));
     }
-
 
     const UserPortfolioSelect = () =>(
         <FormControl className={classes.formControl}>

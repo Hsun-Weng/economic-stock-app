@@ -28,15 +28,16 @@ function login(userName, password){
         body: JSON.stringify({ userName, password })
     };
 
-    return fetch(`/api/user/login`, requestOptions)
-        .then(handleResponse)
-        .then(token => {
-            localStorage.setItem('token', token);
-        });
+    return fetch(`/api/user/login`, requestOptions);
 }
 
 function logout(){
-    localStorage.removeItem('token');
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`/api/user/logout`, requestOptions);
 }
 
 function signUp(user){
@@ -58,10 +59,7 @@ function oauthLogin(providerCode, code){
     };
 
     return fetch(`/api/user/oauth`, requestOptions)
-        .then(handleResponse)
-        .then(token => {
-            localStorage.setItem('token', token);
-        });
+        .then(handleResponse);
 }
 
 const handleResponse = (httpResponse) => {

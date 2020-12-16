@@ -14,7 +14,6 @@ const PortfolioTableBody = ({ portfolioId }) => {
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const portfolioProducts = useSelector(state=>state.portfolioProduct.data);
     const portfolioProductPrices = useSelector(state=>state.portfolioProduct.price);
 
     const onSortEnd = async ({oldIndex, newIndex}) => {
@@ -29,7 +28,7 @@ const PortfolioTableBody = ({ portfolioId }) => {
         dispatch(portfolioAction.deletePortfolioProducts(portfolioId, portfolioProduct));
     };
 
-    const redirectStockChart = ( event, productCode, productType ) => {
+    const redirectChart = ( event, productCode, productType ) => {
         event.preventDefault();
         switch(productType){
             case 0:
@@ -72,12 +71,12 @@ const PortfolioTableBody = ({ portfolioId }) => {
                 </IconButton>
             </TableCell>
             <TableCell>
-                <Link href="#" onClick={event=>redirectStockChart(event, product.productCode, product.productType)}>
+                <Link href="#" onClick={event=>redirectChart(event, product.productCode, product.productType)}>
                     {product.productCode}
                 </Link>
             </TableCell>
             <TableCell>
-                <Link href="#" onClick={event=>redirectStockChart(event, product.productCode, product.productType)}>
+                <Link href="#" onClick={event=>redirectChart(event, product.productCode, product.productType)}>
                     {product.productName}
                 </Link>
             </TableCell>
@@ -124,16 +123,12 @@ const PortfolioTableBody = ({ portfolioId }) => {
             </TableCell>
         </TableRow>
     )});
-
-    useEffect(()=>{
-        if( portfolioId !== 0){
-            dispatch(portfolioAction.getPortfolioProducts(portfolioId));
-        }
-    }, [ dispatch, portfolioId ])
-
+        
     useEffect(()=> {
-        dispatch(portfolioAction.getLatestProductPrice(portfolioProducts));
-    }, [ dispatch, portfolioProducts ]);
+        if( portfolioId !== 0){
+            dispatch(portfolioAction.getLatestProductPrice(portfolioId));
+        }
+    }, [ dispatch, portfolioId ]);
 
     return (<StockTable onSortEnd={onSortEnd} useDragHandle>
             {portfolioProductPrices.map((prop, key)=>

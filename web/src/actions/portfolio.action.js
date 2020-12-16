@@ -118,11 +118,11 @@ function getPortfolioProducts(portfolioId) {
     function failure() { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCTS_FAILURE } }
 }
 
-function addPortfolioProduct(portfolioId, portfolioProduct) {
+function addPortfolioProduct(portfolioId, productType, productCode) {
     return dispatch => {
         dispatch(request());
 
-        portfolioService.addPortfolioProduct(portfolioId, portfolioProduct)
+        portfolioService.addPortfolioProduct(portfolioId, productType, productCode)
             .then(()=>{
                 dispatch(success());
             },
@@ -157,58 +157,18 @@ function deletePortfolioProducts(portfolioId, portfolioProduct) {
     function failure() { return { type: portfolioConstants.DELETE_PORTFOLIO_PRODUCT_FAILURE } }
 }
 
-function getLatestProductPrice(portfolioProducts) {
+function getLatestProductPrice(portfolioId) {
     return dispatch => {
-        let portfolioPorductPrices = [];
-
-        let indexCodes = Object.assign([], portfolioProducts)
-                    .filter((data)=>data.productType===0)
-                    .map((data)=>data.productCode);
-
-        let stockCodes = Object.assign([], portfolioProducts)
-                        .filter((data)=>data.productType===1)
-                        .map((data)=>data.productCode);
-        
         dispatch(request());
 
-        stockService.getLatestStockIndexPrice(indexCodes)
+        portfolioService.getLatestProductPrice(portfolioId)
             .then(data=>{
-                let stockIndexPrices = data.map((detail)=>{
-                    return {...detail,
-                        productCode: detail.indexCode,
-                        productName: portfolioProducts.find((product)=>product.productCode===detail.indexCode).productName,
-                        sort: portfolioProducts.find((product)=>product.productCode===detail.indexCode).sort,
-                        productType: 0
-                    };
-                })
-                portfolioPorductPrices = portfolioPorductPrices.concat(stockIndexPrices)
-                    .sort((product1,product2)=>product1.sort-product2.sort);
-                dispatch(success(portfolioPorductPrices))
+                dispatch(success(data))
             },
             error=>{
                 dispatch(failure());
                 dispatch(notificationActions.enqueueError(error));
             });
-
-        stockService.getLatestStockPrice(stockCodes)
-            .then(data=>{
-                    let stockPrices = data.map((detail)=>{
-                        return {...detail,
-                            productCode: detail.stockCode,
-                            productName: portfolioProducts.find((product)=>product.productCode===detail.stockCode).productName,
-                            sort: portfolioProducts.find((product)=>product.productCode===detail.stockCode).sort,
-                            productType: 1
-                        };
-                    });
-                    portfolioPorductPrices = portfolioPorductPrices.concat(stockPrices)
-                        .sort((product1,product2)=>product1.sort-product2.sort);
-                    dispatch(success(portfolioPorductPrices))
-                },
-                error=>{
-                    dispatch(failure());
-                    dispatch(notificationActions.enqueueError(error));
-            });
-        
     }
 
     function request() { return { type: portfolioConstants.GET_PORTFOLIO_PRODUCT_PRICES_REQUEST } }
@@ -222,10 +182,8 @@ function resortPortfolioProducts(portfolioId, portfolioProducts, oldIndex, newIn
         let resortIndex = 0;
         let updateProducts = resortedProducts.map((product)=>{
             return {
-                id: {
-                    productType: product.productType,
-                    productCode: product.productCode
-                },
+                productType: product.productType,
+                productCode: product.productCode,
                 sort: ++resortIndex
             };
         });

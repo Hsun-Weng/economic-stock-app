@@ -3,7 +3,7 @@ import stockConstants from '../constants/stock.constants';
 const initState = {
     loading: false,
     data: [],
-    stocks: []
+    stockPrices: []
 };
 
 export const stockCategory = (state=initState, action) => {
@@ -18,29 +18,29 @@ export const stockCategory = (state=initState, action) => {
             return {...state,
                 loading: false,
                 data: action.data,
-                stocks: []
+                stockPrices: []
             };
         case stockConstants.GET_CATEGORIES_FAILURE:
             return {...state,
                 loading: false,
                 data: [],
-                stocks: []
+                stockPrices: []
             };
         // category stocks
-        case stockConstants.GET_CATEGORY_STOCKS_REQUEST: 
+        case stockConstants.GET_CATEGORY_STOCK_PRICES_REQUEST: 
             return {...state,
                 loading: true,
-                stocks: []
+                stockPrices: []
             }
-        case stockConstants.GET_CATEGORY_STOCKS_SUCCESS:
+        case stockConstants.GET_CATEGORY_STOCK_PRICES_SUCCESS:
             return {...state,
                 loading: false,
-                stocks: action.data
+                stockPrices: action.data
             }
-        case stockConstants.GET_CATEGORY_STOCKS_FAILURE:
+        case stockConstants.GET_CATEGORY_STOCK_PRICES_FAILURE:
             return { ...state,  
                 loading: false,
-                stocks: []
+                stockPrices: []
             };
         default: 
             return state;

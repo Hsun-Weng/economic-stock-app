@@ -12,29 +12,21 @@ export const userAction = {
 function getUser() {
     return dispatch => {
         dispatch(request());
-
-        if(localStorage.getItem('token')){
-            userService.getUser()
-                .then(user=>{
-                    dispatch(success(user));
-                },
-                error=>{
-                    dispatch(failure());
-                    dispatch(notificationActions.enqueueError(error.message));
-                })
-        }else{
-            dispatch(failure());
-        }
+    
+        userService.getUser()
+            .then(user=>{
+                console.log(user);
+                dispatch(success(user));
+            },
+            error=>{
+                dispatch(failure());
+                dispatch(notificationActions.enqueueError(error.message));
+            })
     };
 
     function request() { return { type: userConstants.GET_USER_REQUEST } }
     function success(user) { return { type: userConstants.GET_USER_SUCCESS, user } }
-    function failure() { 
-        localStorage.removeItem('token');
-        return { 
-            type: userConstants.GET_USER_FAILURE
-        } 
-    }
+    function failure() { return { type: userConstants.GET_USER_FAILURE} }
 }
 
 function login(userName, password) {
