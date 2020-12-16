@@ -4,7 +4,7 @@ const initState = {
     loading: false,
     data: [],
     page: {
-        totalSize: 0,
+        totalPage: 0,
         page: 0,
         size: 10
     }
@@ -18,7 +18,7 @@ export const stockRank = (state=initState, action) => {
                 loading: true,
                 data: [],
                 page: {
-                    totalSize: 0,
+                    totalPage: 0,
                     page: 0,
                     size: 10
                 }
@@ -34,7 +34,7 @@ export const stockRank = (state=initState, action) => {
                 loading: false,
                 data: [],
                 page: {
-                    totalSize: 0,
+                    totalPage: 0,
                     page: 0,
                     size: 10
                 }

@@ -34,7 +34,6 @@ public class FuturesChipServiceImpl implements FuturesChipService {
     @Override
     public List<FuturesChipBean> getFuturesChipList(String futuresCode, Date startDate,
                                                                     Date endDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         // 設置查詢起訖時間移至最早 & 最晚
         LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Date queryStartDate = Date.from(localStartDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
@@ -53,6 +52,8 @@ public class FuturesChipServiceImpl implements FuturesChipService {
                 .map((futuresChip)->{
             // 未平倉總量
             Integer openInterestLot = openInterestLotMap.get(futuresChip.getDate());
+
+            System.out.println(new BigDecimal(openInterestLot));
             
             List<InvestorFuturesChipBean> investorFuturesChipList = futuresChip.getInvestorFuturesChip()
                     .stream()
@@ -65,9 +66,8 @@ public class FuturesChipServiceImpl implements FuturesChipService {
                                     - investorChip.getOpenInterestShortLot())
                             .percent(new BigDecimal(((investorChip.getOpenInterestLongLot()
                                     - investorChip.getOpenInterestShortLot())))
-                                    .divide(new BigDecimal(openInterestLot)
+                                    .divide(new BigDecimal(openInterestLot), 4, RoundingMode.HALF_UP)
                                     .multiply(new BigDecimal(100))
-                                    .setScale(2, RoundingMode.HALF_UP))
                                     .floatValue())
                             .build())
                     .collect(Collectors.toList());
@@ -90,9 +90,8 @@ public class FuturesChipServiceImpl implements FuturesChipService {
                     .openInterestShortLot(retailOpenInterestShortLot)
                     .openInterestNetLot(retailOpenInterestLongLot - retailOpenInterestShortLot)
                     .percent(new BigDecimal(((retailOpenInterestLongLot - retailOpenInterestShortLot)))
-                            .divide(new BigDecimal(openInterestLot)
-                                    .multiply(new BigDecimal(100))
-                                    .setScale(2, RoundingMode.HALF_UP))
+                            .divide(new BigDecimal(openInterestLot), 4, RoundingMode.HALF_UP)
+                            .multiply(new BigDecimal(100))
                             .floatValue())
                     .build());
 

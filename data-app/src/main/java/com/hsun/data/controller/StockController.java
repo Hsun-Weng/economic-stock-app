@@ -3,6 +3,8 @@ package com.hsun.data.controller;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.hsun.data.bean.PageInfoBean;
+import com.hsun.data.bean.StockPriceBean;
 import com.hsun.data.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -58,9 +60,9 @@ public class StockController {
     }
 
     @GetMapping("/stock/latest/rank")
-    public Map<String, Object> getRankLatest(@RequestParam String sortColumn, @RequestParam Integer page,
-                                              @RequestParam Integer size, @RequestParam String direction) {
-        Map<String, Object> result = new HashMap<String, Object>();
+    public Map<String, PageInfoBean<StockPriceBean>> getRankLatest(@RequestParam String sortColumn, @RequestParam Integer page,
+                                                                   @RequestParam Integer size, @RequestParam String direction) {
+        Map<String, PageInfoBean<StockPriceBean>> result = new HashMap<>();
         try{
             result.put("data", service.getStockSortedPage(PageRequest.of(page, size, Sort.Direction.valueOf(direction)
                     , sortColumn)));

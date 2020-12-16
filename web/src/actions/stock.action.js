@@ -13,7 +13,7 @@ export const stockAction = {
     getLatestStockIndexPrice,
     getStockChip,
     getStockMargin,
-    getStockRank,
+    getStockRankPrices,
     getCategoriesProportion
 }
 
@@ -219,11 +219,11 @@ function getStockMargin(stockCode, startDate, endDate) {
     function failure() { return { type: stockConstants.GET_STOCK_MARGIN_FAILURE } }
 }
 
-function getStockRank(allStocks, sortColumn, page, size, direction) {
+function getStockRankPrices(sortColumn, page, size, direction) {
     return dispatch => {
         dispatch(request());
 
-        stockService.getStockRank(sortColumn, page, size, direction)
+        stockService.getStockRankPrices(sortColumn, page, size, direction)
             .then(data=>{
                 dispatch(success(data));
             },
@@ -236,19 +236,11 @@ function getStockRank(allStocks, sortColumn, page, size, direction) {
     function request() { return { type: stockConstants.GET_STOCK_RANK_REQUEST } }
     function success(data) { 
         let page = {
-            page: data.pageable.page,
-            size: data.pageable.size,
-            totalSize: data.total
+            page: data.page,
+            size: data.size,
+            totalPage: data.totalPage
         };
-        let stocks = data.content.map((detail)=>{
-            let stock = allStocks.find((stock)=>stock.stockCode===detail.stockCode);
-            let stockName = stock?stock.stockName:"";
-            return {...detail,
-                stockName: stockName
-            };
-        });
-
-        return { type: stockConstants.GET_STOCK_RANK_SUCCESS, data: stocks, page } 
+        return { type: stockConstants.GET_STOCK_RANK_SUCCESS, data: data.content, page } 
     }
     function failure() { return { type: stockConstants.GET_STOCK_RANK_FAILURE } }
 }

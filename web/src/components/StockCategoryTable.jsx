@@ -33,19 +33,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const StockTable = ({ stocks }) => {
-    const dispatch = useDispatch();
-
-    const prices = useSelector(state=>state.stockPrice.latest);
-
-    useEffect(()=>{
-        dispatch(stockAction.getLatestStockPrice(stocks))
-    }, [ dispatch, stocks ])
-
     return (<TableContainer >
             <Table size="small">
                 <StockHeading />
                 <TableBody>
-                    {prices.map((prop, key)=>
+                    {stocks.map((prop, key)=>
                         <StockRow key={key} stock={prop} />)}
                 </TableBody>
             </Table>

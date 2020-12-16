@@ -35,7 +35,7 @@ public class StockCategoryServiceImpl implements StockCategoryService {
     @Override
     public List<StockPriceBean> getStockPriceList(String categoryCode) {
         Optional<StockCategory> stockCategoryOptional = repository.findById(categoryCode);
-        if(stockCategoryOptional.isPresent()){
+        if(!stockCategoryOptional.isPresent()){
             return Collections.EMPTY_LIST;
         }
         return stockCategoryOptional.get()

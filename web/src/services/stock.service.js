@@ -5,12 +5,10 @@ export const stockService = {
     getCategoryStocks,
     getStockPrices,
     getStockIndex,
-    getLatestStockPrice,
     getAllStockIndexes,
-    getLatestStockIndexPrice,
     getStockChip,
     getStockMargin,
-    getStockRank,
+    getStockRankPrices,
     getCategoriesProportion
 }
 
@@ -40,7 +38,7 @@ function getCategoryStocks(categoryCode){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/api/category/${categoryCode}/stocks`, requestOptions)
+    return fetch(`/api/category/${categoryCode}/stocks/prices`, requestOptions)
         .then(handleResponse)
 }
 
@@ -64,18 +62,6 @@ function getStockIndex(indexCode, startDate, endDate) {
         .then(handleResponse)
 }
 
-function getLatestStockPrice(stockCodes){
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(stockCodes)
-    };
-    
-
-    return fetch(`/data/stock/latest`, requestOptions)
-        .then(handleResponse)
-}
-
 function getAllStockIndexes(){
     const requestOptions = {
         method: 'GET',
@@ -83,18 +69,6 @@ function getAllStockIndexes(){
     };
 
     return fetch(`/api/indexes`, requestOptions)
-        .then(handleResponse)
-}
-
-function getLatestStockIndexPrice(indexCodes){
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(indexCodes)
-    };
-    
-
-    return fetch(`/data/stock/index/latest`, requestOptions)
         .then(handleResponse)
 }
 
@@ -128,13 +102,13 @@ function getStockMargin(stockCode, startDate, endDate){
         )
 }
 
-function getStockRank(sortColumn, page, size, direction) {
+function getStockRankPrices(sortColumn, page, size, direction) {
     const requestOptions = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json'},
     }
 
-    return fetch(`/data/stock/latest/rank?sortColumn=${sortColumn}&page=${page}&size=${size}&direction=${direction}`, requestOptions)
+    return fetch(`/api/stocks/rank/latest?sortColumn=${sortColumn}&page=${page}&size=${size}&direction=${direction}`, requestOptions)
         .then(handleResponse);
 }
 

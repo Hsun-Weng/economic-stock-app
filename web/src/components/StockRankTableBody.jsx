@@ -83,20 +83,12 @@ const StockRow = ({ stock }) => {
 };
 
 const StockRankTableBody = ({ stocks }) => {
-    const dispatch = useDispatch();
-  
-    const prices = useSelector(state=>state.stockPrice.latest);
+    return (
+        <TableBody>
+        {stocks.map((prop, key)=>
+            <StockRow key={key} stock={prop} />)}
+        </TableBody>
+    );
+}
 
-    useEffect(()=>{
-      dispatch(stockAction.getLatestStockPrice(stocks))
-  }, [ dispatch, stocks ])
-
-  return (
-      <TableBody>
-        {prices.map((prop, key)=>
-          <StockRow key={key} stock={prop} />)}
-      </TableBody>
-  );
-  }
-
-  export default StockRankTableBody;
+export default StockRankTableBody;
