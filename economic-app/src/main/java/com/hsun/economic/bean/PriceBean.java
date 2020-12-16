@@ -5,7 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
 
-@SuperBuilder(toBuilder = true)
 @Data
 public class PriceBean {
     private Date date;

@@ -1,13 +1,11 @@
-package com.hsun.economic.bean;
+package com.hsun.data.bean;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 @Data
 public class PageInfoBean<T> {
     private Integer totalPage;

@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.hsun.data.bean.PageInfoBean;
 import com.hsun.data.bean.StockPriceBean;
 import com.hsun.data.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,8 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public StockPriceBean getStockLatestPrice(String stockCode) {
-        Stock price = repository.findFirstByOrderByDateDesc().orElseThrow(()->new ApiServerException("Not found"));
+        Stock price = repository.findFirstByStockCodeOrderByDateDesc(stockCode)
+                .orElseThrow(()->new ApiServerException("Not found"));
         return StockPriceBean.builder()
                 .date(price.getDate())
                 .stockCode(price.getStockCode())
@@ -62,6 +64,7 @@ public class StockServiceImpl implements StockService {
                 .low(price.getLow())
                 .high(price.getHigh())
                 .close(price.getClose())
+                .volume(price.getVolume())
                 .change(price.getChange())
                 .changePercent(Optional.ofNullable(price.getChangePercent())
                         .map(changePercent->changePercent*100).orElse(0f)).build();
@@ -88,12 +91,15 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public Page<StockPriceBean> getStockSortedPage(PageRequest pageRequest) {
+    public PageInfoBean<StockPriceBean> getStockSortedPage(PageRequest pageRequest) {
         Stock latestStock = repository.findFirstByOrderByDateDesc().orElseThrow(()->new ApiServerException("Not found"));
         LocalDate localLatestDate = latestStock.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Date queryStartDate = Date.from(localLatestDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
         Date queryEndDate = Date.from(localLatestDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
-        return repository.findByDateBetween(queryStartDate, queryEndDate, pageRequest)
+
+        Page<Stock> stockPricePage = repository.findByDateBetween(queryStartDate, queryEndDate, pageRequest);
+        List<StockPriceBean> stockPriceList = stockPricePage.getContent()
+                .parallelStream()
                 .map((price)->StockPriceBean.builder()
                         .date(price.getDate())
                         .stockCode(price.getStockCode())
@@ -101,8 +107,16 @@ public class StockServiceImpl implements StockService {
                         .low(price.getLow())
                         .high(price.getHigh())
                         .close(price.getClose())
+                        .volume(price.getVolume())
                         .change(price.getChange())
                         .changePercent(Optional.ofNullable(price.getChangePercent())
-                                .map(changePercent->changePercent*100).orElse(0f)).build());
+                                .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
+
+        return PageInfoBean.<StockPriceBean>builder()
+                .totalPage(stockPricePage.getTotalPages())
+                .page(stockPricePage.getPageable().getPageNumber())
+                .size(stockPricePage.getSize())
+                .content(stockPriceList)
+                .build();
     }
 }

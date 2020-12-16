@@ -19,5 +19,6 @@ public interface StockRepository extends PagingAndSortingRepository<Stock, Strin
     List<Stock> findByStockCodeAndDateBetween(String stockCode, Date startDate, Date endDate);
     Page<Stock> findByDateBetween(Date startDate, Date endDate, Pageable pageable);
     Optional<Stock> findFirstByOrderByDateDesc();
+    Optional<Stock> findFirstByStockCodeOrderByDateDesc(String stockCode);
     List<Stock> findByStockCodeInAndDateBetween(List<String> stockCodeList, Date startDate, Date endDate);
 }

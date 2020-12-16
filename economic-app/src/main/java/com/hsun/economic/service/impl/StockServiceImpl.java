@@ -3,6 +3,7 @@ package com.hsun.economic.service.impl;
 import com.hsun.economic.bean.PageInfoBean;
 import com.hsun.economic.bean.StockBean;
 import com.hsun.economic.bean.StockPriceBean;
+import com.hsun.economic.entity.Stock;
 import com.hsun.economic.repository.StockRepository;
 import com.hsun.economic.resource.StockRankResource;
 import com.hsun.economic.service.StockService;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,16 +35,18 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public PageInfoBean<StockPriceBean> getStockSortedPage(String sortColumn, Integer page, Integer size, String direction) {
-        Page<StockPriceBean> sortedStockPage = stockRankResource.getStockSortedPage(sortColumn, page, size, direction).getData();
-        List<StockPriceBean> sortedStockList = sortedStockPage.getContent();
-        //TODO get page error
-        return new PageInfoBean<>(null, null,null,sortedStockPage.getContent()
+        PageInfoBean<StockPriceBean> sortedStockPage = stockRankResource.getStockSortedPage(sortColumn, page, size, direction).getData();
+        List<StockPriceBean> sortedStockList = sortedStockPage.getContent()
                 .parallelStream()
-                .map((stockPrice)->{
-                    stockPrice.setStockName(repository.findById(stockPrice.getStockCode()).get().getStockName());
-                    return stockPrice;
-                })
-                .collect(Collectors.toList()));
+                .map((stockPriceBean -> {//名稱補進
+                    repository.findById(stockPriceBean.getStockCode())
+                        .ifPresent((stock)->stockPriceBean.setStockName(stock.getStockName()));
+                    return stockPriceBean;
+                })).collect(Collectors.toList());
+
+        sortedStockPage.setContent(sortedStockList);
+
+        return sortedStockPage;
     }
 
 }

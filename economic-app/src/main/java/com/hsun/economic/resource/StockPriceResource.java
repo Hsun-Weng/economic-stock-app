@@ -8,6 +8,6 @@ import retrofit2.http.Path;
 
 @RetrofitClient(baseUrl = "${service.data.url}")
 public interface StockPriceResource {
-    @GET("stock/{stockCode}/latest")
+    @GET("stock/{stockCode}/price/latest")
     ResponseBean<StockPriceBean> getLatestPrice(@Path("stockCode") String stockCode);
 }
