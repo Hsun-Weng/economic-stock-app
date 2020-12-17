@@ -5,6 +5,7 @@ import com.hsun.economic.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,16 +19,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.hsun.economic.filter.JWTAuthenticationFilter;
 import com.hsun.economic.filter.JWTAuthorizationFilter;
-import com.hsun.economic.handler.JWTAuthenticationFailureHandler;
 
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     
     @Autowired
     private UserDetailsService userDetailsService;
-    
-    @Autowired
-    private JWTAuthenticationFailureHandler jwtAuthenticationFailureHandler;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -52,7 +49,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         
         JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter(authenticationManager(), jwtUtil);
         jwtAuthenticationFilter.setFilterProcessesUrl("/user/login");
-        jwtAuthenticationFilter.setAuthenticationFailureHandler(jwtAuthenticationFailureHandler);
+        jwtAuthenticationFilter.setAuthenticationFailureHandler(((request, response, exception) -> {
+            response.sendError(HttpStatus.UNAUTHORIZED.value());
+        }));
         
         http
         .addFilter(jwtAuthenticationFilter)

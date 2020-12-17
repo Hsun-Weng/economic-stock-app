@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +25,9 @@ public class StockChipController {
     private StockChipService service;
     
     @GetMapping("/stock/{stockCode}/chip")
-    public Map<String, Object> getStockChipByCodeAndDateBetween(@PathVariable String stockCode,
-            @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date startDate, @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date endDate){
+    public Map<String, Object> getStockChipByCodeAndDateBetween(@PathVariable String stockCode
+            , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate startDate
+            , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate endDate){
         Map<String, Object> result = new HashMap<String, Object>();
         try {
             result.put("data", service.getStockChipList(stockCode, startDate, endDate));

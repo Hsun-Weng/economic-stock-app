@@ -1,5 +1,6 @@
 package com.hsun.data.controller;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +26,9 @@ public class FuturesController {
     private FuturesService service;
     
     @GetMapping("/futures/{futuresCode}")
-    public Map<String, Object> getFuturesChipByCodeAndDateBetween(@PathVariable String futuresCode,@RequestParam String contractDate,
-            @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date startDate, @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date endDate){
+    public Map<String, Object> getFuturesChipByCodeAndDateBetween(@PathVariable String futuresCode
+            , @RequestParam String contractDate, @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate startDate
+            , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate endDate){
         Map<String, Object> result = new HashMap<String, Object>();
         try {
             result.put("data", service.getFuturesPriceList(futuresCode, contractDate, startDate, endDate));

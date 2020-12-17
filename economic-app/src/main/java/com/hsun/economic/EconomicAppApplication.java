@@ -1,5 +1,6 @@
 package com.hsun.economic;
 
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -13,6 +14,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import java.time.LocalDate;
 
 @SpringBootApplication(exclude = {JacksonAutoConfiguration.class})
 @ComponentScan("com.hsun.economic")
@@ -62,11 +65,4 @@ public class EconomicAppApplication {
 				})
 				.create();
 	}
-
-	@Bean
-	public GsonConverterFactory gsonConverterFactory() {
-		Gson gson = new GsonBuilder().create();
-		return GsonConverterFactory.create(gson);
-	}
-
 }

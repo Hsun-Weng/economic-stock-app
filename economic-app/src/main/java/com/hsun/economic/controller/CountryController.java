@@ -35,4 +35,15 @@ public class CountryController {
         }
         return responseBean;
     }
+
+    @GetMapping("/economic/{countryCode}/{dataCode}/values")
+    public ResponseBean getEconomicValue(@PathVariable String countryCode, @PathVariable String dataCode){
+        ResponseBean responseBean = new ResponseBean();
+        try{
+            responseBean.setData(service.getEconomicValueList(countryCode, dataCode));
+        } catch(Exception e) {
+            throw new ApiServerException();
+        }
+        return responseBean;
+    }
 }

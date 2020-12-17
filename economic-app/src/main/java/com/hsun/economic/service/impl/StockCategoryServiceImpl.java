@@ -58,6 +58,7 @@ public class StockCategoryServiceImpl implements StockCategoryService {
             if(stockProportionList.size()==0){
                 return null;
             }
+
             return StockCategoryProportionBean.builder()
                     .categoryCode(category.getCategoryCode())
                     .name(category.getCategoryName())
