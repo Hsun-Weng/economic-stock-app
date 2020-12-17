@@ -34,11 +34,9 @@ public class StockServiceImpl implements StockService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<StockPriceBean> getStockPriceList(String stockCode, Date startDate, Date endDate) {
-        LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryStartDate = Date.from(localStartDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-        LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryEndDate = Date.from(localEndDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+    public List<StockPriceBean> getStockPriceList(String stockCode, LocalDate startDate, LocalDate endDate) {
+        Date queryStartDate = Date.from(startDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(endDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
         return repository.findByStockCodeAndDateBetween(stockCode, queryStartDate, queryEndDate)
                 .stream()
                 .map((price)->StockPriceBean.builder()

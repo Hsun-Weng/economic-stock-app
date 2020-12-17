@@ -32,13 +32,10 @@ public class FuturesChipServiceImpl implements FuturesChipService {
     private FuturesRepository futuresRepository;
 
     @Override
-    public List<FuturesChipBean> getFuturesChipList(String futuresCode, Date startDate,
-                                                                    Date endDate) {
+    public List<FuturesChipBean> getFuturesChipList(String futuresCode, LocalDate startDate, LocalDate endDate) {
         // 設置查詢起訖時間移至最早 & 最晚
-        LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryStartDate = Date.from(localStartDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-        LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryEndDate = Date.from(localEndDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryStartDate = Date.from(startDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(endDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
         List<FuturesChip> futuresChipList = repository.findByFuturesCodeAndDateBetween(futuresCode, queryStartDate, queryEndDate);
        
         // 查詢全部未平倉量

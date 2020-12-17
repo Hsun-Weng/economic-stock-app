@@ -21,12 +21,10 @@ public class FuturesServiceImpl implements FuturesService {
     private FuturesRepository repository;
     
     @Override
-    public List<FuturesPriceBean> getFuturesPriceList(String futuresCode,
-                                                      String contractDate, Date startDate, Date endDate) {
-        LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryStartDate = Date.from(localStartDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-        LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryEndDate = Date.from(localEndDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+    public List<FuturesPriceBean> getFuturesPriceList(String futuresCode, String contractDate, LocalDate startDate
+            , LocalDate endDate) {
+        Date queryStartDate = Date.from(startDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(endDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
         return repository.findByFuturesCodeAndContractDateAndDateBetween(futuresCode, contractDate
                 , queryStartDate, queryEndDate)
                 .stream()

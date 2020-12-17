@@ -1,5 +1,6 @@
 package com.hsun.data.controller;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,9 +22,10 @@ public class StockIndexController {
     @Autowired
     private StockIndexService service;
 
-    @GetMapping("/stock/index/{indexCode}")
-    public Map<String, Object> getStockIndexByCodeAndDateBetween(@PathVariable String indexCode,
-            @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date startDate, @DateTimeFormat(iso= ISO.DATE)  @RequestParam Date endDate){
+    @GetMapping("/stock/index/{indexCode}/prices")
+    public Map<String, Object> getStockIndexByCodeAndDateBetween(@PathVariable String indexCode
+            , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate startDate
+            , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate endDate){
         Map<String, Object> result = new HashMap<String, Object>();
         try {
             result.put("data", service.getStockIndexByCodeAndDateBetween(indexCode
@@ -34,7 +36,7 @@ public class StockIndexController {
         return result;
     }
 
-    @GetMapping("/stock/index/{indexCode}/latest")
+    @GetMapping("/stock/index/{indexCode}/price/latest")
     public Map<String, Object> getLatestPrice(@PathVariable String indexCode) {
         Map<String, Object> result = new HashMap<String, Object>();
         try{
@@ -46,7 +48,7 @@ public class StockIndexController {
         return result;
     }
 
-    @PostMapping("/stock/index/latest")
+    @PostMapping("/stock/indexes/price/latest")
     public Map<String, Object> getBatchLatest(@RequestBody List<String> indexCodeList) {
         Map<String, Object> result = new HashMap<String, Object>();
         try{

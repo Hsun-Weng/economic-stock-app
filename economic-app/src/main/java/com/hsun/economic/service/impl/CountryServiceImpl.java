@@ -2,8 +2,10 @@ package com.hsun.economic.service.impl;
 
 import com.hsun.economic.bean.CountryBean;
 import com.hsun.economic.bean.EconomicDataBean;
+import com.hsun.economic.bean.EconomicValueBean;
 import com.hsun.economic.entity.Country;
 import com.hsun.economic.repository.CountryRepository;
+import com.hsun.economic.resource.EconomicValueResource;
 import com.hsun.economic.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class CountryServiceImpl implements CountryService {
     
     @Autowired
     private CountryRepository repository;
+
+    @Autowired
+    private EconomicValueResource valueResource;
 
     @Override
     public List<CountryBean> getCountryList() {
@@ -42,5 +47,10 @@ public class CountryServiceImpl implements CountryService {
         }
 
         return economicDataList;
+    }
+
+    @Override
+    public List<EconomicValueBean> getEconomicValueList(String countryCode, String dataCode) {
+        return valueResource.getValueList(countryCode, dataCode).getData();
     }
 }

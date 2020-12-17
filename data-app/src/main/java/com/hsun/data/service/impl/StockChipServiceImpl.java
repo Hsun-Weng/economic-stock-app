@@ -21,11 +21,9 @@ public class StockChipServiceImpl implements StockChipService {
     private StockChipRepository repository;
 
     @Override
-    public List<StockChipBean> getStockChipList(String stockCode, Date startDate, Date endDate) {
-        LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryStartDate = Date.from(localStartDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-        LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryEndDate = Date.from(localEndDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+    public List<StockChipBean> getStockChipList(String stockCode, LocalDate startDate, LocalDate endDate) {
+        Date queryStartDate = Date.from(startDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(endDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
         return repository.findByStockCodeAndDateBetween(stockCode, queryStartDate, queryEndDate)
                 .stream()
                 .map((stockChip -> new StockChipBean(stockChip.getStockCode(),

@@ -29,13 +29,11 @@ public class StockIndexServiceImpl implements StockIndexService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<StockIndexPriceBean> getStockIndexByCodeAndDateBetween(String indexCode, Date startDate,
-                                                                       Date endDate) {
+    public List<StockIndexPriceBean> getStockIndexByCodeAndDateBetween(String indexCode, LocalDate startDate
+            , LocalDate endDate) {
         // 設置查詢起訖時間移至最早 & 最晚
-        LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryStartDate = Date.from(localStartDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-        LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryEndDate = Date.from(localEndDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryStartDate = Date.from(startDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(endDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
         return repository.findByIndexCodeAndDateBetween(indexCode, queryStartDate, queryEndDate)
                 .stream()
                 .map((price)-> StockIndexPriceBean.builder()

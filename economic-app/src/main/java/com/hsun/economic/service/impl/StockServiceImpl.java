@@ -1,16 +1,21 @@
 package com.hsun.economic.service.impl;
 
 import com.hsun.economic.bean.PageInfoBean;
+import com.hsun.economic.bean.PriceBean;
 import com.hsun.economic.bean.StockBean;
 import com.hsun.economic.bean.StockPriceBean;
 import com.hsun.economic.entity.Stock;
 import com.hsun.economic.repository.StockRepository;
+import com.hsun.economic.resource.StockPriceResource;
 import com.hsun.economic.resource.StockRankResource;
 import com.hsun.economic.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +25,9 @@ public class StockServiceImpl implements StockService {
     
     @Autowired
     private StockRepository repository;
+
+    @Autowired
+    private StockPriceResource priceResource;
 
     @Autowired
     private StockRankResource stockRankResource;
@@ -47,6 +55,12 @@ public class StockServiceImpl implements StockService {
         sortedStockPage.setContent(sortedStockList);
 
         return sortedStockPage;
+    }
+
+    @Override
+    public List<PriceBean> getPriceList(String stockCode, LocalDate startDate, LocalDate endDate) {
+        return priceResource.getPriceList(stockCode, startDate.format(DateTimeFormatter.ISO_DATE)
+                , endDate.format(DateTimeFormatter.ISO_DATE)).getData();
     }
 
 }
