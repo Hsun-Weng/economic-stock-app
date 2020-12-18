@@ -1,14 +1,10 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 import { Grid, Paper, Table, TableCell, TableContainer, TableRow, TableBody, Typography, Link } from '@material-ui/core'
-import { Skeleton } from '@material-ui/lab'
-
-import { stockAction } from '../actions';
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -33,7 +29,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CategoryTable = ({ categories }) => {
-
     const history = useHistory();
 
     const redirectCategoryStockTable = (event, categoryCode) =>{
@@ -60,25 +55,28 @@ const CategoryTable = ({ categories }) => {
 };
 
 const StockCategory = () => {
-    const dispatch = useDispatch();
     const classes = useStyles();
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
-    const loading = useSelector(state=>state.stockCategory.loading);
-    const categories = useSelector(state=>state.stockCategory.data);
+    const [ categories, setCategories ] = useState([]);
 
     useEffect(()=>{
-        dispatch(stockAction.getCategories());
-    }, [ dispatch ])
+        const fetchData = () => {
+            fetch(`/api/categories`)
+                .then((res)=>res.json())
+                .then((res)=>res.data)
+                .then((data)=>setCategories(data))
+        }
+        fetchData();
+    }, [])
 
     return (
         <React.Fragment>
             <Grid container spacing={3}>
                 <Grid item md={12}>
-                    {loading?<Skeleton variant="text" className={classes.fixedInputSkeletonHeight} />:
-                        <Paper className={fixedChartHeightPaper}>
-                            <CategoryTable categories={categories} />
-                        </Paper>}
+                    <Paper className={fixedChartHeightPaper}>
+                        <CategoryTable categories={categories} />
+                    </Paper>
                 </Grid>
             </Grid>
         </React.Fragment>);

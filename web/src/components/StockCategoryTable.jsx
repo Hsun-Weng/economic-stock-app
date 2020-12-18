@@ -1,14 +1,10 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 import { Grid, Paper, Table, TableCell, TableContainer, TableHead, TableRow, TableBody, Link, Box } from '@material-ui/core'
-import { Skeleton } from '@material-ui/lab'
-
-import { stockAction } from '../actions';
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -138,26 +134,30 @@ const StockRow = ({ stock }) => {
 };
 
 const StockCategory = () => {
-    const dispatch = useDispatch();
     const classes = useStyles();
     const { categoryCode } = useParams();
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
-    const loading = useSelector(state=>state.stockCategory.loading);
-    const stocks = useSelector(state=>state.stockCategory.stocks);
+    const [ stocks, setStocks ] = useState([]);
 
     useEffect(()=>{
-        dispatch(stockAction.getCategoryStocks(categoryCode));
-    }, [ dispatch, categoryCode ])
+        const fetchData = () => {
+            fetch(`/api/category/${categoryCode}/stocks/prices`)
+                .then((res)=>res.json())
+                .then((res)=>res.data)
+                .then((data)=>setStocks(data))
+            
+        };
+        fetchData();
+    }, [ categoryCode ])
 
     return (
         <React.Fragment>
             <Grid container spacing={3}>
                 <Grid item md={12}>
-                    {loading?<Skeleton variant="text" className={classes.fixedInputSkeletonHeight} />:
-                        <Paper className={fixedChartHeightPaper}>
-                            <StockTable stocks={stocks} />
-                        </Paper>}
+                    <Paper className={fixedChartHeightPaper}>
+                        <StockTable stocks={stocks} />
+                    </Paper>
                 </Grid>
             </Grid>
         </React.Fragment>);

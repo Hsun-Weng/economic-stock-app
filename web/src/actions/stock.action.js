@@ -4,8 +4,6 @@ import { notificationActions } from './';
 
 export const stockAction = {
     getAllStocks,
-    getCategories,
-    getCategoryStocks,
     getStockPrices,
     getStockIndex,
     getLatestStockPrice,
@@ -33,44 +31,6 @@ function getAllStocks() {
     function request() { return { type: stockConstants.GET_STOCK_REQUEST } }
     function success(data) { return { type: stockConstants.GET_STOCK_SUCCESS, data } }
     function failure() { return { type: stockConstants.GET_STOCK_FAILURE } }
-}
-
-function getCategories() {
-    return dispatch => {
-        dispatch(request());
-
-        stockService.getCategories()
-            .then(data=>{
-                dispatch(success(data));
-            },
-            error=>{
-                dispatch(failure());
-                dispatch(notificationActions.enqueueError(error));
-            })
-    };
-
-    function request() { return { type: stockConstants.GET_CATEGORIES_REQUEST } }
-    function success(data) { return { type: stockConstants.GET_CATEGORIES_SUCCESS, data } }
-    function failure() { return { type: stockConstants.GET_CATEGORIES_FAILURE } }
-}
-
-function getCategoryStocks(categoryCode) {
-    return dispatch => {
-        dispatch(request());
-
-        stockService.getCategoryStocks(categoryCode)
-            .then(data=>{
-                dispatch(success(data));
-            },
-            error=>{
-                dispatch(failure());
-                dispatch(notificationActions.enqueueError(error));
-            })
-    };
-
-    function request() { return { type: stockConstants.GET_CATEGORY_STOCKS_REQUEST } }
-    function success(data) { return { type: stockConstants.GET_CATEGORY_STOCKS_SUCCESS, data } }
-    function failure() { return { type: stockConstants.GET_CATEGORY_STOCKS_FAILURE } }
 }
 
 function getStockPrices(stockCode, startDate, endDate) {

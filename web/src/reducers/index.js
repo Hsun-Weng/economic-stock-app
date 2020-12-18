@@ -5,7 +5,6 @@ import { stock } from './stock.reducer';
 import { futures } from './futures.reducer';
 import { portfolio } from './portfolio.reducer';
 import { portfolioProduct } from './portfolio.product.reducer';
-import { stockCategory } from './stock.category.reducer';
 import { stockChip } from './stock.chip.reducer';
 import { stockMargin } from './stock.margin.reducer';
 import { stockPrice } from './stock.price.reducer';
@@ -20,7 +19,6 @@ const rootReducer = combineReducers({
     signUp,
     oauthLogin,
     stock,
-    stockCategory,
     stockChip,
     stockMargin,
     stockPrice,

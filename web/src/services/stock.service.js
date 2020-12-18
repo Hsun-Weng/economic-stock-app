@@ -1,8 +1,6 @@
 
 export const stockService = {
     getAllStocks,
-    getCategories,
-    getCategoryStocks,
     getStockPrices,
     getStockIndex,
     getAllStockIndexes,
@@ -18,26 +16,6 @@ function getAllStocks(){
     };
 
     return fetch(`/api/stocks`, requestOptions)
-        .then(handleResponse)
-}
-
-function getCategories(){
-    const requestOptions = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    };
-
-    return fetch(`/api/categories`, requestOptions)
-        .then(handleResponse)
-}
-
-function getCategoryStocks(categoryCode){
-    const requestOptions = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    };
-
-    return fetch(`/api/category/${categoryCode}/stocks/prices`, requestOptions)
         .then(handleResponse)
 }
 
