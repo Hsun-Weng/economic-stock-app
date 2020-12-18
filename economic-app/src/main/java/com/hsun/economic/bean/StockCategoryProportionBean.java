@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class StockCategoryProportionBean {
     private String categoryCode;
-    private String name;
-    private Float proportion;
+    private String categoryName;
+    private Double proportion;
     private List<StockProportionBean> children;
 }
