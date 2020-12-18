@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { Grid, Box, Button, ButtonGroup, Typography } from '@material-ui/core'
-import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Brush } from 'recharts';
 import ReactEcharts from 'echarts-for-react';
-
-import { economicAction } from '../actions';
 
 const UnitButtonGroup = ({ setUnitCode }) => (
     <ButtonGroup variant="text" color="inherit" >
@@ -40,13 +36,35 @@ const Echart = ({ values }) => {
         option={option} />);
 }
 
+const convertChangeData = (values) => {
+    let cloneData = Object.assign([], values); // copy data array
+    return cloneData.sort(function(a, b){
+        return a.date > b.date ? 1 : -1;
+    }).map((detail, index)=>{
+        if(index === 0){
+            return null;
+        }
+        return {date: detail.date,
+            value: (detail.value - cloneData[index-1].value)};
+    }).filter(value=>value);
+}
+
+const getDisplayValues = ( unitCode, values ) => {
+    switch(unitCode){
+        case "TOTAL":
+            return values;
+        case "CHANGE":
+            return convertChangeData(values);
+        default:
+            return [];
+    }
+}
+
 const EconomicDataChart = ({ countryCode, dataCode }) => {
-    const dispatch = useDispatch();
-    const chartData = useSelector(state=>state.economicValue.chartData);
-    
     const [ unitCode, setUnitCode ] = useState("TOTAL");
     const [ values, setValues ] = useState([]);
-
+    const [ chartValues, setChartValues ] = useState([]);
+    
     useEffect(()=>{
         const fetchValues = async() => {
             fetch(`/data/economic/${countryCode}/${dataCode}`)
@@ -57,33 +75,11 @@ const EconomicDataChart = ({ countryCode, dataCode }) => {
         fetchValues();
     }, [ countryCode, dataCode ]);
 
-    const ChartTooltip = ({ active, payload}) => {
-        if(active){
-            let data = payload[0].payload;
-            return (<Box  border={1} borderColor="grey.500" p={1}>
-                <Box>{`Date: ${data.date}`}</Box>
-                <Box>{`Value: ${data.value}`}</Box>
-            </Box>);
-        }
-        return null;
-    }
+    useEffect(()=>{
+        setChartValues(getDisplayValues(unitCode, values));
+    }, [ unitCode, values ])
 
-    const Chart = () => (
-        <LineChart
-            height={400}
-            width={950}
-            data={chartData}
-            margin={{ top: 50, right: 50, bottom: 50, left: 60 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip content={<ChartTooltip />}/>
-            <Line dataKey={`value`} stroke="red" dot={false} />
-            <Brush dataKey="date" height={30} stroke="red" />
-        </LineChart>
-    )
-    
-    if(values.length>0){
+    if(chartValues.length>0){
         return (
             <Box>
                 <Grid container spacing={3}>
@@ -95,7 +91,7 @@ const EconomicDataChart = ({ countryCode, dataCode }) => {
                 </Grid>
                 <Box display="flex" justifyContent="center">
                     <Box width={950} height={400}>
-                        <Echart values={values}/>
+                        <Echart values={chartValues}/>
                     </Box>
                 </Box>
             </Box>

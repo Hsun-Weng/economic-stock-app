@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper, FormControl, Select, InputLabel, MenuItem, Grid, Box} from '@material-ui/core'
-import Skeleton from '@material-ui/lab/Skeleton';
 
 import EconomicDataChart from './EconomicDataChart';
 
@@ -72,15 +70,10 @@ const DataSelect = ({ countryCode, dataCode, setDataCode }) => {
 
 const EconomicData = () => {
   const classes = useStyles();
-  const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
   const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
   const [ dataCode, setDataCode ] = useState("NONFARM");
   const [ countryCode, setCountryCode ] = useState("USA");
-
-  const dispatch = useDispatch();
-  const economicDataValue = useSelector(state=>state.economicValue.data);
-  const valueLoading = useSelector(state=>state.economicValue.loading);
 
   return (
     <React.Fragment>
@@ -94,12 +87,9 @@ const EconomicData = () => {
           </Paper>
         </Grid>
         <Grid item md={12}>
-          {valueLoading ?
-            <Skeleton variant="rect" className={fixedChartHeightPaper} />:
-            <Paper className={fixedChartHeightPaper}>
-                <EconomicDataChart countryCode={countryCode} dataCode={dataCode} />
-            </Paper>
-          }
+          <Paper className={fixedChartHeightPaper}>
+              <EconomicDataChart countryCode={countryCode} dataCode={dataCode} />
+          </Paper>
         </Grid>
       </Grid>
     </React.Fragment>

@@ -5,8 +5,6 @@ import { stock } from './stock.reducer';
 import { futures } from './futures.reducer';
 import { portfolio } from './portfolio.reducer';
 import { portfolioProduct } from './portfolio.product.reducer';
-import { economicData } from './economic.data.reducer';
-import { economicValue } from './economic.value.reducer'; 
 import { stockCategory } from './stock.category.reducer';
 import { stockCategoryProportion } from './stock.category.proportion.reducer';
 import { stockChip } from './stock.chip.reducer';
@@ -34,8 +32,6 @@ const rootReducer = combineReducers({
     futuresChip,
     portfolio,
     portfolioProduct,
-    economicData,
-    economicValue,
     notification,
     stockCategoryProportion
 });
