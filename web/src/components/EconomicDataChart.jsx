@@ -3,29 +3,59 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Grid, Box, Button, ButtonGroup, Typography } from '@material-ui/core'
 import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Brush } from 'recharts';
+import ReactEcharts from 'echarts-for-react';
 
 import { economicAction } from '../actions';
 
-const EconomicDataChart = ({ data }) => {
+const UnitButtonGroup = ({ setUnitCode }) => (
+    <ButtonGroup variant="text" color="inherit" >
+        <Button onClick={event=>setUnitCode('TOTAL')}>TOTAL</Button>
+        <Button onClick={event=>setUnitCode('CHANGE')}>CHANGE</Button>
+    </ButtonGroup>
+)
+
+const Echart = ({ values }) => {
+    const option = {
+        xAxis: {
+            type: 'category',
+            data: values.map((value)=>value.date)
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: values.map((value)=>value.value),
+            type: 'line',
+            smooth: true
+        }],
+        tooltip: {
+            trigger: 'axis',
+            formatter: (params) => {
+                params = params[0];
+                return params.name + ' : ' + params.value;
+            }
+        }
+    };
+    return (<ReactEcharts
+        option={option} />);
+}
+
+const EconomicDataChart = ({ countryCode, dataCode }) => {
     const dispatch = useDispatch();
     const chartData = useSelector(state=>state.economicValue.chartData);
-
+    
     const [ unitCode, setUnitCode ] = useState("TOTAL");
+    const [ values, setValues ] = useState([]);
 
     useEffect(()=>{
-        dispatch(economicAction.getEconomicChartData(unitCode, data));
-    }, [ dispatch, unitCode, data ]);
-
-    const changeUnitCode = (unitCode) => {
-        setUnitCode(unitCode);
-    }
-
-    const UnitButtonGroup = () => (
-        <ButtonGroup variant="text" color="inherit" >
-            <Button onClick={e=>changeUnitCode('TOTAL')}>TOTAL</Button>
-            <Button onClick={e=>changeUnitCode('CHANGE')}>CHANGE</Button>
-        </ButtonGroup>
-    )
+        const fetchValues = async() => {
+            fetch(`/data/economic/${countryCode}/${dataCode}`)
+              .then((res)=>res.json())
+              .then((res)=>res.data)
+              .then((data)=>setValues(data))
+        }
+        fetchValues();
+    }, [ countryCode, dataCode ]);
 
     const ChartTooltip = ({ active, payload}) => {
         if(active){
@@ -53,19 +83,19 @@ const EconomicDataChart = ({ data }) => {
         </LineChart>
     )
     
-    if(data.length>0){
+    if(values.length>0){
         return (
             <Box>
                 <Grid container spacing={3}>
                     <Grid item md={12}>
                         <Box display="flex" justifyContent="left">
-                            <UnitButtonGroup />
+                            <UnitButtonGroup unitCode={unitCode} setUnitCode={setUnitCode} />
                         </Box>
                     </Grid>
                 </Grid>
                 <Box display="flex" justifyContent="center">
                     <Box width={950} height={400}>
-                        <Chart />
+                        <Echart values={values}/>
                     </Box>
                 </Box>
             </Box>

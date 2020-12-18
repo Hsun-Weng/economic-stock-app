@@ -17,6 +17,8 @@
     "@testing-library/user-event": "^7.2.1",
     "array-move": "^2.2.2",
     "date-fns": "^2.11.0",
+    "echarts": "^4.0.4",
+    "echarts-for-react": "^2.0.16",
     "nivo": "^0.31.0",
     "notistack": "^0.9.16",
     "react": "^16.12.0",

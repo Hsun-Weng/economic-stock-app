@@ -8,7 +8,6 @@ import Skeleton from '@material-ui/lab/Skeleton';
 
 import EconomicDataChart from './EconomicDataChart';
 
-import { economicAction } from '../actions';
 import countries from '../data/country';
 
 const useStyles = makeStyles(theme => ({
@@ -31,77 +30,74 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const CountrySelect = ({ countryCode, setCountryCode}) => {
+  const classes = useStyles();
+  return (
+    <FormControl className={classes.formControl}>
+      <InputLabel>Country</InputLabel>
+      <Select
+        value={countryCode}
+        onChange={(event)=>setCountryCode(event.target.value)}>
+          {countries.map((prop, key)=><MenuItem key={key} value={prop.countryCode}>{prop.countryName}</MenuItem>)}
+      </Select>
+    </FormControl>
+  );
+}
+
+const DataSelect = ({ countryCode, dataCode, setDataCode }) => {
+  const classes = useStyles();
+  const [ datas, setDatas ] = useState([]);
+
+  useEffect(()=>{
+    const fetchData = async() => {
+      fetch(`/api/economic/${countryCode}/data`)
+        .then((res)=>res.json())
+        .then((res)=>res.data)
+        .then((data)=>setDatas(data))
+    }
+    fetchData();
+  }, [ countryCode ])
+
+  return (
+    <FormControl className={classes.formControl}>
+      <InputLabel>Economic Data</InputLabel>
+      <Select
+        value={dataCode}
+        onChange={(event)=>setDataCode(event.target.value)}>
+          {datas.map((prop, key)=><MenuItem key={key} value={prop.dataCode}>{prop.dataName}</MenuItem>)}
+      </Select>
+    </FormControl>
+  );
+}
+
 const EconomicData = () => {
   const classes = useStyles();
   const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
   const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
+  const [ dataCode, setDataCode ] = useState("NONFARM");
+  const [ countryCode, setCountryCode ] = useState("USA");
+
   const dispatch = useDispatch();
-  const economicData = useSelector(state=>state.economicData.data);
   const economicDataValue = useSelector(state=>state.economicValue.data);
-  const dataLoading = useSelector(state=>state.economicData.loading);
   const valueLoading = useSelector(state=>state.economicValue.loading);
-
-  const [countryCode, setCountryCode] = useState("USA");
-  const [dataCode, setDataCode] = useState("NONFARM");
-
-  const handleChangeCountry = event => {
-    setCountryCode(event.target.value);
-  };
-
-  const handleChangeEconomicData = event => {
-    setDataCode(event.target.value);
-  };
-
-  const CountrySelect = () => (
-    <FormControl className={classes.formControl}>
-      <InputLabel>Country</InputLabel>
-      <Select
-        value={countryCode}
-        onChange={handleChangeCountry}>
-          {countries.map((prop, key)=><MenuItem key={key} value={prop.countryCode}>{prop.countryName}</MenuItem>)}
-      </Select>
-    </FormControl>
-  )
-
-  const EconomicDataSelect = () => (
-    <FormControl className={classes.formControl}>
-      <InputLabel>Economic Data</InputLabel>
-      <Select
-        value={dataCode}
-        onChange={handleChangeEconomicData}>
-          {economicData.map((prop, key)=><MenuItem key={key} value={prop.dataCode}>{prop.dataName}</MenuItem>)}
-      </Select>
-    </FormControl>
-  )
-
-  useEffect(() => {
-    dispatch(economicAction.getEconomicData(countryCode));
-  }, [ dispatch, countryCode ])
-
-  useEffect(() => {
-    dispatch(economicAction.getEconomicValue(countryCode, dataCode));
-  }, [ dispatch, countryCode, dataCode]);
 
   return (
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item md={12}>
-          {dataLoading ?
-            <Skeleton variant="text" className={fixedInputSkeletonHeight}/>:
-            <Paper>
-              <Box>
-                <CountrySelect />
-                <EconomicDataSelect />
-              </Box>
-            </Paper>
-          }
+          <Paper>
+            <Box>
+              <CountrySelect countryCode={countryCode} setCountryCode={setCountryCode} />
+              <DataSelect countryCode={countryCode} dataCode={dataCode} setDataCode={setDataCode} />
+            </Box>
+          </Paper>
         </Grid>
         <Grid item md={12}>
           {valueLoading ?
             <Skeleton variant="rect" className={fixedChartHeightPaper} />:
             <Paper className={fixedChartHeightPaper}>
-                <EconomicDataChart data={economicDataValue} />
+                <EconomicDataChart countryCode={countryCode} dataCode={dataCode} />
             </Paper>
           }
         </Grid>

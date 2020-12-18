@@ -48,7 +48,7 @@ function getStockPrices(stockCode, startDate, endDate){
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/data/stock/${stockCode}?startDate=${startDate}&endDate=${endDate}`, requestOptions)
+    return fetch(`/data/stock/${stockCode}/prices?startDate=${startDate}&endDate=${endDate}`, requestOptions)
         .then(handleResponse)
 }
 
@@ -58,7 +58,7 @@ function getStockIndex(indexCode, startDate, endDate) {
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/data/stock/index/${indexCode}?startDate=${startDate}&endDate=${endDate}`, requestOptions)
+    return fetch(`/data/stock/index/${indexCode}/prices?startDate=${startDate}&endDate=${endDate}`, requestOptions)
         .then(handleResponse)
 }
 
