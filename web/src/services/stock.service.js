@@ -9,7 +9,6 @@ export const stockService = {
     getStockChip,
     getStockMargin,
     getStockRankPrices,
-    getCategoriesProportion
 }
 
 function getAllStocks(){
@@ -109,16 +108,6 @@ function getStockRankPrices(sortColumn, page, size, direction) {
     }
 
     return fetch(`/api/stocks/rank/latest?sortColumn=${sortColumn}&page=${page}&size=${size}&direction=${direction}`, requestOptions)
-        .then(handleResponse);
-}
-
-function getCategoriesProportion(){
-    const requestOptions = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    };
-
-    return fetch(`/api/categories/proportion`, requestOptions)
         .then(handleResponse);
 }
 

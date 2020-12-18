@@ -6,7 +6,6 @@ import { futures } from './futures.reducer';
 import { portfolio } from './portfolio.reducer';
 import { portfolioProduct } from './portfolio.product.reducer';
 import { stockCategory } from './stock.category.reducer';
-import { stockCategoryProportion } from './stock.category.proportion.reducer';
 import { stockChip } from './stock.chip.reducer';
 import { stockMargin } from './stock.margin.reducer';
 import { stockPrice } from './stock.price.reducer';
@@ -33,7 +32,6 @@ const rootReducer = combineReducers({
     portfolio,
     portfolioProduct,
     notification,
-    stockCategoryProportion
 });
 
 export default rootReducer;

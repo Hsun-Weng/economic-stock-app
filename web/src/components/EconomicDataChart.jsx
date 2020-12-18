@@ -10,7 +10,7 @@ const UnitButtonGroup = ({ setUnitCode }) => (
     </ButtonGroup>
 )
 
-const Echart = ({ values }) => {
+const LineChart = ({ values }) => {
     const option = {
         xAxis: {
             type: 'category',
@@ -27,8 +27,8 @@ const Echart = ({ values }) => {
         tooltip: {
             trigger: 'axis',
             formatter: (params) => {
-                params = params[0];
-                return params.name + ' : ' + params.value;
+                let param = params[0];
+                return param.name + ' : ' + param.value;
             }
         }
     };
@@ -67,7 +67,7 @@ const EconomicDataChart = ({ countryCode, dataCode }) => {
     
     useEffect(()=>{
         const fetchValues = async() => {
-            fetch(`/data/economic/${countryCode}/${dataCode}`)
+            fetch(`/api/economic/${countryCode}/${dataCode}/values`)
               .then((res)=>res.json())
               .then((res)=>res.data)
               .then((data)=>setValues(data))
@@ -91,7 +91,7 @@ const EconomicDataChart = ({ countryCode, dataCode }) => {
                 </Grid>
                 <Box display="flex" justifyContent="center">
                     <Box width={950} height={400}>
-                        <Echart values={chartValues}/>
+                        <LineChart values={chartValues}/>
                     </Box>
                 </Box>
             </Box>

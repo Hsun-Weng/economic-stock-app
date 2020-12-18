@@ -14,7 +14,6 @@ export const stockAction = {
     getStockChip,
     getStockMargin,
     getStockRankPrices,
-    getCategoriesProportion
 }
 
 function getAllStocks() {
@@ -243,42 +242,4 @@ function getStockRankPrices(sortColumn, page, size, direction) {
         return { type: stockConstants.GET_STOCK_RANK_SUCCESS, data: data.content, page } 
     }
     function failure() { return { type: stockConstants.GET_STOCK_RANK_FAILURE } }
-}
-
-function getCategoriesProportion() {
-    return dispatch => {
-        dispatch(request());
-
-        stockService.getCategoriesProportion()
-            .then(data=>{
-                let stockCodes = [];
-                for(const category of data){
-                    for(const categoryStock of category.children){
-                        stockCodes.push(categoryStock.stockCode);
-                    }
-                }
-                stockService.getLatestStockPrice(stockCodes)
-                    .then(price=>{
-                        data = data.map((category)=>{
-                            category.children = category.children.map((stock)=>{
-                                let stockPrice = price.find((data)=>data.stockCode===stock.stockCode);
-                                let changePercent = stockPrice?Math.round(stockPrice.changePercent* 100)/100:0;
-                                return {...stock,
-                                        changePercent: changePercent,
-                                    }
-                            })
-                            return category;
-                        })
-                        dispatch(success(data));
-                    });
-            },
-            error=>{
-                dispatch(failure());
-                dispatch(notificationActions.enqueueError(error));
-            })
-    };
-
-    function request() { return { type: stockConstants.GET_CATEGORIES_PROPORTION_REQUEST } }
-    function success(data) { return { type: stockConstants.GET_CATEGORIES_PROPORTION_SUCCESS, data } }
-    function failure() { return { type: stockConstants.GET_CATEGORIES_PROPORTION_FAILURE } }
 }
