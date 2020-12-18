@@ -4,11 +4,17 @@ import com.hsun.economic.bean.StockCategoryBean;
 import com.hsun.economic.bean.StockCategoryProportionBean;
 import com.hsun.economic.bean.StockPriceBean;
 import com.hsun.economic.bean.StockProportionBean;
+import com.hsun.economic.entity.Stock;
 import com.hsun.economic.entity.StockCategory;
+import com.hsun.economic.entity.StockCategoryProportionView;
+import com.hsun.economic.repository.StockCategoryProportionViewRepository;
 import com.hsun.economic.repository.StockCategoryRepository;
+import com.hsun.economic.repository.StockProportionViewRepository;
 import com.hsun.economic.resource.StockPriceResource;
 import com.hsun.economic.service.StockCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,6 +28,12 @@ public class StockCategoryServiceImpl implements StockCategoryService {
 
     @Autowired
     private StockPriceResource stockPriceResource;
+
+    @Autowired
+    private StockCategoryProportionViewRepository categoryProportionViewRepository;
+
+    @Autowired
+    private StockProportionViewRepository stockProportionViewRepository;
 
     @Override
     public List<StockCategoryBean> getCategoryList() {
@@ -51,29 +63,47 @@ public class StockCategoryServiceImpl implements StockCategoryService {
     @Override
     public List<StockCategoryProportionBean> getCategoriesStockProportionRanked() {
         List<StockCategory> categoryList = repository.findAll();
-        return categoryList.parallelStream()
-                .map((category)->{
-            List<Map<String, Object>> stockProportionList = repository
-                    .findByCategoryCodeOrderByProportionDescLimited(category.getCategoryCode(), 5);
-            if(stockProportionList.size()==0){
-                return null;
-            }
 
-            return StockCategoryProportionBean.builder()
-                    .categoryCode(category.getCategoryCode())
-                    .name(category.getCategoryName())
-                    .children(stockProportionList
-                            .parallelStream()
-                            .map((stockProportionMap)->new StockProportionBean((String)stockProportionMap.get("stockCode"),
-                                    (String) stockProportionMap.get("stockName")
-                                    , (Float)stockProportionMap.get("proportion"), null))
-                            .map((stockProportion -> {
-                                stockProportion.setChangePercent(stockPriceResource
-                                        .getLatestPrice(stockProportion.getStockCode()).getData().getChangePercent());
+        List<StockCategoryProportionBean> categoryProportionList = categoryProportionViewRepository
+                .findAll()
+                .parallelStream()
+                .map((categoryProportion)->StockCategoryProportionBean
+                        .builder()
+                        .categoryCode(categoryProportion.getCategoryCode())
+                        .categoryName(categoryProportion.getCategoryName())
+                        .proportion(categoryProportion.getProportion())
+                        //只取前5筆
+                        .children(stockProportionViewRepository.findByCategoryCode(categoryProportion.getCategoryCode()
+                                , PageRequest.of(0, 5, Sort.Direction.DESC, "proportion"))
+                                .stream()
+                                .map((stockProportion)->StockProportionBean.builder()
+                                        .stockCode(stockProportion.getStockCode())
+                                        .stockName(stockProportion.getStockName())
+                                        .proportion(stockProportion.getProportion())
+                                        .build()
+                                )
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
+        // 批次取價
+        List<String> stockCodeList = categoryProportionList
+                .parallelStream()
+                .flatMap((categoryProportion)->categoryProportion.getChildren().stream().map(StockProportionBean::getStockCode))
+                .collect(Collectors.toList());
+
+        Map<String, Float> stockChangePercentMap = stockPriceResource.getLatestPriceList(stockCodeList).getData()
+                .parallelStream().collect(Collectors.toMap(StockPriceBean::getStockCode, StockPriceBean::getChangePercent));
+
+        return categoryProportionList.parallelStream()
+                .map((categoryProportion)->{
+                    categoryProportion.setChildren(categoryProportion.getChildren()
+                            .stream()
+                            .map((stockProportion)->{
+                                stockProportion.setChangePercent(stockChangePercentMap.get(stockProportion.getStockCode()));
                                 return stockProportion;
-                            })).collect(Collectors.toList()))
-                    .build();
-        }).filter((category)->category!=null).collect(Collectors.toList());
+                            }).collect(Collectors.toList()));
+                    return categoryProportion;
+                }).collect(Collectors.toList());
     }
 
 }
