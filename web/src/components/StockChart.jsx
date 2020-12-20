@@ -6,13 +6,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 import { Paper, Box, Grid, FormControl, InputLabel, Select, MenuItem, IconButton, AppBar, Tabs, Tab } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 
 import AddIcon from '@material-ui/icons/Add';
 
-import { stockAction, portfolioAction } from '../actions';
+import { portfolioAction } from '../actions';
 
-import CandleStickChart from './CandleStickChart';
+import StockCandleStickChart from './StockCandleStickChart';
 import StockChipChart from './StockChipChart';
 import StockMarginChart from './StockMarginChart';
 
@@ -42,8 +41,6 @@ const StockChart = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.data);
     const portfolios = useSelector(state => state.portfolio.data);
-    const prices = useSelector(state=>state.stockPrice.data);
-    const pricesLoading = useSelector(state=>state.stockPrice.loading);
 
     const [ tabValue, setTabValue] = useState(0);
 
@@ -53,8 +50,6 @@ const StockChart = () => {
     const [ portfolioId, setPortfolioId ] = useState(0);
 
     const { stockCode } = useParams();
-
-    const formatDate = date => date.toISOString().slice(0,10);
 
     const handleChangePortfolioId = ( event ) => {
         setPortfolioId(event.target.value);
@@ -104,12 +99,6 @@ const StockChart = () => {
         }
     }, [ portfolios ])
 
-    useEffect(() => {
-        let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
-        let endDate = new Date();
-        dispatch(stockAction.getStockPrices(stockCode, formatDate(startDate), formatDate(endDate)));
-    }, [ dispatch, stockCode ])
-
     return (
         <React.Fragment>
             <Grid container spacing={3}>
@@ -135,17 +124,7 @@ const StockChart = () => {
                     </AppBar>
                     <Paper className={fixedChartHeightPaper}>
                         <TabPanel value={tabValue} index={0}>
-                            {pricesLoading.loading ?
-                                <Skeleton variant="rect" className={fixedChartHeightPaper} />
-                                :<Box display="flex" justifyContent="center">
-                                    {prices.length > 0 &&
-                                        <CandleStickChart dataset={prices.map((data) => {
-                                            data.date = new Date(data.date);
-                                            return data;
-                                        })} />
-                                    }
-                                </Box>
-                            }
+                            <StockCandleStickChart stockCode={stockCode} />
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
                             <StockChipChart stockCode={stockCode} />

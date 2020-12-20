@@ -51,7 +51,7 @@ const StockMarginChart = ({ stockCode }) => {
         let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
         let endDate = new Date();
         const fetchData = () => {
-            fetch(`/api/category/${stockCode}/stocks/margins?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
+            fetch(`/api/stock/${stockCode}/margins?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
                 .then((res)=>res.json())
                 .then((res)=>res.data)
                 .then((data)=>setMargins(data))

@@ -53,19 +53,28 @@ public class StockServiceImpl implements StockService {
     @Override
     public List<PriceBean> getPriceList(String stockCode, LocalDate startDate, LocalDate endDate) {
         return priceResource.getPriceList(stockCode, startDate.format(DateTimeFormatter.ISO_DATE)
-                , endDate.format(DateTimeFormatter.ISO_DATE)).getData();
+                , endDate.format(DateTimeFormatter.ISO_DATE)).getData()
+                .stream()
+                .sorted((p1, p2)->Long.compare(p2.getDate().getTime(), p1.getDate().getTime()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<StockChipBean> getChipList(String stockCode, LocalDate startDate, LocalDate endDate) {
         return priceResource.getChipList(stockCode, startDate.format(DateTimeFormatter.ISO_DATE)
-                , endDate.format(DateTimeFormatter.ISO_DATE)).getData();
+                , endDate.format(DateTimeFormatter.ISO_DATE)).getData()
+                .stream()
+                .sorted((p1, p2)->Long.compare(p2.getDate().getTime(), p1.getDate().getTime()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<StockMarginBean> getMarginList(String stockCode, LocalDate startDate, LocalDate endDate) {
         return priceResource.getMarginList(stockCode, startDate.format(DateTimeFormatter.ISO_DATE)
-                , endDate.format(DateTimeFormatter.ISO_DATE)).getData();
+                , endDate.format(DateTimeFormatter.ISO_DATE)).getData()
+                .stream()
+                .sorted((p1, p2)->Long.compare(p2.getDate().getTime(), p1.getDate().getTime()))
+                .collect(Collectors.toList());
     }
 
 }

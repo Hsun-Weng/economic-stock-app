@@ -63,7 +63,7 @@ const StockChipChart = ({ stockCode }) => {
         let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
         let endDate = new Date();
         const fetchData = () => {
-            fetch(`/api/category/${stockCode}/stocks/chips?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
+            fetch(`/api/stock/${stockCode}/chips?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
                 .then((res)=>res.json())
                 .then((res)=>res.data)
                 .then((data)=>setChips(data))
