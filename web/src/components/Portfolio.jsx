@@ -12,10 +12,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-import PortfolioTableBody from './PortfolioTableBody';
+import UserPortfolioSelect from './UserPortfolioSelect';
+import PortfolioTable from './PortfolioTable';
 import { AddPortoflioDialog, EditPortoflioDialog, DeletePortfolioDialog } from './PortfolioDialogs';
-
-import { portfolioAction } from '../actions';
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -39,52 +38,11 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const PortfolioHeading = () => (
-    <TableHead>
-        <TableRow>
-            <TableCell></TableCell>
-            <TableCell>
-                Code 
-            </TableCell>
-            <TableCell>
-                Name
-            </TableCell>
-            <TableCell>
-                Last
-            </TableCell>
-            <TableCell>
-                Open
-            </TableCell>
-            <TableCell>
-                High
-            </TableCell>
-            <TableCell>
-                Low
-            </TableCell>
-            <TableCell>
-                Chg
-            </TableCell>
-            <TableCell>
-                Chg %
-            </TableCell>
-            <TableCell>
-                Vol
-            </TableCell>
-            <TableCell>
-                Time
-            </TableCell>
-            <TableCell />
-        </TableRow>
-    </TableHead>
-)
-
 const Portfolio = () => {
-    const dispatch = useDispatch();
     const classes = useStyles();
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
     const portfolio = useSelector(state=>state.portfolio.data);
-    const loading = useSelector(state=>state.portfolio.loading);
     const adding = useSelector(state=>state.portfolio.adding);
     const editing = useSelector(state=>state.portfolio.updating);
     const deleting = useSelector(state=>state.portfolio.deleting);
@@ -132,22 +90,6 @@ const Portfolio = () => {
         setOpenEditPortfolio(true);
     };
 
-    const handleChangePortfolio = (event) => {
-        setPortfolioId(event.target.value);
-    };
-
-    useEffect(()=>{
-        dispatch(portfolioAction.getPortfolio());
-    }, [ dispatch ])
-
-    useEffect(()=>{
-        if( portfolio.length > 0){
-            setPortfolioId(portfolio[0].portfolioId);
-        }else{
-            setPortfolioId(0);
-        }
-    }, [ portfolio ])
-
     useEffect(()=>{
         if(!adding){
             handleOpenAddPortfolioClose();
@@ -169,18 +111,9 @@ const Portfolio = () => {
         <React.Fragment>
             <Grid container spacing={3}>
                 <Grid item md={12}>
-                    {loading?<Skeleton variant="text" className={classes.fixedInputSkeletonHeight} />:
                         <Paper>
                             <Box>
-                                <FormControl className={classes.formControl}>
-                                    <InputLabel>Portfolio</InputLabel>
-                                    <Select
-                                        value={portfolioId}
-                                        onChange={handleChangePortfolio}>
-                                        <MenuItem value={0}>請選擇投資組合</MenuItem>
-                                        {portfolio.map((prop, key)=><MenuItem key={key} value={prop.portfolioId}>{prop.portfolioName}</MenuItem>)}
-                                    </Select>
-                                </FormControl>
+                                <UserPortfolioSelect portfolioId={portfolioId} setPortfolioId={setPortfolioId} className={classes.formControl} />
                                 <IconButton className={classes.button} onClick={handleActionMenuAnchor}>
                                     <MoreVertIcon />
                                 </IconButton>
@@ -203,16 +136,11 @@ const Portfolio = () => {
                                     </MenuItem>
                                 </Menu>
                             </Box>
-                        </Paper>}
+                        </Paper>
                 </Grid>
                 <Grid item md={12}>
                     <Paper className={fixedChartHeightPaper}>
-                        <TableContainer >
-                            <Table size="small">
-                                <PortfolioHeading />
-                                <PortfolioTableBody portfolioId={portfolioId} />
-                            </Table>
-                        </TableContainer>
+                        <PortfolioTable portfolioId={portfolioId} />
                     </Paper>
                 </Grid>
             </Grid>

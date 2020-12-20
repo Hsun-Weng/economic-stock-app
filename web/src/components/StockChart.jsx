@@ -9,6 +9,7 @@ import { Paper, Box, Grid, FormControl, InputLabel, Select, MenuItem, IconButton
 
 import AddIcon from '@material-ui/icons/Add';
 
+import UserPortfolioSelect from './UserPortfolioSelect';
 import StockCandleStickChart from './StockCandleStickChart';
 import StockChipChart from './StockChipChart';
 import StockMarginChart from './StockMarginChart';
@@ -34,37 +35,6 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
     },
 }));
-
-const UserPortfolioSelect = ({ portfolioId, setPortfolioId }) =>{
-    const classes = useStyles();
-    const [ userPortfolios, setUserPortfolios ] = useState([]);
-
-    useEffect(()=>{
-        const fetchData = () => {
-            fetch(`/api/portfolio`)
-                .then((res)=>res.json())
-                .then((res)=>res.data)
-                .then((data)=>{
-                    setUserPortfolios(data)
-                    if(data.length > 0){
-                        setPortfolioId(data[0].portfolioId);
-                    }
-                });
-        }
-        fetchData();
-    }, [ setPortfolioId ])
-
-    return (
-        <FormControl className={classes.formControl}>
-            <InputLabel>Add to portfolio</InputLabel>
-            <Select
-                value={portfolioId}
-                onChange={(event)=>setPortfolioId(event.target.value)}>
-                {userPortfolios.map((prop, key)=><MenuItem key={key} value={prop.portfolioId}>{prop.portfolioName}</MenuItem>)}
-            </Select>
-        </FormControl>
-    );
-}
 
 const StockChart = () => {
     const user = useSelector(state => state.user.data);
@@ -114,7 +84,7 @@ const StockChart = () => {
                     <Grid item md={12}>
                         <Paper>
                             <Box>
-                                <UserPortfolioSelect portfolioId={portfolioId} setPortfolioId={setPortfolioId} />
+                                <UserPortfolioSelect portfolioId={portfolioId} setPortfolioId={setPortfolioId} className={classes.formControl} />
                                 <IconButton color="primary" className={classes.button} onClick={addPortfolioProduct}>
                                     <AddIcon />
                                 </IconButton>

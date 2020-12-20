@@ -155,6 +155,7 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
                     }
                     return ProductPriceBean.builder()
                             .date(priceBean.getDate())
+                            .productType(productType.getValue())
                             .productCode(productCode)
                             .productName(productName)
                             .open(priceBean.getOpen())
