@@ -27,7 +27,6 @@ public class StockMarginServiceImpl implements StockMarginService {
                 .stream()
                 .map((stockMargin)-> StockMarginBean
                         .builder()
-                        .stockCode(stockMargin.getStockCode())
                         .date(stockMargin.getDate())
                         .longShare(stockMargin.getLongShare())
                         .totalLongShare(stockMargin.getTotalLongShare())

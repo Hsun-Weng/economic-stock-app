@@ -3,12 +3,8 @@ import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Paper, FormControl, Select, InputLabel, MenuItem ,Box } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 
 import FuturesChipChart from './FuturesChipChart';
-
-import { futuresAction } from '../actions/futures.action';
-import { stockAction } from '../actions/stock.action';
 
 import investors from '../data/investor.json'
 
@@ -16,9 +12,6 @@ const useStyles = makeStyles(theme => ({
     formControl: {
         margin: theme.spacing(1),
         minWidth: 200
-    },
-    fixedInputSkeletonHeight: {
-        height: 65,
     },
     fixedChartHeight: {
         height: 450,
@@ -74,7 +67,6 @@ const FuturesSelect = ({ futuresCode, setFuturesCode }) => {
 
 const FuturesChip = () => {
     const classes = useStyles();
-    const fixedInputSkeletonHeight = clsx(classes.paper, classes.fixedInputSkeletonHeight);
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
 
     const [ investorCode, setInvestorCode ] = useState('RI');

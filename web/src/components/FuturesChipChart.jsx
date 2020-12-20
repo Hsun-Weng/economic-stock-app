@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { Box, Typography } from '@material-ui/core';
-import { ComposedChart, Line, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 
 import ReactEcharts from 'echarts-for-react';
 

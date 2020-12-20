@@ -1,10 +1,6 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 
 import { Box, Table, TableCell, TableContainer, TableHead, TableBody, TableRow} from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-
-import { stockAction } from '../actions';
 
 const MarginHeading = () => (
     <TableHead>
@@ -46,33 +42,33 @@ const MarginRow = ({data}) => {
     )
 }
 
-const StockMarginChart = ({ stockCode, chartHeight }) => {
-    const dispatch = useDispatch();
-
-    const marginData = useSelector(state=>state.stockMargin.data);
-    const marginDataLoading = useSelector(state=>state.stockMargin.loading);
+const StockMarginChart = ({ stockCode }) => {
+    const [ margins, setMargins ] = useState([]);
 
     const formatDate = date => date.toISOString().slice(0,10);
 
     useEffect(() => {
         let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
         let endDate = new Date();
-        dispatch(stockAction.getStockMargin(stockCode, formatDate(startDate), formatDate(endDate)));
-    }, [ dispatch, stockCode ])
+        const fetchData = () => {
+            fetch(`/api/category/${stockCode}/stocks/margins?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
+                .then((res)=>res.json())
+                .then((res)=>res.data)
+                .then((data)=>setMargins(data))
+        };
+        fetchData();
+    }, [ stockCode ])
 
     return (
         <Box>
-            {marginDataLoading? 
-                <Skeleton variant="rect" height={chartHeight} />:
-                <TableContainer >
-                    <Table>
-                        <MarginHeading />
-                        <TableBody>
-                            {marginData.map((prop, key)=><MarginRow key={key} data={prop} />)}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            }
+            <TableContainer >
+                <Table>
+                    <MarginHeading />
+                    <TableBody>
+                        {margins.map((prop, key)=><MarginRow key={key} data={prop} />)}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Box>
     )
 }

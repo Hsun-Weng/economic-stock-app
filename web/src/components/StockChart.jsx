@@ -148,10 +148,10 @@ const StockChart = () => {
                             }
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                            <StockChipChart stockCode={stockCode} chartHeight={900} />
+                            <StockChipChart stockCode={stockCode} />
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                            <StockMarginChart stockCode={stockCode} chartHeight={900} />
+                            <StockMarginChart stockCode={stockCode} />
                         </TabPanel>
                     </Paper>
                 </Grid>

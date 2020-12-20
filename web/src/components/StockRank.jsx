@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
 
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, FormControl, Select, InputLabel, MenuItem, Grid, Box, RadioGroup, FormLabel, Radio, FormControlLabel,
-  TableContainer, Table, TableHead, TableRow, TableFooter, TablePagination, TableCell } from '@material-ui/core'
-import Skeleton from '@material-ui/lab/Skeleton';
+import { Paper, FormControl, Select, InputLabel, MenuItem, Grid, Box, RadioGroup, FormLabel, Radio, FormControlLabel} from '@material-ui/core'
 
-import StockRankTableBody from './StockRankTableBody';
-import { stockAction } from '../actions';
+import StockRankTable from './StockRankTable';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -30,123 +26,43 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const StockRankTableHeading = () => (
-  <TableHead>
-      <TableRow>
-          <TableCell>
-              Code 
-          </TableCell>
-          <TableCell>
-              Name
-          </TableCell>
-          <TableCell>
-              Last
-          </TableCell>
-          <TableCell>
-              Open
-          </TableCell>
-          <TableCell>
-              High
-          </TableCell>
-          <TableCell>
-              Low
-          </TableCell>
-          <TableCell>
-              Chg
-          </TableCell>
-          <TableCell>
-              Chg %
-          </TableCell>
-          <TableCell>
-              Vol
-          </TableCell>
-          <TableCell>
-              Time
-          </TableCell>
-      </TableRow>
-  </TableHead>
-)
-
-const StockRank = () => {
+const SortColumnSelect = ({ sortColumn, setSortColumn }) => {
   const classes = useStyles();
-  const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
-
-  const dispatch = useDispatch();
-  const loading = useSelector(state=>state.stockRank.loading);
-  const stockRanks = useSelector(state=>state.stockRank.data);
-  const totalPage = useSelector(state=>state.stockRank.page.totalPage);
-
-  const [ sortColumn, setSortColumn ] = useState("volume");
-  const [ direction, setDirection ] = useState("DESC");
-  const [ page, setPage ] = useState(0);
-  const [ size, setSize ] = useState(10);
-
-  const handleChangeSortColumn = (event) => {
-    setSortColumn(event.target.value);
-  };
-
-  const handleChangeDirection = (event) => {
-    setDirection(event.target.value);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setSize(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  useEffect(()=>{
-    dispatch(stockAction.getStockRankPrices(sortColumn, page, size, direction))
-  }, [ dispatch, sortColumn, page, size, direction ])
-
-  const SortColumnSelect = () => (
+  return(
     <FormControl className={classes.formControl}>
         <InputLabel>排序欄位</InputLabel>
         <Select
             value={sortColumn}
-            onChange={handleChangeSortColumn}>
+            onChange={(event)=>setSortColumn(event.target.value)}>
             <MenuItem value={"volume"}>成交量</MenuItem>
             <MenuItem value={"chg"}>價格變化</MenuItem>
         </Select>
     </FormControl>
-  );
+  )
+};
 
-  const DirectionRadioGroup = () => (
+const DirectionRadioGroup = ({ direction, setDirection }) => {
+  const classes = useStyles();
+  return (
     <FormControl className={classes.formControl}>
         <FormLabel component="legend" >順序</FormLabel>
         <RadioGroup row
           value={direction}
-          onChange={handleChangeDirection}>
+          onChange={(event)=>setDirection(event.target.value)}>
             <FormControlLabel value="ASC" label="升序" control={<Radio />}></FormControlLabel>
             <FormControlLabel value="DESC" label="降序" control={<Radio />}></FormControlLabel>
         </RadioGroup>
     </FormControl>
   )
+}
 
-  const StockRankTable = () => (
-    <TableContainer>
-      <Table>
-        <StockRankTableHeading />
-        <StockRankTableBody stocks={stockRanks} />
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              colSpan={10}
-              count={totalPage}
-              rowsPerPage={size}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
-  );
+const StockRank = () => {
+  const classes = useStyles();
+  const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
+
+  const [ sortColumn, setSortColumn ] = useState("volume");
+  const [ direction, setDirection ] = useState("DESC");
+
 
   return (
     <React.Fragment>
@@ -154,18 +70,15 @@ const StockRank = () => {
         <Grid item md={12}>
           <Paper>
             <Box>
-              <SortColumnSelect />
-              <DirectionRadioGroup />
+              <SortColumnSelect sortColumn={sortColumn} setSortColumn={setSortColumn} />
+              <DirectionRadioGroup direction={direction} setDirection={setDirection} />
             </Box>
           </Paper>
         </Grid>
         <Grid item md={12}>
-          {loading ?
-            <Skeleton variant="rect" className={fixedChartHeightPaper} />:
-            <Paper className={fixedChartHeightPaper}>
-                <StockRankTable />
-            </Paper>
-          }
+          <Paper className={fixedChartHeightPaper}>
+              <StockRankTable sortColumn={sortColumn} direction={direction} />
+          </Paper>
         </Grid>
       </Grid>
     </React.Fragment>

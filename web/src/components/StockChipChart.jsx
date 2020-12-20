@@ -1,10 +1,6 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 
 import { Box, Table, TableCell, TableContainer, TableHead, TableBody, TableRow} from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-
-import { stockAction } from '../actions';
 
 const ChipHeading = () => (
     <TableHead>
@@ -58,33 +54,33 @@ const ChipRow = ({data}) => {
     )
 }
 
-const StockChipChart = ({ stockCode, chartHeight }) => {
-    const dispatch = useDispatch();
-
-    const chipData = useSelector(state=>state.stockChip.data);
-    const chipDataLoading = useSelector(state=>state.stockChip.loading);
+const StockChipChart = ({ stockCode }) => {
+    const [ chips, setChips ] = useState([]);
 
     const formatDate = date => date.toISOString().slice(0,10);
 
     useEffect(() => {
         let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
         let endDate = new Date();
-        dispatch(stockAction.getStockChip(stockCode, formatDate(startDate), formatDate(endDate)));
-    }, [ dispatch, stockCode ])
+        const fetchData = () => {
+            fetch(`/api/category/${stockCode}/stocks/chips?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
+                .then((res)=>res.json())
+                .then((res)=>res.data)
+                .then((data)=>setChips(data))
+        };
+        fetchData();
+    }, [ stockCode ])
 
     return (
         <Box>
-            {chipDataLoading? 
-                <Skeleton variant="rect" height={chartHeight} />:
-                <TableContainer >
-                    <Table>
-                        <ChipHeading />
-                        <TableBody>
-                            {chipData.map((prop, key)=><ChipRow key={key} data={prop} />)}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            }
+            <TableContainer >
+                <Table>
+                    <ChipHeading />
+                    <TableBody>
+                        {chips.map((prop, key)=><ChipRow key={key} data={prop} />)}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Box>
     )
 }
