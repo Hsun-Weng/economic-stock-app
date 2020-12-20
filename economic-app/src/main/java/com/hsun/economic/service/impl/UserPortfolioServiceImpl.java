@@ -66,12 +66,12 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Transactional
     @Override
     public void deletePortfolio(String userName, Integer portfolioId) {
-        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
-        UserPortfolio userPortfolio = user.getUserPortfolioList()
-                .stream().filter((data)->data.getPortfolioId().equals(portfolioId))
-                .findAny().orElseThrow(()->new ApiClientException("Portfolio not found."));
-        //TODO can't delete
-        repository.deleteById(portfolioId);
+        UserPortfolio userPortfolio = repository.findById(portfolioId)
+                .orElseThrow(()->new ApiClientException("Portfolio not found."));
+        if(!userPortfolio.getUserName().equals(userName)){
+            throw new ApiClientException("Portfolio not found.");
+        }
+        repository.delete(userPortfolio);
     }
 
     @Override

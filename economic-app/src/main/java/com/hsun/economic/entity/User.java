@@ -1,6 +1,8 @@
 package com.hsun.economic.entity;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -32,13 +34,29 @@ public class User implements Serializable {
 	@Column(name="last_name")
 	private String lastName;
 
-	@OneToMany(cascade = {CascadeType.ALL},orphanRemoval = true)
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
 	@JoinColumn(name="user_name")
 	@ToString.Exclude
+	@Setter(AccessLevel.NONE)
 	private List<UserPortfolio> userPortfolioList = new ArrayList<>();
 
-	@OneToMany(orphanRemoval = true)
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
 	@JoinColumn(name="user_name")
 	@ToString.Exclude
+	@Setter(AccessLevel.NONE)
 	private List<OauthToken> oauthTokenList = new ArrayList<>();
+
+	public void setUserPortfolioList(List<UserPortfolio> userPortfolioList) {
+		this.userPortfolioList.clear();
+		if(userPortfolioList!=null){
+			this.userPortfolioList.addAll(userPortfolioList);
+		}
+	}
+
+	public void setOauthTokenList(List<OauthToken> oauthTokenList) {
+		this.oauthTokenList.clear();
+		if(oauthTokenList!=null){
+			this.oauthTokenList.addAll(oauthTokenList);
+		}
+	}
 }
