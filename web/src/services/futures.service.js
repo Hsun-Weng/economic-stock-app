@@ -1,7 +1,6 @@
 
 export const futuresService = {
-    getFutures,
-    getFuturesChip
+    getFutures
 }
 
 function getFutures(){
@@ -12,24 +11,6 @@ function getFutures(){
 
     return fetch(`/api/futures`, requestOptions)
         .then(handleResponse)
-}
-
-function getFuturesChip(futuresCode, investorCode, startDate, endDate){
-    const requestOptions = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    };
-
-    return fetch(`/data/futures/${futuresCode}/chip?investorCode=${investorCode}&startDate=${startDate}&endDate=${endDate}`, requestOptions)
-        .then(handleResponse)
-        .then(data => {
-            return data.map((investorChipData)=>{
-                let chipData = investorChipData.investorChip.pop();
-                chipData.openInterestNetLot = chipData.openInterestLongLot - chipData.openInterestShortLot;
-                let percent = Math.round(( chipData.openInterestNetLot / investorChipData.openInterestLot ) * 100);
-                return {...investorChipData, ...chipData, "percent": percent};
-            })
-        })
 }
 
 const handleResponse = (httpResponse) => {

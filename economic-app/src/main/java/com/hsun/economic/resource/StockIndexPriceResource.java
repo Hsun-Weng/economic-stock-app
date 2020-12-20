@@ -1,13 +1,10 @@
 package com.hsun.economic.resource;
 
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitClient;
+import com.hsun.economic.bean.PriceBean;
 import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.bean.StockIndexPriceBean;
-import com.hsun.economic.bean.StockPriceBean;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
+import retrofit2.http.*;
 
 import java.util.List;
 
@@ -15,6 +12,9 @@ import java.util.List;
 public interface StockIndexPriceResource {
     @GET("stock/index/{indexCode}/price/latest")
     ResponseBean<StockIndexPriceBean> getLatestPrice(@Path("indexCode") String indexCode);
+    @GET("stock/index/{indexCode}/prices")
+    ResponseBean<List<PriceBean>> getPriceList(@Path("indexCode") String indexCode, @Query("startDate") String startDate
+            , @Query("endDate") String endDate);
     @POST("stock/indexes/price/latest")
     ResponseBean<List<StockIndexPriceBean>> getLatestPriceList(@Body List<String> indexCodeList);
 }

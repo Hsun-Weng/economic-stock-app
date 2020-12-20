@@ -1,51 +1,114 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { ComposedChart, Line, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 
-const FuturesChipChart = ({ data }) =>{
+import ReactEcharts from 'echarts-for-react';
 
-    const ChartTooltip = ({active, payload }) => {
-        if(active){
-            let d = payload[0].payload;
-            return (
-                <Box border={1} borderColor="grey.500">
-                    <Box>{`Date: ${d.date}`}</Box>
-                    {d.close?<Box>{`Index Close: ${d.close}`}</Box>:null}
-                    {d.openInterestNetLot?<Box>{`Open Interest Net Lot: ${d.openInterestNetLot}`}</Box>:null}
-                    {d.percent?<Box>{`Percent : ${d.percent}％`}</Box>:null}
-                </Box>
-            )
+const MixedLineBarChart = ({ investorCode, chips }) => {
+    const option = {
+        xAxis: [
+            {
+                type: 'category',
+                data: chips.map((chip)=>chip.date),
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '佔全市場未平倉 %',
+                min: -40,
+                max: 40,
+                interval: 10,
+                axisLabel: {
+                    formatter: '{value} ％'
+                }
+            },
+            {
+                type: 'value',
+                name: '現貨指數',
+                interval: 300,
+            },
+            {
+                type: 'value',
+                name: '未平倉口數',
+                interval: 100,
+            },
+        ],
+        legend: {
+            data: ['未平倉佔比', '指數', '未平倉口數']
+        },
+        series: [
+            {
+                name: '未平倉佔比',
+                data: chips.flatMap((chip)=>chip.investorChip)
+                    .filter((investorChip)=>investorChip.investorCode===investorCode)
+                    .map((investorChip)=>investorChip.percent),
+                type: 'bar'
+            },
+            {
+                name: '指數',
+                data: chips.map((chip)=>chip.close),
+                type: 'line',
+                yAxisIndex: 1,
+                smooth: true
+            },
+            {
+                name: '未平倉口數',
+                data: chips.flatMap((chip)=>chip.investorChip)
+                    .filter((investorChip)=>investorChip.investorCode===investorCode)
+                    .map((investorChip)=>investorChip.openInterestNetLot),
+                type: 'line',
+                yAxisIndex: 2,
+                smooth: true
+            },
+        ],
+        tooltip: {
+            trigger: 'axis',
+            // formatter: (params) => {
+            //     console.log(params);
+                // let param = params[0];
+                // return param.name + ' : ' + param.value;
+            // }
         }
-        return null;
     };
+    return (<ReactEcharts option={option} />)
+}
 
-    return (
-        <Box display="flex" justifyContent="center" >
-            <ComposedChart
-                height={450}
-                width={950}
-                data={data}
-                margin={{ top: 50, right: 50, bottom: 50, left: 60 }}>
-                <CartesianGrid stroke="#f5f5f5" />
-                <XAxis dataKey="date" padding={{ left: 30, right: 30}} />
-                <Line yAxisId="left" dataKey="close" stroke="#ff7300" />
-                <YAxis yAxisId="left" domain={['auto', 'auto']} />
-                <YAxis yAxisId="right" orientation="right" domain={[-30, 30]}
-                        ticks={[-30, -20, -10, 0, 10, 20, 30]}
-                        tickFormatter={(tickValue)=>tickValue+"%"}/>
-                <Tooltip content={<ChartTooltip />} />
-                {/* <Legend /> */}
-                <ReferenceLine yAxisId="right" y={0} stroke="black" />
-                <Bar yAxisId="right" dataKey="percent" barSize={10} fill="#413ea0" >
-                    {data.map((entry, key) => {
-                        const color = entry.percent > 0 ? "green" : "red";
-                        return <Cell key={key} fill={color} />;
-                    })}
-                </Bar>
-            </ComposedChart>
-        </Box>
-    );
+const FuturesChipChart = ({ investorCode, futuresCode }) =>{
+    const [ chips, setChips ] = useState([]);
+
+    const formatDate = date => date.toISOString().slice(0,10);
+
+    useEffect(()=>{
+        const fetchData = () => {
+            let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
+            let endDate = new Date();
+            fetch(`/api/futures/${futuresCode}/chip?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
+                .then((res)=>res.json())
+                .then((res)=>res.data)
+                .then((data)=>setChips(data))
+        }
+        fetchData();
+    }, [ futuresCode ])
+
+    if(chips.length>0){
+        return (
+            <Box display="flex" justifyContent="center" >
+                <Box width={950} height={400}>
+                    <MixedLineBarChart investorCode={investorCode} chips={chips} />
+                </Box>
+            </Box>
+        )
+    }else{
+        return(
+            <Box align="center">
+                <Typography variant="h4" color="error">
+                    查無資料
+                </Typography>
+            </Box>
+        )
+    }
 }
 
 

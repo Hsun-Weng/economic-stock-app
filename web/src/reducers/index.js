@@ -11,7 +11,6 @@ import { stockPrice } from './stock.price.reducer';
 import { stockRank } from './stock.rank.reducer';
 import { stockIndex } from './stock.index.reducer';
 import { stockIndexPrice } from './stock.index.price.reducer';
-import { futuresChip } from './futures.chip.reducer';
 
 const rootReducer = combineReducers({
     user,
@@ -26,7 +25,6 @@ const rootReducer = combineReducers({
     stockIndex,
     stockIndexPrice,
     futures,
-    futuresChip,
     portfolio,
     portfolioProduct,
     notification,
