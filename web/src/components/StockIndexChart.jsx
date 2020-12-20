@@ -6,13 +6,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 import { Paper, Box, Grid, FormControl, InputLabel, Select, MenuItem, IconButton } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 
 import AddIcon from '@material-ui/icons/Add';
 
-import { stockAction, portfolioAction } from '../actions';
+import { portfolioAction } from '../actions';
 
-import CandleStickChart from './CandleStickChart';
+import StockIndexCandleStickChart from './StockIndexCandleStickChart';
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -36,11 +35,39 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+const UserPortfolioSelect = ({ portfolioId, setPortfolioId }) =>{
+    const classes = useStyles();
+    const [ userPortfolios, setUserPortfolios ] = useState([]);
+
+    useEffect(()=>{
+        const fetchData = () => {
+            fetch(`/api/portfolio`)
+                .then((res)=>res.json())
+                .then((res)=>res.data)
+                .then((data)=>{
+                    setUserPortfolios(data)
+                    if(data.length > 0){
+                        setPortfolioId(data[0].portfolioId);
+                    }
+                });
+        }
+        fetchData();
+    }, [ setPortfolioId ])
+
+    return (
+        <FormControl className={classes.formControl}>
+            <InputLabel>Add to portfolio</InputLabel>
+            <Select
+                value={portfolioId}
+                onChange={(event)=>setPortfolioId(event.target.value)}>
+                {userPortfolios.map((prop, key)=><MenuItem key={key} value={prop.portfolioId}>{prop.portfolioName}</MenuItem>)}
+            </Select>
+        </FormControl>
+    );
+}
+
 const StockIndexChart = () => {
-    const dispatch = useDispatch();
     const user = useSelector(state => state.user.data);
-    const portfolios = useSelector(state => state.portfolio.data);
-    const prices = useSelector(state=>state.stockIndexPrice.data);
 
     const classes = useStyles();
     const fixedChartHeightPaper = clsx(classes.paper, classes.fixedChartHeight);
@@ -49,51 +76,25 @@ const StockIndexChart = () => {
 
     const { indexCode } = useParams();
 
-    const formatDate = date => date.toISOString().slice(0,10);
-
-    const handleChangePortfolioId = ( event ) => {
-        setPortfolioId(event.target.value);
-    }
-
     const addPortfolioProduct = ( event ) => {
-        dispatch(portfolioAction.addPortfolioProduct(portfolioId, 0, indexCode));
-    }
-
-    const UserPortfolioSelect = () =>(
-        <FormControl className={classes.formControl}>
-            <InputLabel>Add to portfolio</InputLabel>
-            <Select
-                value={portfolioId}
-                onChange={handleChangePortfolioId}>
-                {portfolios.map((prop, key)=><MenuItem key={key} value={prop.portfolioId}>{prop.portfolioName}</MenuItem>)}
-            </Select>
-        </FormControl>
-    );
-
-    useEffect(()=>{
-        dispatch(portfolioAction.getPortfolio());
-    }, [ dispatch ])
-
-    useEffect(()=>{
-        if( portfolios.length > 0){
-            setPortfolioId(portfolios[0].portfolioId);
-        }
-    }, [ portfolios ])
-
-    useEffect(() => {
-        let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
-        let endDate = new Date();
-        dispatch(stockAction.getStockIndex(indexCode, formatDate(startDate), formatDate(endDate)))
-    }, [ dispatch, indexCode ])
+        let requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({productType: 0, productCode: indexCode})
+        };
+        fetch(`/api/portfolio/${portfolioId}/product`, requestOptions)
+            .then((res)=>res.json())
+            .then((res)=>res.data)
+    };
 
     return (
         <React.Fragment>
             <Grid container spacing={3}>
-                {(user != null && portfolios.length > 0) &&
+                {(user != null) &&
                     <Grid item md={12}>
                         <Paper>
                             <Box>
-                                <UserPortfolioSelect />
+                                <UserPortfolioSelect portfolioId={portfolioId} setPortfolioId={setPortfolioId} />
                                 <IconButton color="primary" className={classes.button} onClick={addPortfolioProduct}>
                                     <AddIcon />
                                 </IconButton>
@@ -103,14 +104,7 @@ const StockIndexChart = () => {
                 }
                 <Grid item md={12}>
                     <Paper className={fixedChartHeightPaper}>
-                        <Box display="flex" justifyContent="center">
-                            {prices.length > 0 ?
-                                <CandleStickChart dataset={prices.map((data) => {
-                                    data.date = new Date(data.date);
-                                    return data;
-                                })} />
-                            :<Skeleton variant="rect" className={fixedChartHeightPaper} />}
-                        </Box>
+                        <StockIndexCandleStickChart indexCode={indexCode}/>
                     </Paper>
                 </Grid>
             </Grid>

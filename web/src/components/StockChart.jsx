@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,8 +8,6 @@ import clsx from 'clsx';
 import { Paper, Box, Grid, FormControl, InputLabel, Select, MenuItem, IconButton, AppBar, Tabs, Tab } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
-
-import { portfolioAction } from '../actions';
 
 import StockCandleStickChart from './StockCandleStickChart';
 import StockChipChart from './StockChipChart';
@@ -37,10 +35,39 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+const UserPortfolioSelect = ({ portfolioId, setPortfolioId }) =>{
+    const classes = useStyles();
+    const [ userPortfolios, setUserPortfolios ] = useState([]);
+
+    useEffect(()=>{
+        const fetchData = () => {
+            fetch(`/api/portfolio`)
+                .then((res)=>res.json())
+                .then((res)=>res.data)
+                .then((data)=>{
+                    setUserPortfolios(data)
+                    if(data.length > 0){
+                        setPortfolioId(data[0].portfolioId);
+                    }
+                });
+        }
+        fetchData();
+    }, [ setPortfolioId ])
+
+    return (
+        <FormControl className={classes.formControl}>
+            <InputLabel>Add to portfolio</InputLabel>
+            <Select
+                value={portfolioId}
+                onChange={(event)=>setPortfolioId(event.target.value)}>
+                {userPortfolios.map((prop, key)=><MenuItem key={key} value={prop.portfolioId}>{prop.portfolioName}</MenuItem>)}
+            </Select>
+        </FormControl>
+    );
+}
+
 const StockChart = () => {
-    const dispatch = useDispatch();
     const user = useSelector(state => state.user.data);
-    const portfolios = useSelector(state => state.portfolio.data);
 
     const [ tabValue, setTabValue] = useState(0);
 
@@ -51,16 +78,19 @@ const StockChart = () => {
 
     const { stockCode } = useParams();
 
-    const handleChangePortfolioId = ( event ) => {
-        setPortfolioId(event.target.value);
-    }
-
     const handleChangeTab = (event, newValue) => {
         setTabValue(newValue);
       };
 
     const addPortfolioProduct = ( event ) => {
-        dispatch(portfolioAction.addPortfolioProduct(portfolioId, 1, stockCode));
+        let requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({productType: 1, productCode: stockCode})
+        };
+        fetch(`/api/portfolio/${portfolioId}/product`, requestOptions)
+            .then((res)=>res.json())
+            .then((res)=>res.data)
     };
 
     const TabPanel = (props) => {
@@ -75,38 +105,16 @@ const StockChart = () => {
             {value === index && children}
           </div>
         );
-      }
-
-
-    const UserPortfolioSelect = () =>(
-        <FormControl className={classes.formControl}>
-            <InputLabel>Add to portfolio</InputLabel>
-            <Select
-                value={portfolioId}
-                onChange={handleChangePortfolioId}>
-                {portfolios.map((prop, key)=><MenuItem key={key} value={prop.portfolioId}>{prop.portfolioName}</MenuItem>)}
-            </Select>
-        </FormControl>
-    );
-
-    useEffect(()=>{
-        dispatch(portfolioAction.getPortfolio());
-    }, [ dispatch ])
-
-    useEffect(()=>{
-        if( portfolios.length > 0){
-            setPortfolioId(portfolios[0].portfolioId);
-        }
-    }, [ portfolios ])
+    }
 
     return (
         <React.Fragment>
             <Grid container spacing={3}>
-                {(user != null && portfolios.length > 0) &&
+                {(user != null) &&
                     <Grid item md={12}>
                         <Paper>
                             <Box>
-                                <UserPortfolioSelect />
+                                <UserPortfolioSelect portfolioId={portfolioId} setPortfolioId={setPortfolioId} />
                                 <IconButton color="primary" className={classes.button} onClick={addPortfolioProduct}>
                                     <AddIcon />
                                 </IconButton>
