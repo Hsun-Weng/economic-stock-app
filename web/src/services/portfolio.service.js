@@ -1,138 +1,19 @@
 import { authHeader } from '../helplers/authHeader';
 
 export const portfolioService = {
-    getPortfolio,
-    addPortfolio,
-    deletePortfolio,
-    updatePortfolio,
-    getPortfolioProducts,
-    addPortfolioProduct,
-    updatePortfolioProducts,
-    deletePortfolioProduct,
-    getLatestProductPrice
+    getPortfolios,
 }
 
-function getPortfolio(){
+/**
+ * 取得投資組合
+ */
+function getPortfolios(){
     const requestOptions = {
         method: 'GET',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
     };
 
     return fetch(`/api/portfolio`, requestOptions)
-        .then(handleResponse)
-}
-
-function addPortfolio(portfolio){
-    const requestOptions = {
-        method: 'POST',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(portfolio)
-    };
-
-    return fetch(`/api/portfolio`, requestOptions)
-        .then((httpResponse) => {
-            if (!httpResponse.ok) {
-                const error = httpResponse;
-                return Promise.reject(error);
-            }
-        })
-}
-
-function deletePortfolio(portfolioId){
-    const requestOptions = {
-        method: 'DELETE',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' }
-    };
-
-    return fetch(`/api/portfolio/${portfolioId}`, requestOptions)
-        .then((httpResponse) => {
-            if (!httpResponse.ok) {
-                const error = httpResponse;
-                return Promise.reject(error);
-            }
-        })
-}
-
-function updatePortfolio(portfolioId, portfolio){
-    const requestOptions = {
-        method: 'PUT',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(portfolio)
-    };
-
-    return fetch(`/api/portfolio/${portfolioId}`, requestOptions)
-        .then((httpResponse) => {
-            if (!httpResponse.ok) {
-                const error = httpResponse;
-                return Promise.reject(error);
-            }
-        })
-}
-
-function addPortfolioProduct(portfolioId, productType, productCode) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({productType: productType, productCode: productCode})
-    };
-
-    return fetch(`/api/portfolio/${portfolioId}/product`, requestOptions)
-        .then((httpResponse) => {
-            if (!httpResponse.ok) {
-                const error = httpResponse;
-                return Promise.reject(error);
-            }
-        })
-}
-
-function getPortfolioProducts(portfolioId) {
-    const requestOptions = {
-        method: 'GET',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-    };
-
-    return fetch(`/api/portfolio/${portfolioId}/products`, requestOptions)
-        .then(handleResponse)
-}
-
-function updatePortfolioProducts(portfolioId, portfolioProducts) {
-    const requestOptions = {
-        method: 'PUT',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(portfolioProducts)
-    };
-
-    return fetch(`/api/portfolio/${portfolioId}/products`, requestOptions)
-        .then((httpResponse) => {
-            if (!httpResponse.ok) {
-                const error = httpResponse;
-                return Promise.reject(error);
-            }
-        })
-}
-
-function deletePortfolioProduct(portfolioId, portfolioProduct) {
-    const requestOptions = {
-        method: 'DELETE',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' }
-    };
-
-    return fetch(`/api/portfolio/${portfolioId}/product/${portfolioProduct.productType}/${portfolioProduct.productCode}`, requestOptions)
-        .then((httpResponse) => {
-            if (!httpResponse.ok) {
-                const error = httpResponse;
-                return Promise.reject(error);
-            }
-        })
-}
-
-function getLatestProductPrice(portfolioId) {
-    const requestOptions = {
-        method: 'GET',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-    };
-
-    return fetch(`/api/portfolio/${portfolioId}/product/prices`, requestOptions)
         .then(handleResponse)
 }
 

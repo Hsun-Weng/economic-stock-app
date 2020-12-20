@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { TextField } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab';
 import SearchIcon from '@material-ui/icons/Search';
-
-import { stockAction } from '../actions';
 
 const useStyles = makeStyles(theme => ({
     title: {
@@ -52,11 +49,7 @@ const useStyles = makeStyles(theme => ({
 
 const SearchBar = () => {
     const classes = useStyles();
-    const dispatch = useDispatch();
-    const allStocks = useSelector(state=> state.stock.data);
-    const allStockIndexes = useSelector(state=> state.stockIndex.data);
     const [ products, setProducts ] = useState([]);
-    
     const [ product, setProduct ] = useState(null);
 
     const history = useHistory();
@@ -78,32 +71,28 @@ const SearchBar = () => {
         }
     }
 
-    useEffect(() => {
-        dispatch(stockAction.getAllStocks());
-        dispatch(stockAction.getAllStockIndexes());
-    }, [ dispatch ])
-
-    useEffect(() => {
-        let allProducts = [];
-        let stockProducts = allStocks.map((data)=>{
-            let product = {};
-            product.productType = 1;
-            product.productTypeName = "股票";
-            product.productCode = data.stockCode;
-            product.productName = data.stockName;
-            return product;
-        });
-        let stockIndexProducts = allStockIndexes.map((data)=>{
-            let product = {};
-            product.productType = 0;
-            product.productTypeName = "指數";
-            product.productCode = data.indexCode;
-            product.productName = data.indexName;
-            return product;
-        });
-        allProducts = stockProducts.concat(stockIndexProducts);
-        setProducts(allProducts);
-    }, [ allStocks, allStockIndexes ]);
+    useEffect(()=>{
+        const fetchData = () => {
+            fetch(`/api/products`)
+                .then((res)=>res.json())
+                .then((res)=>res.data)
+                .then((data)=>{
+                    let products = [];
+                    products = products.concat(data.filter((product)=>product.productType===0)
+                        .map((product)=>{
+                            product.productTypeName = "指數";
+                            return product;
+                        }));
+                    products = products.concat(data.filter((product)=>product.productType===0)
+                        .map((product)=>{
+                            product.productTypeName = "股票";
+                            return product;
+                        }));
+                    setProducts(products)
+                });
+        }
+        fetchData();
+    }, [])
 
     return (
         <div className={classes.search}>

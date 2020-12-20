@@ -1,14 +1,11 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
-import { Table, TableContainer, TableHead, TableBody, TableCell, TableRow, Link, Box, IconButton } from '@material-ui/core'
+import { Typography, Table, TableContainer, TableHead, TableBody, TableCell, TableRow, Link, Box, IconButton } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
-
-import { portfolioAction } from '../actions'
 
 const PortfolioHeading = () => (
     <TableHead>
@@ -50,17 +47,17 @@ const PortfolioHeading = () => (
 )
 
 const StockRow = SortableElement(({product, portfolioId}) => {
-    const dispatch =  useDispatch();
     const history = useHistory();
 
     const DrageHandle = SortableHandle(()=> <MenuIcon />);
 
     const deleteProduct = ( productCode, productType ) => {
-        let portfolioProduct = {
-            productType: productType,
-            productCode: productCode
-        }
-        dispatch(portfolioAction.deletePortfolioProducts(portfolioId, portfolioProduct));
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        };
+        fetch(`/api/portfolio/${portfolioId}/product/${productType}/${productCode}`, requestOptions)
+            .then(res=>res.json())
     };
 
     const redirectChart = ( event, productCode, productType ) => {
@@ -154,13 +151,12 @@ const StockRow = SortableElement(({product, portfolioId}) => {
 
 
 const PortfolioTable = ({ portfolioId }) => {
-    const dispatch = useDispatch();
     const history = useHistory();
-
-    const portfolioProductPrices = useSelector(state=>state.portfolioProduct.price);
+    const [ portfolioProductPrices , setPortfolioProductPrices ] = useState([]);
 
     const onSortEnd = async ({oldIndex, newIndex}) => {
-        dispatch(portfolioAction.resortPortfolioProducts(portfolioId, portfolioProductPrices, oldIndex, newIndex));
+        fetch(`/api/portfolio/${portfolioId}/products`)
+            .then(res=>res.json())
     };
 
     const StockTable = SortableContainer(({children})=>(
@@ -169,18 +165,29 @@ const PortfolioTable = ({ portfolioId }) => {
         
     useEffect(()=> {
         if( portfolioId !== 0){
-            dispatch(portfolioAction.getLatestProductPrice(portfolioId));
+            fetch(`/api/portfolio/${portfolioId}/product/prices`)
+                .then(res=>res.json())
+                .then(res=>res.data)
+                .then(data=>setPortfolioProductPrices(data))
         }
-    }, [ dispatch, portfolioId ]);
+    }, [ portfolioId ]);
 
+    if(portfolioProductPrices.length==0){
+        return (<Box align="center">
+            <Typography variant="h4" color="error">
+                查無資料
+            </Typography>
+        </Box>);
+    }
+    
     return (
         <TableContainer>
             <Table size="small">
                 <PortfolioHeading />
-                <StockTable onSortEnd={onSortEnd} useDragHandle>
-                    {portfolioProductPrices.map((prop, key)=>
-                    <StockRow key={key} index={key} product={prop} portfolioId={portfolioId} /> )}
-                </StockTable>)
+                    <StockTable onSortEnd={onSortEnd} useDragHandle>
+                        {portfolioProductPrices.map((prop, key)=>
+                        <StockRow key={key} index={key} product={prop} portfolioId={portfolioId} /> )}
+                    </StockTable>
             </Table>
         </TableContainer>
     )

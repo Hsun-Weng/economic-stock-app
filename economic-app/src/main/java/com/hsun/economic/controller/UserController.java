@@ -31,7 +31,7 @@ public class UserController {
     public ResponseBean<UserBean> getUser(Authentication authentication){
         ResponseBean responseBean = new ResponseBean();
         try{
-            responseBean.setData(service.findUserByName(authentication.getName()));
+            responseBean.setData(service.getUser(authentication.getName()));
         }catch(Exception e) {
             throw new ApiServerException();
         }

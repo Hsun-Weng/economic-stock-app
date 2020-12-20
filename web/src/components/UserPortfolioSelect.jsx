@@ -1,24 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 
 const UserPortfolioSelect = ({ portfolioId, setPortfolioId, className }) =>{
-    const [ userPortfolios, setUserPortfolios ] = useState([]);
+    const userPortfolios = useSelector(state=>state.portfolio.data);
 
     useEffect(()=>{
-        const fetchData = () => {
-            fetch(`/api/portfolio`)
-                .then((res)=>res.json())
-                .then((res)=>res.data)
-                .then((data)=>{
-                    setUserPortfolios(data)
-                    if(data.length > 0){
-                        setPortfolioId(data[0].portfolioId);
-                    }
-                });
+        if(portfolioId===0&&userPortfolios.length>0){
+            setPortfolioId(userPortfolios[0].portfolioId);
         }
-        fetchData();
-    }, [ setPortfolioId ])
+    }, [portfolioId, userPortfolios])
 
     return (
         <FormControl className={className}>

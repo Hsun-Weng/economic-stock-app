@@ -29,7 +29,7 @@ public class OauthTokenServiceImpl implements OauthTokenService {
     public ResponseOauthBean getAccessTokenByCode(Integer providerCode, String code) {
         OauthClientConfig oauthClientConfig = oauthConfig.getClients()
                 .stream()
-                .filter((client) -> client.getProviderCode() == providerCode)
+                .filter((client) -> client.getProviderCode().equals(providerCode))
                 .findFirst().orElse(null);
 
         Map<String, Object> queryParamsMap = new HashMap<String, Object>();
@@ -51,7 +51,7 @@ public class OauthTokenServiceImpl implements OauthTokenService {
     public OauthUser getUserInfoFromToken(Integer providerCode, String tokenType, String accessToken) {
         OauthClientConfig oauthClientConfig = oauthConfig.getClients()
                 .stream()
-                .filter((client)->client.getProviderCode()==providerCode)
+                .filter((client)->client.getProviderCode().equals(providerCode))
                 .findFirst().orElse(null);
 
         HttpHeaders httpHeaders = new HttpHeaders();

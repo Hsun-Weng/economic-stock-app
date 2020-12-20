@@ -32,7 +32,7 @@ public class User implements Serializable {
 	@Column(name="last_name")
 	private String lastName;
 
-	@OneToMany(orphanRemoval = true)
+	@OneToMany(cascade = {CascadeType.ALL},orphanRemoval = true)
 	@JoinColumn(name="user_name")
 	@ToString.Exclude
 	private List<UserPortfolio> userPortfolioList = new ArrayList<>();

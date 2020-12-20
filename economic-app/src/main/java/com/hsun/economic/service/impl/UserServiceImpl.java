@@ -7,6 +7,7 @@ import com.hsun.economic.bean.UserBean;
 import com.hsun.economic.entity.OauthToken;
 import com.hsun.economic.entity.OauthTokenPK;
 import com.hsun.economic.entity.User;
+import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.repository.OauthTokenRepository;
 import com.hsun.economic.repository.UserRepository;
 import com.hsun.economic.service.OauthTokenService;
@@ -42,11 +43,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserBean findUserByName(String userName) {
-        return repository.findById(userName)
-                .map((user)->new UserBean(user.getUserName(), null
-                        , user.getFirstName(), user.getLastName()))
-                .orElse(null);
+    public UserBean getUser(String userName) {
+        User user = repository.findById(userName).orElseThrow(()->new ApiClientException("Get User Fail"));
+        return new UserBean(user.getUserName(), null, user.getFirstName(), user.getLastName());
     }
 
     @Override

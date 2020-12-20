@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public void addPortfolio(String userName, PortfolioBean portfolioBean) {
         if(StringUtils.isEmpty(portfolioBean.getPortfolioName())){
@@ -61,12 +63,14 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
         repository.save(userPortfolio);
     }
 
+    @Transactional
     @Override
     public void deletePortfolio(String userName, Integer portfolioId) {
         User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
         UserPortfolio userPortfolio = user.getUserPortfolioList()
-                .stream().filter((data)->data.getPortfolioId() == portfolioId)
+                .stream().filter((data)->data.getPortfolioId().equals(portfolioId))
                 .findAny().orElseThrow(()->new ApiClientException("Portfolio not found."));
+        //TODO can't delete
         repository.deleteById(portfolioId);
     }
 
@@ -74,7 +78,7 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     public void updatePortfolio(String userName, Integer portfolioId, PortfolioBean portfolioBean) {
         User user = userRepository.findById(userName).get();
         UserPortfolio userPortfolio= user.getUserPortfolioList()
-                .stream().filter((data)->data.getPortfolioId() == portfolioId)
+                .stream().filter((data)->data.getPortfolioId().equals(portfolioId))
                 .findAny().orElseThrow(()->new ApiClientException("Portfolio not found."));
         if(StringUtils.isEmpty(portfolioBean.getPortfolioName())){
             throw new ApiClientException("Portfolio name can't be empty.");
@@ -89,7 +93,7 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
                 .orElseThrow(()->new ApiClientException("User not found."));
         UserPortfolio userPortfolio = user.getUserPortfolioList()
                 .stream()
-                .filter((data)->data.getPortfolioId() == portfolioId)
+                .filter((data)->data.getPortfolioId().equals(portfolioId))
                 .findAny()
                 .orElseThrow(()->new ApiClientException("Portfolio not found."));
 
@@ -125,9 +129,10 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     public List<ProductPriceBean> getProductPriceList(String userName, Integer portfolioId) {
         User user = userRepository.findById(userName)
                 .orElseThrow(()->new ApiClientException("User not found."));
+        System.out.println(user.getUserPortfolioList());
         UserPortfolio userPortfolio = user.getUserPortfolioList()
                 .stream()
-                .filter((data)->data.getPortfolioId() == portfolioId)
+                .filter((data)->data.getPortfolioId().equals(portfolioId))
                 .findAny()
                 .orElseThrow(()->new ApiClientException("Portfolio not found."));
         List<PortfolioProduct> portfolioProductList = userPortfolio.getPortfolioProductList();

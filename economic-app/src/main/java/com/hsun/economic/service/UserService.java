@@ -5,6 +5,6 @@ import com.hsun.economic.bean.UserBean;
 
 public interface UserService {
     void saveUser(UserBean userBean);
-    UserBean findUserByName(String userName);
+    UserBean getUser(String userName);
     String oauth(RequestOauthBean requestOauthBean);
 }

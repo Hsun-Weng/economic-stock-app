@@ -8,12 +8,24 @@ import { portfolioAction } from '../actions/'
 const AddPortoflioDialog = ({ open, handleClose }) => {
     const dispatch = useDispatch();
 
-    const loading = useSelector(state=>state.portfolio.adding);
+    const [ adding, setAdding ] = useState(false);
     const [ addPorftolioName, setAddPortfolioName ] = useState("");
 
     const addPortfolio = () => {
-        let portfolio = { portfolioName: addPorftolioName}
-        dispatch(portfolioAction.addPortfolio(portfolio))
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ portfolioName: addPorftolioName})
+        };
+        setAdding(true);
+        fetch(`/api/portfolio`, requestOptions)
+            .then((res) => {
+                setAdding(false);
+                handleClose();
+                dispatch(portfolioAction.getPortfolios());
+            }).catch((err)=>{
+                setAdding(false);
+            })
     };
 
     return (
@@ -28,26 +40,40 @@ const AddPortoflioDialog = ({ open, handleClose }) => {
                 />
             </DialogContent>
             <DialogActions>
-                <Button color="primary" disabled={loading} onClick={addPortfolio}>
-                    {loading && <CircularProgress size={24} />}
+                <Button color="primary" disabled={adding} onClick={addPortfolio}>
+                    {adding && <CircularProgress size={24} />}
                     新增
                 </Button>
-                <Button color="secondary" disabled={loading} onClick={handleClose}>
+                <Button color="secondary" disabled={adding} onClick={handleClose}>
                     取消
                 </Button>
             </DialogActions>
         </Dialog>);
 }
 
-const EditPortoflioDialog = ({ open, handleClose, portfolioId, portfolioName }) => {
+const EditPortoflioDialog = ({ open, handleClose, portfolioId }) => {
     const dispatch = useDispatch();
+    const userPortfolios = useSelector(state=>state.portfolio.data);
 
-    const loading = useSelector(state=>state.portfolio.updating);
+    const [ updating, setUpdating ] = useState(false);
     const [ updatePortfolioName, setUpdatePortfolioName ] = useState("");
 
-    const updatePortfolio = () => {
-        let portfolio = { portfolioName: updatePortfolioName}
-        dispatch(portfolioAction.updatePortfolio(portfolioId, portfolio))
+    const updatePortfolio = (event) => {
+        event.preventDefault();
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ portfolioName: updatePortfolioName })
+        };
+        setUpdating(true);
+        fetch(`/api/portfolio/${portfolioId}`, requestOptions)
+            .then((res) => {
+                setUpdating(false);
+                handleClose();
+                dispatch(portfolioAction.getPortfolios());
+            }).catch((err)=>{
+                setUpdating(false);
+            })
     };
 
     const handleChange = (event) => {
@@ -55,8 +81,11 @@ const EditPortoflioDialog = ({ open, handleClose, portfolioId, portfolioName }) 
     }
 
     useEffect(()=>{
-        setUpdatePortfolioName(portfolioName);
-    }, [ portfolioName ]);
+        let filteredPortfolios = userPortfolios.filter((userPortfolio)=>userPortfolio.portfolioId===portfolioId);
+        if(filteredPortfolios.length>0){
+            setUpdatePortfolioName(filteredPortfolios[0].portfolioName);
+        }
+    }, [ portfolioId, userPortfolios ])
 
     return (
         <Dialog open={open} onClose={handleClose}>
@@ -70,31 +99,50 @@ const EditPortoflioDialog = ({ open, handleClose, portfolioId, portfolioName }) 
                 />
             </DialogContent>
             <DialogActions>
-                <Button color="primary" disabled={loading} onClick={updatePortfolio}>
-                    {loading && <CircularProgress size={24} />}
+                <Button color="primary" disabled={updating} onClick={updatePortfolio}>
+                    {updating && <CircularProgress size={24} />}
                     確定
                 </Button>
-                <Button color="secondary" disabled={loading} onClick={handleClose}>
+                <Button color="secondary" disabled={updating} onClick={handleClose}>
                     取消
                 </Button>
             </DialogActions>
         </Dialog>);
 }
 
-const DeletePortfolioDialog = ({ open, handleClose, portfolioId, portfolioName }) => {
+const DeletePortfolioDialog = ({ open, handleClose, portfolioId }) => {
     const dispatch = useDispatch();
+    const userPortfolios = useSelector(state=>state.portfolio.data);
 
-    const loading = useSelector(state=>state.portfolio.deleting);
-
+    const [ deleting, setDeleting ] = useState(false); 
     const [ deletePortfolioName, setDeletePortfolioName ] = useState("");
 
-    const deletePortfolio = () => {
-        dispatch(portfolioAction.deletePortfolio(portfolioId))
+    const deletePortfolio = (event) => {
+        event.preventDefault();
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        };
+        
+        setDeleting(true);
+        fetch(`/api/portfolio/${portfolioId}`, requestOptions)
+            .then((res) => {
+                setDeleting(false);
+                handleClose();
+                dispatch(portfolioAction.getPortfolios());
+            }).catch((err)=>{
+                setDeleting(false);
+            })
     };
 
+
     useEffect(()=>{
-        setDeletePortfolioName(portfolioName);
-    }, [ portfolioName ])
+        let filteredPortfolios = userPortfolios.filter((userPortfolio)=>userPortfolio.portfolioId===portfolioId);
+        if(filteredPortfolios.length>0){
+            setDeletePortfolioName(filteredPortfolios[0].portfolioName);
+        }
+    }, [ portfolioId, userPortfolios ])
+
 
     return (
         <Dialog open={open} onClose={handleClose}>
@@ -103,11 +151,11 @@ const DeletePortfolioDialog = ({ open, handleClose, portfolioId, portfolioName }
                 確定刪除 {deletePortfolioName} ?
             </DialogContent>
             <DialogActions>
-                <Button color="primary" disabled={loading} onClick={deletePortfolio}>
-                    {loading && <CircularProgress size={24} />}
+                <Button color="primary" disabled={deleting} onClick={deletePortfolio}>
+                    {deleting && <CircularProgress size={24} />}
                     確定
                 </Button>
-                <Button color="secondary" disabled={loading} onClick={handleClose}>
+                <Button color="secondary" disabled={deleting} onClick={handleClose}>
                     取消
                 </Button>
             </DialogActions>

@@ -10,22 +10,22 @@ export const user = (state=userInitState, action) =>{
     case userConstants.GET_USER_REQUEST:
       return {...state,
         loading: true,
-        data: null 
+        data: null,
       };
     case userConstants.GET_USER_SUCCESS:
       return {...state,
         loading: false, 
-        data: action.user
+        data: action.user,
       }
     case userConstants.GET_USER_FAILURE:
       return {...state,
         loading: false,
-        data: null
+        data: null,
       };
     case userConstants.LOGOUT:
       return {...state,
         loading: false,
-        data: null
+        data: null,
       };
     default:
       return state;

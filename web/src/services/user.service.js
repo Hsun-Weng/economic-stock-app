@@ -1,5 +1,3 @@
-import { authHeader } from '../helplers/authHeader';
-
 export const userService = {
     getUser,
     login,
@@ -11,14 +9,11 @@ export const userService = {
 function getUser(){
     const requestOptions = {
         method: 'GET',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
     };
 
     return fetch(`/api/user`, requestOptions)
         .then(handleResponse)
-        .then(user => {
-            return user;
-        });
 }
 
 function login(userName, password){

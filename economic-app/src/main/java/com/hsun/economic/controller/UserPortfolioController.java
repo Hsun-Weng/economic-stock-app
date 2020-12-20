@@ -133,6 +133,7 @@ public class UserPortfolioController {
         }catch(ApiClientException e){
             throw e;
         }catch(Exception e){
+            e.printStackTrace();
             throw new ApiServerException();
         }
         return responseBean;

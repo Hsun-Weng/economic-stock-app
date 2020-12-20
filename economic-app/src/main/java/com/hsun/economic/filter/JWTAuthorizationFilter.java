@@ -64,7 +64,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = tokenCookie.getValue();
         String userName =  jwtUtil.getUsernameFromToken(token);
         if(!StringUtils.isEmpty(userName) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserBean userBean = userService.findUserByName(userName);
+            UserBean userBean = userService.getUser(userName);
             if(jwtUtil.validateToken(token, userBean)) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userBean.getUserName(), null, new ArrayList<>());

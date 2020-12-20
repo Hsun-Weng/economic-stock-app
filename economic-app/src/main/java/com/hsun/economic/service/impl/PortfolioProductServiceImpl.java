@@ -1,7 +1,12 @@
 package com.hsun.economic.service.impl;
 
 import com.hsun.economic.bean.PortfolioProductBean;
-import com.hsun.economic.entity.*;
+import com.hsun.economic.bean.ProductBean;
+import com.hsun.economic.constants.ProductType;
+import com.hsun.economic.entity.PortfolioProduct;
+import com.hsun.economic.entity.PortfolioProductPK;
+import com.hsun.economic.entity.User;
+import com.hsun.economic.entity.UserPortfolio;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.repository.*;
 import com.hsun.economic.service.PortfolioProductService;
@@ -11,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PortfolioProductServiceImpl implements PortfolioProductService {
@@ -23,6 +29,32 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
 
     @Autowired
     private UserPortfolioRepository userPortfolioRepository;
+
+    @Autowired
+    private StockRepository stockRepository;
+
+    @Autowired
+    private StockIndexRepository stockIndexRepository;
+
+    @Override
+    public List<ProductBean> getProductList() {
+        List<ProductBean> stockProductList = stockRepository
+                .findAll()
+                .parallelStream()
+                .map((stock)->new ProductBean(ProductType.STOCK.getValue(), stock.getStockCode()
+                        , stock.getStockName()))
+                .collect(Collectors.toList());
+
+        List<ProductBean> stockIndexProductList = stockRepository
+                .findAll()
+                .parallelStream()
+                .map((stockIndex)->new ProductBean(ProductType.INDEX.getValue(), stockIndex.getStockCode()
+                        , stockIndex.getStockName()))
+                .collect(Collectors.toList());
+
+        return Stream.concat(stockProductList.stream(), stockIndexProductList.stream())
+                .collect(Collectors.toList());
+    }
 
     @Override
     public void addPortfolioProduct(String userName, Integer portfolioId, PortfolioProductBean portfolioProductBean) {
