@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-import { Paper, Box, Grid, FormControl, InputLabel, Select, MenuItem, IconButton, AppBar, Tabs, Tab } from '@material-ui/core';
+import { Paper, Box, Grid, IconButton, AppBar, Tabs, Tab } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
 

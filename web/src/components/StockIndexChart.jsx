@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-import { Paper, Box, Grid, FormControl, InputLabel, Select, MenuItem, IconButton } from '@material-ui/core';
+import { Paper, Box, Grid, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import UserPortfolioSelect from './UserPortfolioSelect';
-
-import { portfolioAction } from '../actions';
 
 import StockIndexCandleStickChart from './StockIndexCandleStickChart';
 

@@ -1,7 +1,6 @@
 import userConstants from '../constants/user.constants';
-import portfolioConstant from '../constants/portfolio.constants';
 import { portfolioAction } from './portfolio.action';
-import { portfolioService, userService } from '../services';
+import { userService } from '../services';
 import { notificationActions } from './';
 
 export const userAction = {
@@ -22,7 +21,6 @@ function getUser() {
             },
             error=>{
                 dispatch(failure());
-                dispatch(notificationActions.enqueueError(error.message));
             })
         
     };
@@ -30,7 +28,6 @@ function getUser() {
     function request() { return { type: userConstants.GET_USER_REQUEST } }
     function success(user) { return { type: userConstants.GET_USER_SUCCESS, user } }
     function failure() { return { type: userConstants.GET_USER_FAILURE} }
-    function getPortfoliosSuccess(data) { return { type: portfolioConstant.GET_PORTFOLIO_SUCCESS, data } }
 }
 
 function login(userName, password) {

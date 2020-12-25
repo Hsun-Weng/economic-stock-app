@@ -1,5 +1,3 @@
-import { authHeader } from '../helplers/authHeader';
-
 export const portfolioService = {
     getPortfolios,
 }

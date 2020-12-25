@@ -7,10 +7,10 @@ const initState = {
 
 export const portfolio = (state=initState, action) => {
     switch(action.type) {
-        case portfolioConstants.GET_PORTFOLIO_SUCCESS:
+        case portfolioConstants.GET_PORTFOLIO_REQUEST:
             return {
                 loading: true,
-                data: action.data
+                data: []
             }
         case portfolioConstants.GET_PORTFOLIO_SUCCESS:
             return {

@@ -151,7 +151,6 @@ const StockRow = SortableElement(({product, portfolioId}) => {
 
 
 const PortfolioTable = ({ portfolioId }) => {
-    const history = useHistory();
     const [ portfolioProductPrices , setPortfolioProductPrices ] = useState([]);
 
     const onSortEnd = async ({oldIndex, newIndex}) => {
@@ -172,7 +171,7 @@ const PortfolioTable = ({ portfolioId }) => {
         }
     }, [ portfolioId ]);
 
-    if(portfolioProductPrices.length==0){
+    if(portfolioProductPrices.length===0){
         return (<Box align="center">
             <Typography variant="h4" color="error">
                 查無資料

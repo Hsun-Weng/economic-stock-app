@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
@@ -10,7 +10,7 @@ const UserPortfolioSelect = ({ portfolioId, setPortfolioId, className }) =>{
         if(portfolioId===0&&userPortfolios.length>0){
             setPortfolioId(userPortfolios[0].portfolioId);
         }
-    }, [portfolioId, userPortfolios])
+    }, [portfolioId, userPortfolios, setPortfolioId])
 
     return (
         <FormControl className={className}>

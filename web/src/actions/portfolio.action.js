@@ -1,10 +1,5 @@
 import portfolioConstants from '../constants/portfolio.constants';
 import { portfolioService } from '../services';
-import { stockService } from '../services';
-
-import { notificationActions } from './';
-
-import arrayMove from 'array-move';
 
 export const portfolioAction = {
     getPortfolios,
