@@ -3,7 +3,7 @@ package com.hsun.economic.service.impl;
 import com.hsun.economic.bean.PriceBean;
 import com.hsun.economic.bean.StockIndexBean;
 import com.hsun.economic.repository.StockIndexRepository;
-import com.hsun.economic.resource.StockIndexPriceResource;
+import com.hsun.economic.resource.StockIndexResource;
 import com.hsun.economic.service.StockIndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class StockIndexServiceImpl implements StockIndexService {
     private StockIndexRepository repository;
 
     @Autowired
-    private StockIndexPriceResource priceResource;
+    private StockIndexResource stockIndexResource;
 
     @Override
     public List<StockIndexBean> getStockIndexList() {
@@ -33,7 +33,7 @@ public class StockIndexServiceImpl implements StockIndexService {
 
     @Override
     public List<PriceBean> getPriceList(String indexCode, LocalDate startDate, LocalDate endDate) {
-        return priceResource.getPriceList(indexCode, startDate.format(DateTimeFormatter.ISO_DATE)
+        return stockIndexResource.getPriceList(indexCode, startDate.format(DateTimeFormatter.ISO_DATE)
                 , endDate.format(DateTimeFormatter.ISO_DATE)).getData()
                 .stream()
                 .sorted((p1, p2)->Long.compare(p2.getDate().getTime(), p1.getDate().getTime()))

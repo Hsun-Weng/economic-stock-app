@@ -2,8 +2,7 @@ package com.hsun.economic.service.impl;
 
 import com.hsun.economic.bean.*;
 import com.hsun.economic.repository.StockRepository;
-import com.hsun.economic.resource.StockPriceResource;
-import com.hsun.economic.resource.StockRankResource;
+import com.hsun.economic.resource.StockResource;
 import com.hsun.economic.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,10 +19,7 @@ public class StockServiceImpl implements StockService {
     private StockRepository repository;
 
     @Autowired
-    private StockPriceResource priceResource;
-
-    @Autowired
-    private StockRankResource stockRankResource;
+    private StockResource stockResource;
 
     @Override
     public List<StockBean> getStockList() {
@@ -36,7 +32,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public PageInfoBean<StockPriceBean> getStockSortedPage(String sortColumn, Integer page, Integer size, String direction) {
-        PageInfoBean<StockPriceBean> sortedStockPage = stockRankResource.getStockSortedPage(sortColumn, page, size, direction).getData();
+        PageInfoBean<StockPriceBean> sortedStockPage = stockResource.getStockSortedPage(sortColumn, page, size, direction).getData();
         List<StockPriceBean> sortedStockList = sortedStockPage.getContent()
                 .parallelStream()
                 .map((stockPriceBean -> {//名稱補進
@@ -52,7 +48,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<PriceBean> getPriceList(String stockCode, LocalDate startDate, LocalDate endDate) {
-        return priceResource.getPriceList(stockCode, startDate.format(DateTimeFormatter.ISO_DATE)
+        return stockResource.getPriceList(stockCode, startDate.format(DateTimeFormatter.ISO_DATE)
                 , endDate.format(DateTimeFormatter.ISO_DATE)).getData()
                 .stream()
                 .sorted((p1, p2)->Long.compare(p2.getDate().getTime(), p1.getDate().getTime()))
@@ -61,7 +57,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<StockChipBean> getChipList(String stockCode, LocalDate startDate, LocalDate endDate) {
-        return priceResource.getChipList(stockCode, startDate.format(DateTimeFormatter.ISO_DATE)
+        return stockResource.getChipList(stockCode, startDate.format(DateTimeFormatter.ISO_DATE)
                 , endDate.format(DateTimeFormatter.ISO_DATE)).getData()
                 .stream()
                 .sorted((p1, p2)->Long.compare(p2.getDate().getTime(), p1.getDate().getTime()))
@@ -70,7 +66,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<StockMarginBean> getMarginList(String stockCode, LocalDate startDate, LocalDate endDate) {
-        return priceResource.getMarginList(stockCode, startDate.format(DateTimeFormatter.ISO_DATE)
+        return stockResource.getMarginList(stockCode, startDate.format(DateTimeFormatter.ISO_DATE)
                 , endDate.format(DateTimeFormatter.ISO_DATE)).getData()
                 .stream()
                 .sorted((p1, p2)->Long.compare(p2.getDate().getTime(), p1.getDate().getTime()))

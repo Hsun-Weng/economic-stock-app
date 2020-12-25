@@ -4,13 +4,11 @@ import com.hsun.economic.bean.StockCategoryBean;
 import com.hsun.economic.bean.StockCategoryProportionBean;
 import com.hsun.economic.bean.StockPriceBean;
 import com.hsun.economic.bean.StockProportionBean;
-import com.hsun.economic.entity.Stock;
 import com.hsun.economic.entity.StockCategory;
-import com.hsun.economic.entity.StockCategoryProportionView;
 import com.hsun.economic.repository.StockCategoryProportionViewRepository;
 import com.hsun.economic.repository.StockCategoryRepository;
 import com.hsun.economic.repository.StockProportionViewRepository;
-import com.hsun.economic.resource.StockPriceResource;
+import com.hsun.economic.resource.StockResource;
 import com.hsun.economic.service.StockCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +25,7 @@ public class StockCategoryServiceImpl implements StockCategoryService {
     private StockCategoryRepository repository;
 
     @Autowired
-    private StockPriceResource stockPriceResource;
+    private StockResource stockResource;
 
     @Autowired
     private StockCategoryProportionViewRepository categoryProportionViewRepository;
@@ -54,7 +52,7 @@ public class StockCategoryServiceImpl implements StockCategoryService {
                 .getStockList()
                 .parallelStream()
                 .map((stock)->{
-                    StockPriceBean priceBean = stockPriceResource.getLatestPrice(stock.getStockCode()).getData();
+                    StockPriceBean priceBean = stockResource.getLatestPrice(stock.getStockCode()).getData();
                     priceBean.setStockName(stock.getStockName());
                     return priceBean;
                 }).collect(Collectors.toList());
@@ -91,7 +89,7 @@ public class StockCategoryServiceImpl implements StockCategoryService {
                 .flatMap((categoryProportion)->categoryProportion.getChildren().stream().map(StockProportionBean::getStockCode))
                 .collect(Collectors.toList());
 
-        Map<String, Float> stockChangePercentMap = stockPriceResource.getLatestPriceList(stockCodeList).getData()
+        Map<String, Float> stockChangePercentMap = stockResource.getLatestPriceList(stockCodeList).getData()
                 .parallelStream().collect(Collectors.toMap(StockPriceBean::getStockCode, StockPriceBean::getChangePercent));
 
         return categoryProportionList.parallelStream()

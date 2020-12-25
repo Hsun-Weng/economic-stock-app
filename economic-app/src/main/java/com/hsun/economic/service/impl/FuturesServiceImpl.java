@@ -6,8 +6,8 @@ import com.hsun.economic.bean.PriceBean;
 import com.hsun.economic.entity.Futures;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.repository.FuturesRepository;
-import com.hsun.economic.resource.FuturesChipResource;
-import com.hsun.economic.resource.StockIndexPriceResource;
+import com.hsun.economic.resource.FuturesResource;
+import com.hsun.economic.resource.StockIndexResource;
 import com.hsun.economic.service.FuturesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +26,10 @@ public class FuturesServiceImpl implements FuturesService {
     private FuturesRepository repository;
 
     @Autowired
-    private FuturesChipResource chipResource;
+    private FuturesResource futuresResource;
 
     @Autowired
-    private StockIndexPriceResource stockIndexPriceResource;
+    private StockIndexResource stockIndexResource;
 
     @Override
     public List<FuturesBean> getFuturesList() {
@@ -51,12 +51,12 @@ public class FuturesServiceImpl implements FuturesService {
         Futures futures = repository.findById(futuresCode)
                 .orElseThrow(()->new ApiClientException("Futures not found"));
 
-        Map<Long, PriceBean> datePriceMap = stockIndexPriceResource.getPriceList(futures.getStockIndex().getIndexCode()
+        Map<Long, PriceBean> datePriceMap = stockIndexResource.getPriceList(futures.getStockIndex().getIndexCode()
                 , startDate.format(DateTimeFormatter.ISO_DATE), endDate.format(DateTimeFormatter.ISO_DATE)).getData()
                 .parallelStream()
                 .collect(Collectors.toMap((price)->price.getDate().getTime(), Function.identity()));
 
-        return  chipResource.getChipList(futuresCode, startDate.format(DateTimeFormatter.ISO_DATE)
+        return  futuresResource.getChipList(futuresCode, startDate.format(DateTimeFormatter.ISO_DATE)
                     , endDate.format(DateTimeFormatter.ISO_DATE)).getData()
                 .parallelStream()
                 .map((chip)->{

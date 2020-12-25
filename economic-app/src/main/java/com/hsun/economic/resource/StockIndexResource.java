@@ -9,7 +9,7 @@ import retrofit2.http.*;
 import java.util.List;
 
 @RetrofitClient(baseUrl = "${service.data.url}")
-public interface StockIndexPriceResource {
+public interface StockIndexResource {
     @GET("stock/index/{indexCode}/price/latest")
     ResponseBean<StockIndexPriceBean> getLatestPrice(@Path("indexCode") String indexCode);
     @GET("stock/index/{indexCode}/prices")

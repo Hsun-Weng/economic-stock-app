@@ -7,7 +7,7 @@ import retrofit2.http.*;
 import java.util.List;
 
 @RetrofitClient(baseUrl = "${service.data.url}")
-public interface StockPriceResource {
+public interface StockResource {
     @GET("stock/{stockCode}/price/latest")
     ResponseBean<StockPriceBean> getLatestPrice(@Path("stockCode") String stockCode);
     @POST("stocks/price/latest")
@@ -21,4 +21,7 @@ public interface StockPriceResource {
     @GET("stock/{stockCode}/chip")
     ResponseBean<List<StockChipBean>> getChipList(@Path("stockCode") String stockCode, @Query("startDate") String startDate
             , @Query("endDate") String endDate);
+    @GET("stocks/rank/price/latest")
+    ResponseBean<PageInfoBean<StockPriceBean>> getStockSortedPage(@Query("sortColumn") String sortColumn
+            , @Query("page") Integer page, @Query("size") Integer size, @Query("direction") String direction);
 }

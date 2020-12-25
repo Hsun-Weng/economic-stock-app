@@ -5,8 +5,8 @@ import com.hsun.economic.constants.ProductType;
 import com.hsun.economic.entity.*;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.repository.*;
-import com.hsun.economic.resource.StockIndexPriceResource;
-import com.hsun.economic.resource.StockPriceResource;
+import com.hsun.economic.resource.StockIndexResource;
+import com.hsun.economic.resource.StockResource;
 import com.hsun.economic.service.UserPortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,10 +35,10 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     private StockIndexRepository stockIndexRepository;
 
     @Autowired
-    private StockPriceResource stockPriceResource;
+    private StockResource stockResource;
 
     @Autowired
-    private StockIndexPriceResource stockIndexPriceResource;
+    private StockIndexResource stockIndexResource;
 
     @Override
     public List<PortfolioBean> getPortfolioList(String userName) {
@@ -148,12 +148,12 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
                     switch(productType){
                         case INDEX:
                             productName = stockIndexRepository.findById(productCode).get().getIndexName();
-                            priceBean = stockIndexPriceResource.getLatestPrice(productCode)
+                            priceBean = stockIndexResource.getLatestPrice(productCode)
                                     .getData();
                             break;
                         case STOCK:
                             productName = stockRepository.findById(productCode).get().getStockName();
-                            priceBean = stockPriceResource.getLatestPrice(productCode).getData();
+                            priceBean = stockResource.getLatestPrice(productCode).getData();
                             break;
                         case FUTURES:
                             break;
