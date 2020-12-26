@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
@@ -47,7 +47,7 @@ const PortfolioHeading = () => (
 )
 
 const StockRow = SortableElement(({product, portfolioId}) => {
-    const history = useHistory();
+    const history = useNavigate();
 
     const DrageHandle = SortableHandle(()=> <MenuIcon />);
 

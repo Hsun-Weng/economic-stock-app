@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { Table, TableHead, TableFooter, TableContainer, TableBody, TableRow, TablePagination, TableCell, Box, Link } from '@material-ui/core';
 
 const StockRow = ({ stock }) => {
-  const history = useHistory();
+  const history = useNavigate();
 
   const redirectStockChart = ( event, stockCode ) => {
       event.preventDefault();

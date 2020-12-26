@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useParams, useLocation, Redirect } from 'react-router-dom';
+import { useParams, useLocation, Navigate } from 'react-router-dom';
 
 import { userAction } from '../actions';
 
@@ -18,7 +18,7 @@ const OauthReirect = () => {
         }
     }
 
-    return (<Redirect to="/" />)
+    return (<Navigate to="/" />)
 }
 
 export default OauthReirect;

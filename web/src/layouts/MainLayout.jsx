@@ -18,7 +18,7 @@ import User from '../components/User';
 import Notification from '../components/Notification';
 import SearchBar from '../components/SearchBar';
 
-import {Switch} from 'react-router-dom'
+import { Routes } from 'react-router-dom'
 
 import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
@@ -154,9 +154,9 @@ export default function Dashboard() {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
-              <Switch>
+              <Routes>
                 <RouteComponent />
-              </Switch>
+              </Routes>
           </Container>
           <Box pt={4}>
               <Copyright />

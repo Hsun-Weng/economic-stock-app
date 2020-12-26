@@ -14,6 +14,8 @@ import Portfolio from './components/Portfolio';
 
 import SignUp from './components/SignUp';
 import OauthRedirect from './components/OauthRedirect';
+import DashboardLayout from './layouts/DashboardLayout';
+import EconomicDataView from './views/EconomicDataView';
 
 export const mainItemRoutes = [
     {
@@ -56,7 +58,7 @@ export const mainItemRoutes = [
         itemName: "個股成交排行",
         component: StockRank,
         itemType: 0
-    }
+    },
 ]
 
 export const userItemRoutes = [

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { TextField } from '@material-ui/core'
@@ -52,7 +52,7 @@ const SearchBar = () => {
     const [ products, setProducts ] = useState([]);
     const [ product, setProduct ] = useState(null);
 
-    const history = useHistory();
+    const history = useNavigate();
 
     const handleChangeStock = ( event, value ) => {
         setProduct(value);

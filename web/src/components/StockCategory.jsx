@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CategoryTable = ({ categories }) => {
-    const history = useHistory();
+    const history = useNavigate();
 
     const redirectCategoryStockTable = (event, categoryCode) =>{
         event.preventDefault();

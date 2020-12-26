@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -58,7 +58,7 @@ const StockHeading = () => (
 );
 
 const StockRow = ({ stock }) => {
-    const history = useHistory();
+    const history = useNavigate();
 
     const redirectStockChart = ( event, stockCode ) => {
         event.preventDefault();

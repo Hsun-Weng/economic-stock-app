@@ -4,6 +4,7 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 
 import MainLayout from './layouts/MainLayout'
+import DashboardLayout from './layouts/DashboardLayout';
 import {BrowserRouter as Router} from 'react-router-dom'
 
 import { Provider } from 'react-redux';
@@ -13,13 +14,15 @@ import rootReducer from './reducers';
 
 import { SnackbarProvider } from 'notistack';
 
+import App from './App';
+
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 ReactDOM.render(
   <Provider store={store}>
     <SnackbarProvider>
       <Router>
-        <MainLayout />
+        <App />
       </Router>
     </SnackbarProvider>
   </Provider>,
