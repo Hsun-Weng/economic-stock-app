@@ -1,14 +1,10 @@
 import userConstants from '../constants/user.constants';
-import { portfolioAction } from './portfolio.action';
 import { userService } from '../services';
-import { notificationActions } from './';
+import { portfolioAction } from './portfolio.action';
 
 export const userAction = {
     getUser,
-    login,
-    signUp,
-    logout,
-    oauthLogin
+    removeUser
 }
 function getUser() {
     return dispatch => {
@@ -30,79 +26,9 @@ function getUser() {
     function failure() { return { type: userConstants.GET_USER_FAILURE} }
 }
 
-function login(userName, password) {
-    return dispatch => {
-        dispatch(request());
-        
-        userService.login(userName, password)
-            .then(() => {
-                    dispatch(success());
-                    dispatch(getUser());
-                },
-                error => {
-                    dispatch(failure(error));
-                    if(error){
-                        dispatch(notificationActions.enqueueError(error.message));
-                    }else{
-                        console.log('no error body')
-                    }
-                }
-            );
-    }
-
-    function request() {return {type: userConstants.LOGIN_REQUEST}}
-    function success() {return {type: userConstants.LOGIN_SUCCESS}}
-    function failure() {return {type: userConstants.LOGIN_FAILURE}}
-}
-
-function logout() {
+function removeUser() {
     return dispatch =>{
-        userService.logout();
-        dispatch(_logout());
+        dispatch(remove());
     }
-
-    function _logout(){
-        return {type: userConstants.LOGOUT};
-    };
-}
-
-function signUp(user) {
-    return dispatch => {
-        dispatch(request(user));
-
-        userService.signUp(user)
-            .then(
-                () => { 
-                    dispatch(success());
-                    dispatch(notificationActions.enqueueSuccess(`Sign Up Success, Now you can login as ${user.userName}`));
-                },
-                error => {
-                    dispatch(failure());
-                    dispatch(notificationActions.enqueueError(error));
-                }
-            );
-    };
-
-    function request () { return { type: userConstants.SIGNUP_REQUEST } }
-    function success () { return { type: userConstants.SIGNUP_SUCCESS } }
-    function failure () { return { type: userConstants.SIGNUP_FAILURE }}
-}
-
-function oauthLogin(providerCode, code) {
-    return dispatch => {
-        dispatch(request());
-        
-        userService.oauthLogin(providerCode, code)
-            .then(() => {
-                    dispatch(success());
-                },
-                error => {
-                    dispatch(failure(error));
-                }
-            );
-    }
-
-    function request() {return {type: userConstants.OAUTH_LOGIN_REQUEST}}
-    function success() {return {type: userConstants.OAUTH_LOGIN_SUCCESS}}
-    function failure() {return {type: userConstants.OAUTH_LOGIN_FAILURE}}
+    function remove() { return { type: userConstants.REMOVE_USER } }
 }
