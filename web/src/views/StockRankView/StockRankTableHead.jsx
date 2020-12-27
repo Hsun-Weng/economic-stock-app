@@ -2,7 +2,7 @@ import React from 'react';
 
 import { TableHead, TableRow, TableCell } from '@material-ui/core';
 
-const StockRankTableHeading = () => (
+const StockRankTableHead = () => (
     <TableHead>
         <TableRow>
             <TableCell>
@@ -38,3 +38,5 @@ const StockRankTableHeading = () => (
         </TableRow>
     </TableHead>
 )
+
+export default StockRankTableHead;

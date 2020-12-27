@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { TableRow, TableCell } from '@material-ui/core';
-import { MenuIcon } from '@material-ui/icons';
+import { TableRow, TableCell, Box, IconButton, Link } from '@material-ui/core';
+import { Menu as MenuIcon, Close as CloseIcon } from '@material-ui/icons';
 
 const PortfolioTableRow = SortableElement(({product, portfolioId}) => {
     const navigate = useNavigate();
@@ -22,10 +22,10 @@ const PortfolioTableRow = SortableElement(({product, portfolioId}) => {
         event.preventDefault();
         switch(productType){
             case 0:
-                navigate.push(`/index/${productCode}`);
+                navigate(`/app/stock/index/${productCode}`);
                 break;
             case 1:
-                navigate.push(`/stock/${productCode}`);
+                navigate(`/app/stock/${productCode}`);
                 break;
             default:
         }

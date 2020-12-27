@@ -32,39 +32,44 @@ const user = {
 
 const items = [
   {
-    href: '/app/dashboard',
+    href: '/app',
     icon: BarChartIcon,
-    title: 'Dashboard'
+    title: '儀表板'
   },
   {
-    href: '/app/customers',
+    href: '/app/economic',
     icon: UsersIcon,
-    title: 'Customers'
+    title: '經濟數據'
   },
   {
-    href: '/app/products',
+    href: '/app/futures/chip',
     icon: ShoppingBagIcon,
-    title: 'Products'
+    title: '期貨未平倉'
   },
   {
-    href: '/app/account',
+    href: '/app/stock/category',
     icon: UserIcon,
-    title: 'Account'
+    title: '個股類別'
   },
   {
-    href: '/app/settings',
+    href: '/app/stock/rank',
     icon: SettingsIcon,
-    title: 'Settings'
+    title: '當日個股排行'
+  },
+  {
+    href: '/app/portfolio',
+    icon: SettingsIcon,
+    title: '投資組合'
   },
   {
     href: '/login',
     icon: LockIcon,
-    title: 'Login'
+    title: '登入'
   },
   {
     href: '/register',
     icon: UserPlusIcon,
-    title: 'Register'
+    title: '註冊'
   },
   {
     href: '/404',

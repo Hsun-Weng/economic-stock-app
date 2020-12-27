@@ -7,7 +7,7 @@ const CategoryStocksTableRow = ({ stock }) => {
 
     const redirectStockChart = ( event, stockCode ) => {
         event.preventDefault();
-        navigate.push(`/stock/${stockCode}`);
+        navigate(`/app/stock/${stockCode}`);
     }
 
     const CellValue = ({children}) => {

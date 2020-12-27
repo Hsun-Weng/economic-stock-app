@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 
-import { Grid, Paper, Card,
+import { Grid, Paper, Box, Card,
     CardHeader, Divider, Table, TableCell, TableContainer, TableRow, TableBody, Typography, Link } from '@material-ui/core'
 
 const useStyles = makeStyles(() => ({
@@ -15,13 +15,13 @@ const useStyles = makeStyles(() => ({
 
 const StockCategoryTable = ({ className, ...rest }) => {
     const classes = useStyles();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const [ categories, setCategories ] = useState([]);
 
     const redirectCategoryStockTable = (event, categoryCode) =>{
         event.preventDefault();
-        history.push(`/stockCategory/${categoryCode}`);
+        navigate(`/app/stock/category/${categoryCode}`);
     };
 
     useEffect(()=>{

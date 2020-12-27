@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Container,
   Box,
@@ -24,7 +25,7 @@ const StockIndexView = () => {
     return (
       <Page
         className={classes.root}
-        title={stockCode}>
+        title={indexCode}>
         <Container maxWidth="lg">
           <Toolbar indexCode={indexCode}/>
           <Box mt={3}>

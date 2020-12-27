@@ -4,7 +4,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-import { Grid, Paper, Card,
+import { Grid, Paper, Box, Card,
     CardHeader, Divider, Table, TableCell, TablePagination, TableRow, TableBody, Typography, Link } from '@material-ui/core'
 
 import StockRankTableHead from './StockRankTableHead';
@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
     root: {},
 }));
 
-const CategoryStocksTable = ({ className, categoryCode, ...rest }) => {
+const StockRankTable = ({ className, categoryCode, sortColumn, direction, ...rest }) => {
     const classes = useStyles();
 
     const [ page, setPage ] = useState(0);
@@ -70,4 +70,4 @@ const CategoryStocksTable = ({ className, categoryCode, ...rest }) => {
     );
 }
 
-export default CategoryStocksTable;
+export default StockRankTable;

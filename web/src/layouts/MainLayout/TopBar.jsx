@@ -5,9 +5,11 @@ import PropTypes from 'prop-types';
 import {
   AppBar,
   Toolbar,
-  makeStyles
+  makeStyles,
+  IconButton,
+  Badge,
 } from '@material-ui/core';
-import Logo from 'src/components/Logo';
+import { Home as HomeIcon } from 'react-feather';
 
 const useStyles = makeStyles(({
   root: {},
@@ -23,12 +25,15 @@ const TopBar = ({ className, ...rest }) => {
     <AppBar
       className={clsx(classes.root, className)}
       elevation={0}
-      {...rest}
-    >
+      {...rest}>
       <Toolbar className={classes.toolbar}>
-        <RouterLink to="/">
-          <Logo />
-        </RouterLink>
+        <IconButton color="inherit" href="/">
+            <Badge
+                color="primary"
+                variant="dot">
+                <HomeIcon />
+            </Badge>
+        </IconButton>
       </Toolbar>
     </AppBar>
   );

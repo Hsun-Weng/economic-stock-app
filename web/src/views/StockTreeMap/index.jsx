@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import {
   Container,
   Box,
   makeStyles
 } from '@material-ui/core';
 import Page from '../../components/Page';
-import Toolbar from './Toolbar';
-import StockTabs from './StockTabs';
+import TreeMap from './TreeMap';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,22 +16,20 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const StockView = () => {
+const StockTreeMapView = () => {
     const classes = useStyles();
-    const { stockCode } = useParams();
 
     return (
       <Page
         className={classes.root}
-        title={stockCode}>
+        title="上市公司">
         <Container maxWidth="lg">
-          <Toolbar stockCode={stockCode}/>
           <Box mt={3}>
-            <StockTabs stockCode={stockCode}/>
+            <TreeMap />
           </Box>
         </Container>
       </Page>
     );
 }
 
-export default StockView;
+export default StockTreeMapView;

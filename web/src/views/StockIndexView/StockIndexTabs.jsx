@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import { Paper, Box, Grid, IconButton, AppBar, Tabs, Tab, Card,
-    CardHeader, Divider, } from '@material-ui/core';
+    CardHeader, CardContent, Divider, } from '@material-ui/core';
 
 import TabPanel from './TabPanel';
 import CandleStickChart from './CandleStickChart';
@@ -14,7 +15,7 @@ const useStyles = makeStyles(() => ({
     root: {},
 }));
 
-const StockIndexTabs = ({ indexCode }) => {
+const StockIndexTabs = ({className, indexCode, ...rest }) => {
     const classes = useStyles();
     const [ tabValue, setTabValue ] = useState(0);
 

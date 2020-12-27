@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Container,
   Box,
@@ -7,6 +8,7 @@ import {
 import Page from '../../components/Page';
 import Toolbar from './Toolbar';
 import PortfolioTable from './PortfolioTable';
+import PortfolioSelect from './PortfolioSelect';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,8 +21,13 @@ const useStyles = makeStyles((theme) => ({
 
 const PortfolioView = () => {
     const classes = useStyles();
+    const portfolios = useSelector(state=>state.portfolio.data);
 
     const [ portfolioId, setPortfolioId ] = useState(0);
+
+    if(portfolioId===0&&portfolios.length>0){
+      setPortfolioId(portfolios[0].portfolioId);
+    }
 
     return (
       <Page
@@ -28,8 +35,7 @@ const PortfolioView = () => {
         title="投資組合">
         <Toolbar  portfolioId={portfolioId} onPortfolioChange={e=>setPortfolioId(e.target.value)}/>
         <Container maxWidth="lg">
-          <StockRankSelect sortColumn={sortColumn} onSortColumnChange={e=>setSortColumn(e.target.value)}
-                direction={direction} onDirectionChange={e=>setDirection(e.target.value)}/>
+          <PortfolioSelect portfolioId={portfolioId} onPortfolioChange={e=>setPortfolioId(e.target.value)}/>
           <Box mt={3}>
             <PortfolioTable portfolioId={portfolioId} />
           </Box>

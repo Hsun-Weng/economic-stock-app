@@ -6,12 +6,6 @@ import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 const PortfolioSelect = ({ portfolioId, onPortfolioChange }) =>{
     const portfolios = useSelector(state=>state.portfolio.data);
 
-    useEffect(()=>{
-        if(portfolioId===0&&portfolios.length>0){
-            setPortfolioId(portfolios[0].portfolioId);
-        }
-    }, [portfolioId, portfolios, setPortfolioId])
-
     return (
         <FormControl fullWidth margin="normal">
             <InputLabel>Add to portfolio</InputLabel>

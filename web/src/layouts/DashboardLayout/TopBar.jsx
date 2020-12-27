@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -11,9 +10,8 @@ import {
   Toolbar,
   makeStyles
 } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import InputIcon from '@material-ui/icons/Input';
+import { Menu as MenuIcon, Notifications as NotificationsIcon, Input as InputIcon } from '@material-ui/icons';
+import { Home as HomeIcon } from 'react-feather';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -38,9 +36,13 @@ const TopBar = ({
       {...rest}
     >
       <Toolbar>
-        {/* <RouterLink to="/">
-          <Logo />
-        </RouterLink> */}
+        <IconButton color="inherit" href="/">
+            <Badge
+                color="primary"
+                variant="dot">
+                <HomeIcon />
+            </Badge>
+        </IconButton>
         <Box flexGrow={1} />
         <Hidden mdDown>
           <IconButton color="inherit">

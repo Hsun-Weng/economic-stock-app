@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import Page from '../../components/Page';
 import StockRankSelect from './StockRankSelect';
-import EconomicDataChart from './EconomicDataChart';
+import StockRankTable from './StockRankTable';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,7 +32,7 @@ const StockRankView = () => {
           <StockRankSelect sortColumn={sortColumn} onSortColumnChange={e=>setSortColumn(e.target.value)}
                 direction={direction} onDirectionChange={e=>setDirection(e.target.value)}/>
           <Box mt={3}>
-            <EconomicDataChart countryCode={countryCode} dataCode={dataCode} />
+            <StockRankTable sortColumn={sortColumn} direction={direction}/>
           </Box>
         </Container>
       </Page>
