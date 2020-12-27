@@ -16,6 +16,7 @@
     "date-fns": "^2.11.0",
     "echarts": "^4.0.4",
     "echarts-for-react": "^2.0.16",
+    "formik": "^2.1.5",
     "notistack": "^0.9.16",
     "react": "^16.12.0",
     "react-dev-utils": "^10.1.0",
@@ -28,7 +29,8 @@
     "react-scripts": "^3.4.3",
     "react-sortable-hoc": "^1.11.0",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const EconomicDataView = () => {
+const StockRankView = () => {
     const classes = useStyles();
 
     const [ sortColumn, setSortColumn ] = useState("volume");
@@ -39,4 +39,4 @@ const EconomicDataView = () => {
     );
 }
 
-export default EconomicDataView;
+export default StockRankView;

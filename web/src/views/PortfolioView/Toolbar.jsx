@@ -27,8 +27,7 @@ const Toolbar = ({ className, portfolioId, onPortfolioChange, ...rest }) => {
     const [ openDeletePortfolio, setOpenDeletePortfolio ] = useState(false);
 
     return (
-        <div className={clsx(classes.root, className)}
-            {...rest}>
+        <div className={clsx(classes.root, className)} {...rest}>
             <Box display="flex"
                 justifyContent="flex-end">
                 <Button className={classes.editButton} onClick={()=>setOpenEditPortfolio(true)}>
