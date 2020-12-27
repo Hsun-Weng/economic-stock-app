@@ -1,6 +1,5 @@
+import { TableCell, TableHead, TableRow } from '@material-ui/core';
 import React from 'react';
-
-import { TableHead, TableRow, TableCell } from '@material-ui/core';
 
 const StockRankTableHead = () => (
     <TableHead>

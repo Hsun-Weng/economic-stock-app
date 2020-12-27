@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-
-import { Box, Table, TableCell, TableContainer, TableHead, TableBody, TableRow} from '@material-ui/core';
+import { TableCell, TableHead, TableRow } from '@material-ui/core';
+import React from 'react';
 
 const ChipTableHead = () => (
     <TableHead>

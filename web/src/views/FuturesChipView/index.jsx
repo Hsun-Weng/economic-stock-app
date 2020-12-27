@@ -1,13 +1,8 @@
+import { Box, Container, makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
-import {
-  Container,
-  Grid,
-  Box,
-  makeStyles
-} from '@material-ui/core';
 import Page from '../../components/Page';
-import InvestorChipSelect from './InvestorChipSelect';
 import FuturesChipChart from './FuturesChipChart';
+import InvestorChipSelect from './InvestorChipSelect';
 
 const useStyles = makeStyles((theme) => ({
     root: {

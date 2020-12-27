@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
-
+import { Box, Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-
-import { Box, Card, CardContent, Button } from '@material-ui/core';
+import React, { useState } from 'react';
 import PortfolioAddDialog from './PortfolioAddDialog';
-import PortfolioEditDialog from  './PortfolioEditDialog';
 import PortfolioDeleteDialog from './PortfolioDeleteDialog';
+import PortfolioEditDialog from './PortfolioEditDialog';
 import PortfolioSelect from './PortfolioSelect';
 
 const useStyles = makeStyles((theme) => ({

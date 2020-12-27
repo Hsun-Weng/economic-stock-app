@@ -1,15 +1,13 @@
-import { CircularProgress } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useParams, useLocation, Navigate } from 'react-router-dom';
-
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { userAction } from '../actions';
   
 const OauthReirect = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const { providerCode } = useParams();
-    const [ loading, setLoading ] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(()=>{
         if(location.search){
@@ -24,16 +22,18 @@ const OauthReirect = () => {
             
                 fetch(`/api/user/oauth`, requestOptions)
                     .then(res=>res.json())
-                    .then(setLoading(false));
+                    .then((data)=>{
+                        dispatch(userAction.getUser());
+                    }).catch(err=>{
+                        
+                    }).finally(()=>{
+                        navigate('/');
+                    });
             }
         }
-    }, [])
+    }, [ dispatch, location, navigate, providerCode ])
 
-    if(loading){
-        return (<CircularProgress />)
-    }else{
-        return (<Navigate to="/" />)
-    }
+    return (<div />)
 }
 
 export default OauthReirect;

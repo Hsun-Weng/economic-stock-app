@@ -1,8 +1,8 @@
+import { Box, IconButton, Link, TableCell, TableRow } from '@material-ui/core';
+import { Close as CloseIcon, Menu as MenuIcon } from '@material-ui/icons';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { TableRow, TableCell, Box, IconButton, Link } from '@material-ui/core';
-import { Menu as MenuIcon, Close as CloseIcon } from '@material-ui/icons';
 
 const PortfolioTableRow = SortableElement(({product, portfolioId}) => {
     const navigate = useNavigate();

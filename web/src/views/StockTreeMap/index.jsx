@@ -1,9 +1,5 @@
-import React, { useState } from 'react';
-import {
-  Container,
-  Box,
-  makeStyles
-} from '@material-ui/core';
+import { Box, Container, makeStyles } from '@material-ui/core';
+import React from 'react';
 import Page from '../../components/Page';
 import TreeMap from './TreeMap';
 

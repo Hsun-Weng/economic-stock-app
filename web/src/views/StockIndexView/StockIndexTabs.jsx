@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
-
+import { AppBar, Box, Card, CardContent, Tab, Tabs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import React, { useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
-import { Paper, Box, Grid, IconButton, AppBar, Tabs, Tab, Card,
-    CardHeader, CardContent, Divider, } from '@material-ui/core';
-
-import TabPanel from './TabPanel';
 import CandleStickChart from './CandleStickChart';
-
+import TabPanel from './TabPanel';
 
 const useStyles = makeStyles(() => ({
     root: {},

@@ -1,16 +1,12 @@
+import { Box, Button, Grid, Link, TextField, Typography } from '@material-ui/core';
+import { Formik } from 'formik';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
-
-import { Formik } from 'formik';
 import * as Yup from 'yup';
-
-import { Box, Typography, Grid, Button, Link, TextField } from '@material-ui/core'
-
 import { userAction } from '../../actions';
-import FacebookIcon from '../../icons/Facebook';
-
 import config from '../../config';
+import FacebookIcon from '../../icons/Facebook';
 
 const LoginForm = () => {
     const dispatch = useDispatch();
@@ -78,8 +74,7 @@ const LoginForm = () => {
                       startIcon={<FacebookIcon />}
                       size="large"
                       variant="contained"
-                      component={RouterLink}
-                      to={redirectUrl}>
+                      href={redirectUrl}>
                       以Facebook登入
                     </Button>
                   </Grid>

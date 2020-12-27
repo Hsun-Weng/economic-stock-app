@@ -1,11 +1,6 @@
-import React, { useState } from 'react';
+import { Container, Grid, makeStyles } from '@material-ui/core';
+import React from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  Container,
-  Grid,
-  Box,
-  makeStyles
-} from '@material-ui/core';
 import Page from '../../components/Page';
 import CategoryStocksTable from './CategoryStocksTable';
 

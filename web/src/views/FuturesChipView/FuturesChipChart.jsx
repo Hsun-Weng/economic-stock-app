@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
-
-import clsx from 'clsx';
+import { Box, Card, CardContent, CardHeader, Divider, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Typography, Card, CardHeader, CardContent, Divider } from '@material-ui/core';
-
+import clsx from 'clsx';
 import ReactEcharts from 'echarts-for-react';
+import React, { useEffect, useState } from 'react';
 
 const useStyles = makeStyles(() => ({
     root: {}

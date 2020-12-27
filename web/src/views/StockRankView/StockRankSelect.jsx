@@ -1,16 +1,7 @@
-import React, { useState, useEffect } from 'react';
-
-import clsx from 'clsx';
+import { Card, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, FormControl, Select, InputLabel, MenuItem,
-    Card,
-    CardContent,
-    CardHeader,
-    FormLabel,
-    RadioGroup,
-    Radio,
-    FormControlLabel,
-    Grid, Box} from '@material-ui/core'
+import clsx from 'clsx';
+import React from 'react';
 
 const useStyles = makeStyles(() => ({
   root: {}

@@ -1,27 +1,8 @@
-import React from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
+import { Box, Button, Checkbox, FormHelperText, Link, TextField, Typography } from '@material-ui/core';
 import { Formik } from 'formik';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Container,
-  FormHelperText,
-  Link,
-  TextField,
-  Typography,
-  makeStyles
-} from '@material-ui/core';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.dark,
-    height: '100%',
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3)
-  }
-}));
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import * as Yup from 'yup';
 
 const SignUpView = () => {
   const signUp = ( values ) => {

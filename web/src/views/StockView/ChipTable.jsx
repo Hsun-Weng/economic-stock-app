@@ -1,8 +1,6 @@
+import { Table, TableBody } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-
-import { Box, Table, TableCell, TableContainer, TableHead, TableBody, TableRow} from '@material-ui/core';
-
-import ChipTableHead  from './ChipTableHead';
+import ChipTableHead from './ChipTableHead';
 import ChipTableRow from './ChipTableRow';
 
 const ChipTable = ({ stockCode }) => {

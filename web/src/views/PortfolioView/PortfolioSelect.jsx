@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import React from 'react';
 import { useSelector } from 'react-redux';
-
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 
 const PortfolioSelect = ({ portfolioId, onPortfolioChange }) =>{
     const portfolios = useSelector(state=>state.portfolio.data);

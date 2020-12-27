@@ -1,10 +1,5 @@
-import React, { useState } from 'react';
-import {
-  Container,
-  Grid,
-  Box,
-  makeStyles
-} from '@material-ui/core';
+import { Container, Grid, makeStyles } from '@material-ui/core';
+import React from 'react';
 import Page from '../../components/Page';
 import StockCategoryTable from './StockCategoryTable';
 

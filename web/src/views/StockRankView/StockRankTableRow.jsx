@@ -1,6 +1,6 @@
+import { Box, Link, TableCell, TableRow } from '@material-ui/core';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TableCell, TableRow, Link, Box } from '@material-ui/core'
 
 const StockRankTableRow = ({ stock }) => {
     const navigate = useNavigate();

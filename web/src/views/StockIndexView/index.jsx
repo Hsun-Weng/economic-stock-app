@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
+import { Box, Container, makeStyles } from '@material-ui/core';
+import React from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  Container,
-  Box,
-  makeStyles
-} from '@material-ui/core';
 import Page from '../../components/Page';
-import Toolbar from './Toolbar';
 import StockIndexTabs from './StockIndexTabs';
+import Toolbar from './Toolbar';
 
 const useStyles = makeStyles((theme) => ({
     root: {

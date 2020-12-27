@@ -1,9 +1,5 @@
+import { Box, Container, makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
-import {
-  Container,
-  Box,
-  makeStyles
-} from '@material-ui/core';
 import Page from '../../components/Page';
 import CountryDataSelect from './CountryDataSelect';
 import EconomicDataChart from './EconomicDataChart';

@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from 'react';
-
-import clsx from 'clsx';
+import { Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, FormControl, Select, InputLabel, MenuItem,
-    Card,
-    CardContent,
-    CardHeader,
-    Divider
-    , Grid, Box} from '@material-ui/core'
-
+import clsx from 'clsx';
+import React, { useEffect, useState } from 'react';
 import countries from '../../data/country.json';
 
 const useStyles = makeStyles(() => ({

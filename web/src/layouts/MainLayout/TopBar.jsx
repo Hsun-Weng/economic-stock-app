@@ -1,14 +1,7 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { AppBar, Badge, IconButton, makeStyles, Toolbar } from '@material-ui/core';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import {
-  AppBar,
-  Toolbar,
-  makeStyles,
-  IconButton,
-  Badge,
-} from '@material-ui/core';
+import React from 'react';
 import { Home as HomeIcon } from 'react-feather';
 
 const useStyles = makeStyles(({

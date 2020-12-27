@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Dialog, DialogContent, DialogActions, TextField, Button, DialogTitle, CircularProgress } from '@material-ui/core';
-
 import { portfolioAction } from '../../actions';
 
 const PortfolioEditDialog = ({ open, handleClose, portfolioId }) => {

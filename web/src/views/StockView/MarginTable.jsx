@@ -1,7 +1,5 @@
+import { Table, TableBody } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-
-import { Box, Table, TableCell, TableContainer, TableHead, TableBody, TableRow} from '@material-ui/core';
-
 import MarginTableHead from './MarginTableHead';
 import MarginTableRow from './MarginTableRow';
 

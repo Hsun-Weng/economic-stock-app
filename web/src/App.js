@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import { useRoutes } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core';
 import GlobalStyles from './components/GlobalStyles';
