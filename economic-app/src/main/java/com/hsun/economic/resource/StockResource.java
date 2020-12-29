@@ -9,19 +9,19 @@ import java.util.List;
 @RetrofitClient(baseUrl = "${service.data.url}")
 public interface StockResource {
     @GET("stock/{stockCode}/price/latest")
-    ResponseBean<StockPriceBean> getLatestPrice(@Path("stockCode") String stockCode);
+    StockPriceBean getLatestPrice(@Path("stockCode") String stockCode);
     @POST("stocks/price/latest")
-    ResponseBean<List<StockPriceBean>> getLatestPriceList(@Body List<String> stockCodeList);
+    List<StockPriceBean> getLatestPriceList(@Body List<String> stockCodeList);
     @GET("stock/{stockCode}/prices")
-    ResponseBean<List<PriceBean>> getPriceList(@Path("stockCode") String stockCode, @Query("startDate") String startDate
+    List<PriceBean> getPriceList(@Path("stockCode") String stockCode, @Query("startDate") String startDate
             , @Query("endDate") String endDate);
     @GET("stock/{stockCode}/margin")
-    ResponseBean<List<StockMarginBean>> getMarginList(@Path("stockCode") String stockCode, @Query("startDate") String startDate
+    List<StockMarginBean> getMarginList(@Path("stockCode") String stockCode, @Query("startDate") String startDate
             , @Query("endDate") String endDate);
     @GET("stock/{stockCode}/chip")
-    ResponseBean<List<StockChipBean>> getChipList(@Path("stockCode") String stockCode, @Query("startDate") String startDate
+    List<StockChipBean> getChipList(@Path("stockCode") String stockCode, @Query("startDate") String startDate
             , @Query("endDate") String endDate);
     @GET("stocks/rank/price/latest")
-    ResponseBean<PageInfoBean<StockPriceBean>> getStockSortedPage(@Query("sortColumn") String sortColumn
+    PageInfoBean<StockPriceBean> getStockSortedPage(@Query("sortColumn") String sortColumn
             , @Query("page") Integer page, @Query("size") Integer size, @Query("direction") String direction);
 }

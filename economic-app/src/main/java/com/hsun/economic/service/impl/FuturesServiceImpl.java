@@ -52,12 +52,12 @@ public class FuturesServiceImpl implements FuturesService {
                 .orElseThrow(()->new ResourceNotFoundException("期貨不存在"));
 
         Map<Long, PriceBean> datePriceMap = stockIndexResource.getPriceList(futures.getStockIndex().getIndexCode()
-                , startDate.format(DateTimeFormatter.ISO_DATE), endDate.format(DateTimeFormatter.ISO_DATE)).getData()
+                , startDate.format(DateTimeFormatter.ISO_DATE), endDate.format(DateTimeFormatter.ISO_DATE))
                 .parallelStream()
                 .collect(Collectors.toMap((price)->price.getDate().getTime(), Function.identity()));
 
         return  futuresResource.getChipList(futuresCode, startDate.format(DateTimeFormatter.ISO_DATE)
-                    , endDate.format(DateTimeFormatter.ISO_DATE)).getData()
+                    , endDate.format(DateTimeFormatter.ISO_DATE))
                 .parallelStream()
                 .map((chip)->{
                     if(datePriceMap.containsKey(chip.getDate().getTime())) {

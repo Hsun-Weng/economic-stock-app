@@ -3,7 +3,11 @@ import userConstants from '../constants/user.constants';
 const userInitState = {
   loading: false,
   isLoggedIn: false,
-  data: null
+  info: {
+    email: null,
+    firstName: null,
+    lastName: null
+  }
 };
 
 export const user = (state=userInitState, action) =>{

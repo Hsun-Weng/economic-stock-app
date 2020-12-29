@@ -1,5 +1,6 @@
 package com.hsun.data.controller;
 
+import com.hsun.data.bean.StockMarginBean;
 import com.hsun.data.entity.StockMargin;
 import com.hsun.data.exception.ApiServerException;
 import com.hsun.data.service.StockMarginService;
@@ -25,15 +26,9 @@ public class StockMarginController {
     private StockMarginService service;
     
     @GetMapping("/stock/{stockCode}/margin")
-    public Map<String, Object> getStockMarginByCodeAndDateBetween(@PathVariable String stockCode
+    public List<StockMarginBean> getStockMarginByCodeAndDateBetween(@PathVariable String stockCode
             , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate startDate
             , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate endDate){
-        Map<String, Object> result = new HashMap<String, Object>();
-        try {
-            result.put("data", service.getStockMarginList(stockCode, startDate, endDate));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return result;
+        return service.getStockMarginList(stockCode, startDate, endDate);
     }
 }

@@ -52,7 +52,7 @@ public class StockCategoryServiceImpl implements StockCategoryService {
                 .getStockList()
                 .parallelStream()
                 .map((stock)->{
-                    StockPriceBean priceBean = stockResource.getLatestPrice(stock.getStockCode()).getData();
+                    StockPriceBean priceBean = stockResource.getLatestPrice(stock.getStockCode());
                     priceBean.setStockName(stock.getStockName());
                     return priceBean;
                 }).collect(Collectors.toList());
@@ -89,7 +89,7 @@ public class StockCategoryServiceImpl implements StockCategoryService {
                 .flatMap((categoryProportion)->categoryProportion.getChildren().stream().map(StockProportionBean::getStockCode))
                 .collect(Collectors.toList());
 
-        Map<String, Float> stockChangePercentMap = stockResource.getLatestPriceList(stockCodeList).getData()
+        Map<String, Float> stockChangePercentMap = stockResource.getLatestPriceList(stockCodeList)
                 .parallelStream().collect(Collectors.toMap(StockPriceBean::getStockCode, StockPriceBean::getChangePercent));
 
         return categoryProportionList.parallelStream()

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.hsun.data.bean.EconomicDataBean;
 import com.hsun.data.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,15 +22,9 @@ public class EconomicDataController {
     private EconomicDataService service;
     
     @GetMapping("/economic/{countryCode}/{dataCode}")
-    public Map<String, Object> getEconomicDataByDataCode(@PathVariable String countryCode,
-            @PathVariable String dataCode) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        try {
-            result.put("data", service.getDataByCodeAndCountryCode(countryCode, dataCode));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return result;
+    public List<EconomicDataBean> getEconomicDataByDataCode(@PathVariable String countryCode,
+                                                            @PathVariable String dataCode) {
+        return service.getDataByCodeAndCountryCode(countryCode, dataCode);
     }
     
 }

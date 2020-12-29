@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.hsun.data.bean.StockIndexPriceBean;
 import com.hsun.data.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,39 +24,20 @@ public class StockIndexController {
     private StockIndexService service;
 
     @GetMapping("/stock/index/{indexCode}/prices")
-    public Map<String, Object> getStockIndexByCodeAndDateBetween(@PathVariable String indexCode
+    public List<StockIndexPriceBean> getStockIndexByCodeAndDateBetween(@PathVariable String indexCode
             , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate startDate
             , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate endDate){
-        Map<String, Object> result = new HashMap<String, Object>();
-        try {
-            result.put("data", service.getStockIndexByCodeAndDateBetween(indexCode
-                    , startDate, endDate));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return result;
+        return service.getStockIndexByCodeAndDateBetween(indexCode, startDate, endDate);
     }
 
     @GetMapping("/stock/index/{indexCode}/price/latest")
-    public Map<String, Object> getLatestPrice(@PathVariable String indexCode) {
+    public StockIndexPriceBean getLatestPrice(@PathVariable String indexCode) {
         Map<String, Object> result = new HashMap<String, Object>();
-        try{
-            result.put("data", service.getStockIndexLatestPrice(indexCode));
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new ApiServerException();
-        }
-        return result;
+        return service.getStockIndexLatestPrice(indexCode);
     }
 
     @PostMapping("/stock/indexes/price/latest")
-    public Map<String, Object> getBatchLatest(@RequestBody List<String> indexCodeList) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        try{
-            result.put("data", service.getBatchLatestPriceList(indexCodeList));
-        }catch(Exception e){
-            throw new ApiServerException();
-        }
-        return result;
+    public List<StockIndexPriceBean> getBatchLatest(@RequestBody List<String> indexCodeList) {
+        return service.getBatchLatestPriceList(indexCodeList);
     }
 }

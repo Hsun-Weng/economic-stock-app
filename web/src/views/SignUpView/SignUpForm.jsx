@@ -24,12 +24,14 @@ const SignUpView = () => {
     fetch(`/api/user/signup`, requestOptions)
       .then((res)=>{
         if (!res.ok) {
-          throw new Error(res.statusText);
+          throw Error(res.text());
         }
       }).then(()=>{
         dispatch(notificationAction.enqueueSuccess("註冊成功"));
       })
-      .catch((errText)=>dispatch(notificationAction.enqueueError(errText)));
+      .catch((errText)=>{
+        dispatch(notificationAction.enqueueError(errText))
+      });
   }
 
   return (
