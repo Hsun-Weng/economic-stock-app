@@ -34,7 +34,7 @@ public class StockIndexServiceImpl implements StockIndexService {
     @Override
     public List<PriceBean> getPriceList(String indexCode, LocalDate startDate, LocalDate endDate) {
         return stockIndexResource.getPriceList(indexCode, startDate.format(DateTimeFormatter.ISO_DATE)
-                , endDate.format(DateTimeFormatter.ISO_DATE)).getData()
+                , endDate.format(DateTimeFormatter.ISO_DATE))
                 .stream()
                 .sorted((p1, p2)->Long.compare(p2.getDate().getTime(), p1.getDate().getTime()))
                 .collect(Collectors.toList());

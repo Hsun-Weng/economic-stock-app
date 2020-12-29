@@ -149,12 +149,11 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
                     switch(productType){
                         case INDEX:
                             productName = stockIndexRepository.findById(productCode).get().getIndexName();
-                            priceBean = stockIndexResource.getLatestPrice(productCode)
-                                    .getData();
+                            priceBean = stockIndexResource.getLatestPrice(productCode);
                             break;
                         case STOCK:
                             productName = stockRepository.findById(productCode).get().getStockName();
-                            priceBean = stockResource.getLatestPrice(productCode).getData();
+                            priceBean = stockResource.getLatestPrice(productCode);
                             break;
                         case FUTURES:
                             break;

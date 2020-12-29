@@ -51,6 +51,6 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public List<EconomicValueBean> getEconomicValueList(String countryCode, String dataCode) {
-        return economicResource.getValueList(countryCode, dataCode).getData();
+        return economicResource.getValueList(countryCode, dataCode);
     }
 }

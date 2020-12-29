@@ -25,52 +25,25 @@ public class StockController {
     private StockService service;
 
     @GetMapping("/stock/{stockCode}/prices")
-    public Map<String, Object> getStockByCodeAndDateBetween(@PathVariable String stockCode
+    public List<StockPriceBean> getStockByCodeAndDateBetween(@PathVariable String stockCode
             , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate startDate
             , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate endDate){
-        Map<String, Object> result = new HashMap<String, Object>();
-        try {
-            result.put("data", service.getStockPriceList(stockCode, startDate, endDate));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return result;
+        return service.getStockPriceList(stockCode, startDate, endDate);
     }
 
     @GetMapping("/stock/{stockCode}/price/latest")
-    public Map<String, Object> getLatestPrice(@PathVariable String stockCode) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        try{
-            result.put("data", service.getStockLatestPrice(stockCode));
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new ApiServerException();
-        }
-        return result;
+    public StockPriceBean getLatestPrice(@PathVariable String stockCode) {
+        return service.getStockLatestPrice(stockCode);
     }
 
     @PostMapping("/stocks/price/latest")
-    public Map<String, Object> getBatchLatestPrice(@RequestBody List<String> stockCodeList) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        try{
-            result.put("data", service.getBatchStockLatestPriceList(stockCodeList));
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new ApiServerException();
-        }
-        return result;
+    public List<StockPriceBean> getBatchLatestPrice(@RequestBody List<String> stockCodeList) {
+        return service.getBatchStockLatestPriceList(stockCodeList);
     }
 
     @GetMapping("/stocks/rank/price/latest")
-    public Map<String, PageInfoBean<StockPriceBean>> getRankLatest(@RequestParam String sortColumn, @RequestParam Integer page,
+    public PageInfoBean<StockPriceBean> getRankLatest(@RequestParam String sortColumn, @RequestParam Integer page,
                                                                    @RequestParam Integer size, @RequestParam String direction) {
-        Map<String, PageInfoBean<StockPriceBean>> result = new HashMap<>();
-        try{
-            result.put("data", service.getStockSortedPage(PageRequest.of(page, size, Sort.Direction.valueOf(direction)
-                    , sortColumn)));
-        }catch(Exception e){
-            throw new ApiServerException();
-        }
-        return result;
+        return service.getStockSortedPage(PageRequest.of(page, size, Sort.Direction.valueOf(direction), sortColumn));
     }
 }

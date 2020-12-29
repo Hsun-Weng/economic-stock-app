@@ -8,6 +8,7 @@ import com.hsun.economic.entity.OauthToken;
 import com.hsun.economic.entity.OauthTokenPK;
 import com.hsun.economic.entity.User;
 import com.hsun.economic.exception.ApiClientException;
+import com.hsun.economic.exception.DuplicateException;
 import com.hsun.economic.exception.ResourceNotFoundException;
 import com.hsun.economic.repository.OauthTokenRepository;
 import com.hsun.economic.repository.UserRepository;
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUser(UserBean userBean) {
         if(repository.findById(userBean.getUserName()).isPresent()) {
-            throw new ApiClientException("帳號重複");
+            throw new DuplicateException("帳號重複");
         }
         User user = new User();
         user.setUserName(userBean.getUserName());

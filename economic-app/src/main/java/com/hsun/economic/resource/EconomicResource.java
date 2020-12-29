@@ -11,5 +11,5 @@ import java.util.List;
 @RetrofitClient(baseUrl = "${service.data.url}")
 public interface EconomicResource {
     @GET("economic/{countryCode}/{dataCode}")
-    ResponseBean<List<EconomicValueBean>> getValueList(@Path("countryCode") String countryCode, @Path("dataCode") String dataCode);
+    List<EconomicValueBean> getValueList(@Path("countryCode") String countryCode, @Path("dataCode") String dataCode);
 }

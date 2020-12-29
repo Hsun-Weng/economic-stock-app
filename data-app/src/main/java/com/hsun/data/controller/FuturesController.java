@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.hsun.data.bean.FuturesPriceBean;
 import com.hsun.data.exception.ApiServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,15 +27,9 @@ public class FuturesController {
     private FuturesService service;
     
     @GetMapping("/futures/{futuresCode}")
-    public Map<String, Object> getFuturesChipByCodeAndDateBetween(@PathVariable String futuresCode
+    public List<FuturesPriceBean> getFuturesChipByCodeAndDateBetween(@PathVariable String futuresCode
             , @RequestParam String contractDate, @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate startDate
             , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate endDate){
-        Map<String, Object> result = new HashMap<String, Object>();
-        try {
-            result.put("data", service.getFuturesPriceList(futuresCode, contractDate, startDate, endDate));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return result;
+        return service.getFuturesPriceList(futuresCode, contractDate, startDate, endDate);
     }
 }

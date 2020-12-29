@@ -1,5 +1,6 @@
 package com.hsun.data.controller;
 
+import com.hsun.data.bean.StockChipBean;
 import com.hsun.data.entity.StockChip;
 import com.hsun.data.exception.ApiServerException;
 import com.hsun.data.service.StockChipService;
@@ -25,15 +26,9 @@ public class StockChipController {
     private StockChipService service;
     
     @GetMapping("/stock/{stockCode}/chip")
-    public Map<String, Object> getStockChipByCodeAndDateBetween(@PathVariable String stockCode
+    public List<StockChipBean> getStockChipByCodeAndDateBetween(@PathVariable String stockCode
             , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate startDate
             , @DateTimeFormat(iso= ISO.DATE)  @RequestParam LocalDate endDate){
-        Map<String, Object> result = new HashMap<String, Object>();
-        try {
-            result.put("data", service.getStockChipList(stockCode, startDate, endDate));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return result;
+        return service.getStockChipList(stockCode, startDate, endDate);
     }
 }
