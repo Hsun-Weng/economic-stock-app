@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CardHeader, Divider, Typography } from '@material-ui/core';
+import { Card, CardContent, CardHeader, Divider, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import ReactEcharts from 'echarts-for-react';
@@ -120,9 +120,11 @@ const TreeMap = ({ className, countryCode, dataCode , ...rest}) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [ categoryProportions, setCategoryProportions ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
     useEffect(()=>{
         const fetchData = () => {
+            setLoading(true);
             fetch(`/api/categories/proportion`)
             .then(res=>{
                 if(!res.ok){
@@ -142,16 +144,18 @@ const TreeMap = ({ className, countryCode, dataCode , ...rest}) => {
                 } else {
                   dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                 }
-            })
+            }).finally(()=>setLoading(false));
         }
         fetchData();
     }, [ dispatch ])
 
-    if(categoryProportions.length>0){
-        return (
-            <Card
-                className={clsx(classes.root, className)}
-                {...rest}>
+    
+    return (
+        <Card
+            className={clsx(classes.root, className)}
+            {...rest}>
+            {loading?(<LinearProgress />):
+            <>
                 <CardHeader
                     title={`上市公司`}>
                 </CardHeader>
@@ -159,17 +163,10 @@ const TreeMap = ({ className, countryCode, dataCode , ...rest}) => {
                 <CardContent>
                     <Chart categoryProportions={formatTreeMapData(categoryProportions)} />
                 </CardContent>
-            </Card>
-        );
-    }else{
-        return(
-            <Box align="center">
-                <Typography variant="h4" color="error">
-                    查無資料
-                </Typography>
-            </Box>
-        )
-    }
+            </>
+            }
+        </Card>
+    );
 }
 
 export default TreeMap;

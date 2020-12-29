@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, Divider, Table, TableBody, TablePagination } from '@material-ui/core';
+import { Box, Card, CardHeader, Divider, Table, TableBody, TablePagination, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
@@ -21,6 +21,7 @@ const StockRankTable = ({ className, categoryCode, sortColumn, direction, ...res
     const [ totalPage, setTotalPage ] = useState(0);
 
     const [ stocks, setStocks ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
     const handleChangeRowsPerPage = (event) => {
         setSize(parseInt(event.target.value, 10));
@@ -29,6 +30,7 @@ const StockRankTable = ({ className, categoryCode, sortColumn, direction, ...res
 
     useEffect(()=>{
         const fetchData = () => {
+            setLoading(true);
             fetch(`/api/stocks/rank/latest?sortColumn=${sortColumn}&page=${page}&size=${size}&direction=${direction}`)
                 .then(res=>{
                     if(!res.ok){
@@ -49,7 +51,7 @@ const StockRankTable = ({ className, categoryCode, sortColumn, direction, ...res
                     } else {
                       dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                     }
-                })
+                }).finally(()=>setLoading(false));
         };
         fetchData();
     }, [ sortColumn, direction, page, size, dispatch ])
@@ -58,27 +60,30 @@ const StockRankTable = ({ className, categoryCode, sortColumn, direction, ...res
         <Card
             className={clsx(classes.root, className)}
             {...rest}>
-            <CardHeader title="個股類別" />
-            <Divider />    
-            <PerfectScrollbar>
-                <Box minWidth={800}>
-                    <Table>
-                        <StockRankTableHead />
-                        <TableBody>
-                            {stocks.map((prop, key)=> <StockRankTableRow key={key} stock={prop} />)}
-                        </TableBody>
-                    </Table>
-                </Box>
-            </PerfectScrollbar>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                colSpan={10}
-                count={totalPage}
-                rowsPerPage={size}
-                page={page}
-                onChangePage={(event, newPage) => setPage(newPage)}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-            />
+            {loading?<LinearProgress/>:
+            <>
+                <CardHeader title="個股類別" />
+                <Divider />    
+                <PerfectScrollbar>
+                    <Box minWidth={800}>
+                        <Table>
+                            <StockRankTableHead />
+                            <TableBody>
+                                {stocks.map((prop, key)=> <StockRankTableRow key={key} stock={prop} />)}
+                            </TableBody>
+                        </Table>
+                    </Box>
+                </PerfectScrollbar>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    colSpan={10}
+                    count={totalPage}
+                    rowsPerPage={size}
+                    page={page}
+                    onChangePage={(event, newPage) => setPage(newPage)}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                />
+            </>}
         </Card>
     );
 }

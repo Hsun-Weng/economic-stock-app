@@ -1,7 +1,6 @@
 import { List } from '@material-ui/core';
 import React from 'react';
 import {
-  AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,

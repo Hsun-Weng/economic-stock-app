@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, Divider, Table, TableBody } from '@material-ui/core';
+import { Box, Card, CardHeader, Divider, Table, TableBody, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
@@ -16,10 +16,12 @@ const CategoryStocksTable = ({ className, categoryCode, ...rest }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
+    const [ loading, setLoading  ] = useState(false);
     const [ stocks, setStocks ] = useState([]);
 
     useEffect(()=>{
         const fetchData = () => {
+            setLoading(true);
             fetch(`/api/category/${categoryCode}/stocks/prices`)
                 .then(res=>{
                     if(!res.ok){
@@ -37,7 +39,7 @@ const CategoryStocksTable = ({ className, categoryCode, ...rest }) => {
                     } else {
                       dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                     }
-                })
+                }).finally(()=>setLoading(false));
         };
         fetchData();
     }, [ categoryCode, dispatch ])
@@ -46,18 +48,22 @@ const CategoryStocksTable = ({ className, categoryCode, ...rest }) => {
         <Card
             className={clsx(classes.root, className)}
             {...rest}>
-            <CardHeader title="個股類別" />
-            <Divider />    
-            <PerfectScrollbar>
-                <Box minWidth={800}>
-                    <Table>
-                        <CategoryStocksTableHead />
-                        <TableBody>
-                            {stocks.map((prop, key)=> <CategoryStocksTableRow key={key} stock={prop} />)}
-                        </TableBody>
-                    </Table>
-                </Box>
-            </PerfectScrollbar>
+            {loading?<LinearProgress/>:
+            <>
+                <CardHeader title="個股類別" />
+                <Divider />    
+                <PerfectScrollbar>
+                    <Box minWidth={800}>
+                        <Table>
+                            <CategoryStocksTableHead />
+                            <TableBody>
+                                {stocks.map((prop, key)=> <CategoryStocksTableRow key={key} stock={prop} />)}
+                            </TableBody>
+                        </Table>
+                    </Box>
+                </PerfectScrollbar>
+            </>
+            }
         </Card>
     );
 }

@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, Divider, Table, TableBody } from '@material-ui/core';
+import { Box, Card, CardHeader, Divider, Table, TableBody, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import arrayMove from 'array-move';
 import clsx from 'clsx';
@@ -19,9 +19,11 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
     const classes = useStyles();
 
     const [ products, setProducts ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
     useEffect(()=> {
         if( portfolioId !== 0){
+            setLoading(true);
             fetch(`/api/portfolio/${portfolioId}/product/prices`)
                 .then(res=>{
                     if(!res.ok){
@@ -41,7 +43,7 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
                     } else {
                       dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                     }
-                })
+                }).finally(()=>setLoading(false));
         }
     }, [ portfolioId, dispatch ]);
 
@@ -72,18 +74,21 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
         <Card
             className={clsx(classes.root, className)}
             {...rest}>
-            <CardHeader title="個股清單" />
-            <Divider />    
-            <PerfectScrollbar>
-                <Box minWidth={800}>
-                    <Table>
-                        <PortfolioTableHead />
-                        <SortableTableBody onSortEnd={onSortEnd} useDragHandle>
-                            {products.map((prop, key)=> <PortfolioTableRow key={key} product={prop} />)}
-                        </SortableTableBody>
-                    </Table>
-                </Box>
-            </PerfectScrollbar>
+            {loading?<LinearProgress/>:
+            <>
+                <CardHeader title="個股清單" />
+                <Divider />    
+                <PerfectScrollbar>
+                    <Box minWidth={800}>
+                        <Table>
+                            <PortfolioTableHead />
+                            <SortableTableBody onSortEnd={onSortEnd} useDragHandle>
+                                {products.map((prop, key)=> <PortfolioTableRow key={key} product={prop} />)}
+                            </SortableTableBody>
+                        </Table>
+                    </Box>
+                </PerfectScrollbar>
+            </>}
         </Card>
     );
 }

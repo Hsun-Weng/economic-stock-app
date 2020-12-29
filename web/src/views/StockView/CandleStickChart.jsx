@@ -1,3 +1,4 @@
+import { LinearProgress } from '@material-ui/core';
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -162,6 +163,7 @@ const getOption = (prices) => {
 const CandleStickChart = ({ stockCode }) => {
     const dispatch = useDispatch();
     const [ stockPrices, setStockPrices ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
     const formatDate = date => date.toISOString().slice(0,10);
 
@@ -169,6 +171,7 @@ const CandleStickChart = ({ stockCode }) => {
         const fetchData = () => {
             let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
             let endDate = new Date();
+            setLoading(true);
             fetch(`/api/stock/${stockCode}/prices?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
                 .then(res=>{
                     if(!res.ok){
@@ -188,12 +191,13 @@ const CandleStickChart = ({ stockCode }) => {
                     } else {
                       dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                     }
-                })
+                }).finally(()=>setLoading(false));
         }
         fetchData();
     }, [ stockCode, dispatch ]);
 
     return (
+        loading?<LinearProgress/>:
         <ReactEcharts option={getOption(stockPrices)} />
     )
 }

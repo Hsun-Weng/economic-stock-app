@@ -1,10 +1,10 @@
-import { Box, Button, ButtonGroup, Card, CardContent, CardHeader, Divider, Typography } from '@material-ui/core';
+import { Box, Button, ButtonGroup, Card, CardContent, CardHeader, Divider, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { notificationAction } from '../../actions'; 
+import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles(() => ({
     root: {}
@@ -73,9 +73,11 @@ const EconomicDataChart = ({ className, countryCode, dataCode , ...rest}) => {
     const [ unitCode, setUnitCode ] = useState("TOTAL");
     const [ values, setValues ] = useState([]);
     const [ chartValues, setChartValues ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
     
     useEffect(()=>{
         const fetchValues = async() => {
+            setLoading(true);
             fetch(`/api/economic/${countryCode}/${dataCode}/values`)
                 .then(res=>{
                     if(!res.ok){
@@ -93,7 +95,7 @@ const EconomicDataChart = ({ className, countryCode, dataCode , ...rest}) => {
                     } else {
                       dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                     }
-                })
+                }).finally(()=>setLoading(false));
         }
         fetchValues();
     }, [ countryCode, dataCode, dispatch ]);
@@ -102,32 +104,25 @@ const EconomicDataChart = ({ className, countryCode, dataCode , ...rest}) => {
         setChartValues(getDisplayValues(unitCode, values));
     }, [ unitCode, values ])
 
-    if(chartValues.length>0){
-        return (
-            <Card
-                className={clsx(classes.root, className)}
-                {...rest}>
-                <CardHeader
-                    action={(<UnitButtonGroup setUnitCode={setUnitCode} />)}
-                    title={`${countryCode}: ${dataCode}`}>
-                </CardHeader>
-                <Divider />
-                <CardContent>
-                    <Box position="relative" height={400}>
-                        <LineChart values={chartValues}/>
-                    </Box>
-                </CardContent>
-            </Card>
-        );
-    }else{
-        return(
-            <Box align="center">
-                <Typography variant="h4" color="error">
-                    查無資料
-                </Typography>
-            </Box>
-        )
-    }
+    return (
+        <Card
+            className={clsx(classes.root, className)}
+            {...rest}>
+            {loading?<LinearProgress/>:
+            <>
+            <CardHeader
+                action={(<UnitButtonGroup setUnitCode={setUnitCode} />)}
+                title={`${countryCode}: ${dataCode}`}>
+            </CardHeader>
+            <Divider />
+            <CardContent>
+                <Box position="relative" height={400}>
+                    <LineChart values={chartValues}/>
+                </Box>
+            </CardContent>
+            </>}
+        </Card>
+    );
 }
 
 export default EconomicDataChart;

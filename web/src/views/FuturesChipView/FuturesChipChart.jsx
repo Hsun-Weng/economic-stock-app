@@ -1,10 +1,10 @@
-import { Box, Card, CardContent, CardHeader, Divider, Typography } from '@material-ui/core';
+import { Box, Card, CardContent, CardHeader, Divider, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { notificationAction } from '../../actions'; 
+import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles(() => ({
     root: {}
@@ -84,11 +84,13 @@ const FuturesChipChart = ({ className, investorCode, futuresCode, ...rest }) =>{
     const classes = useStyles();
     const dispatch = useDispatch();
     const [ chips, setChips ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
     const formatDate = date => date.toISOString().slice(0,10);
 
     useEffect(()=>{
         const fetchData = () => {
+            setLoading(true);
             let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
             let endDate = new Date();
             fetch(`/api/futures/${futuresCode}/chip?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
@@ -108,16 +110,17 @@ const FuturesChipChart = ({ className, investorCode, futuresCode, ...rest }) =>{
                     } else {
                       dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                     }
-                })
+                }).finally(()=>setLoading(false));
         }
         fetchData();
     }, [ futuresCode, dispatch ])
 
-    if(chips.length>0){
-        return (
-            <Card
-                className={clsx(classes.root, className)}
-                {...rest}>
+    return (
+        <Card
+            className={clsx(classes.root, className)}
+            {...rest}>
+            {loading?<LinearProgress/>:
+            <>
                 <CardHeader
                     title={`期貨指數以及籌碼`}>
                 </CardHeader>
@@ -127,17 +130,9 @@ const FuturesChipChart = ({ className, investorCode, futuresCode, ...rest }) =>{
                         <MixedLineBarChart investorCode={investorCode} chips={chips} />
                     </Box>
                 </CardContent>
-            </Card>
-        )
-    }else{
-        return(
-            <Box align="center">
-                <Typography variant="h4" color="error">
-                    查無資料
-                </Typography>
-            </Box>
-        )
-    }
+            </>}
+        </Card>
+    )
 }
 
 

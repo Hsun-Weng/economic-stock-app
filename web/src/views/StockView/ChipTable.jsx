@@ -1,4 +1,4 @@
-import { Table, TableBody } from '@material-ui/core';
+import { Table, TableBody, LinearProgress } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import ChipTableHead from './ChipTableHead';
@@ -8,6 +8,7 @@ import { notificationAction } from '../../actions';
 const ChipTable = ({ stockCode }) => {
     const dispatch = useDispatch();
     const [ chips, setChips ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
     const formatDate = date => date.toISOString().slice(0,10);
 
@@ -15,6 +16,7 @@ const ChipTable = ({ stockCode }) => {
         let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
         let endDate = new Date();
         const fetchData = () => {
+            setLoading(true);
             fetch(`/api/stock/${stockCode}/chips?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
                 .then(res=>{
                     if(!res.ok){
@@ -34,12 +36,13 @@ const ChipTable = ({ stockCode }) => {
                     } else {
                       dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                     }
-                })
+                }).finally(()=>setLoading(false));
         };
         fetchData();
     }, [ stockCode, dispatch ])
 
     return (
+        loading?<LinearProgress/>:
         <Table>
             <ChipTableHead />
             <TableBody>

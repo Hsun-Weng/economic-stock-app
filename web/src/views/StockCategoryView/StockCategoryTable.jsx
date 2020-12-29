@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, Divider, Link, Table, TableBody, TableCell, TableRow, Typography } from '@material-ui/core';
+import { Box, Card, CardHeader, Divider, Link, Table, TableBody, TableCell, TableRow, Typography, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
@@ -17,6 +17,7 @@ const StockCategoryTable = ({ className, ...rest }) => {
     const navigate = useNavigate();
 
     const [ categories, setCategories ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
     const redirectCategoryStockTable = (event, categoryCode) =>{
         event.preventDefault();
@@ -25,6 +26,7 @@ const StockCategoryTable = ({ className, ...rest }) => {
 
     useEffect(()=>{
         const fetchData = () => {
+            setLoading(true);
             fetch(`/api/categories`)
                 .then(res=>{
                     if(!res.ok){
@@ -44,7 +46,7 @@ const StockCategoryTable = ({ className, ...rest }) => {
                     } else {
                       dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                     }
-                })
+                }).finally(()=>setLoading(false));
         }
         fetchData();
     }, [ dispatch ])
@@ -53,26 +55,29 @@ const StockCategoryTable = ({ className, ...rest }) => {
         <Card
             className={clsx(classes.root, className)}
             {...rest}>
-            <CardHeader title="個股類別" />
-            <Divider />    
-            <PerfectScrollbar>
-                <Box minWidth={800}>
-                    <Table>
-                        <TableBody>
-                            {categories.map((prop, key)=>
-                                <TableRow key={key}>
-                                    <TableCell>
-                                        <Typography>
-                                            <Link href="#" onClick={event=>redirectCategoryStockTable(event, prop.categoryCode)}>
-                                                {prop.categoryName}
-                                            </Link>
-                                        </Typography>
-                                    </TableCell>
-                                </TableRow>)}
-                        </TableBody>
-                    </Table>
-                </Box>
-            </PerfectScrollbar>
+            {loading?<LinearProgress/>:
+            <>
+                <CardHeader title="個股類別" />
+                <Divider />    
+                <PerfectScrollbar>
+                    <Box minWidth={800}>
+                        <Table>
+                            <TableBody>
+                                {categories.map((prop, key)=>
+                                    <TableRow key={key}>
+                                        <TableCell>
+                                            <Typography>
+                                                <Link href="#" onClick={event=>redirectCategoryStockTable(event, prop.categoryCode)}>
+                                                    {prop.categoryName}
+                                                </Link>
+                                            </Typography>
+                                        </TableCell>
+                                    </TableRow>)}
+                            </TableBody>
+                        </Table>
+                    </Box>
+                </PerfectScrollbar>
+            </>}
         </Card>
     );
 }
