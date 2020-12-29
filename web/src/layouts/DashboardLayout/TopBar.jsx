@@ -1,17 +1,10 @@
-import React, { useState } from 'react';
+import { AppBar, Badge, Box, Hidden, IconButton, makeStyles, Toolbar } from '@material-ui/core';
+import { Menu as MenuIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import {
-  AppBar,
-  Badge,
-  Box,
-  Hidden,
-  IconButton,
-  Toolbar,
-  makeStyles
-} from '@material-ui/core';
-import { Menu as MenuIcon, Notifications as NotificationsIcon, Input as InputIcon } from '@material-ui/icons';
+import React from 'react';
 import { Home as HomeIcon } from 'react-feather';
+import LogoutButton from './LogoutButton';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -27,7 +20,6 @@ const TopBar = ({
   ...rest
 }) => {
   const classes = useStyles();
-  const [notifications] = useState([]);
 
   return (
     <AppBar
@@ -45,18 +37,7 @@ const TopBar = ({
         </IconButton>
         <Box flexGrow={1} />
         <Hidden mdDown>
-          <IconButton color="inherit">
-            <Badge
-              badgeContent={notifications.length}
-              color="primary"
-              variant="dot"
-            >
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <IconButton color="inherit">
-            <InputIcon />
-          </IconButton>
+          <LogoutButton />
         </Hidden>
         <Hidden lgUp>
           <IconButton

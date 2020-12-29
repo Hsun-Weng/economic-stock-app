@@ -14,6 +14,7 @@ import StockIndexView from './views/StockIndexView';
 import StockRankView from './views/StockRankView';
 import StockTreeMapView from './views/StockTreeMap';
 import StockView from './views/StockView';
+import NotFoundView from './views/NotFoundView';
 
 const routes = [
     {
@@ -28,7 +29,8 @@ const routes = [
             { path: '/stock/rank', element: <StockRankView />},
             { path: '/portfolio', element: <PortfolioView />},
             { path: '/stock/:stockCode', element: <StockView />},
-            { path: '/stock/index/:indexCode', element: <StockIndexView />}
+            { path: '/stock/index/:indexCode', element: <StockIndexView />},
+            { path: '*', element: <Navigate to="/404" /> }
         ]
     },{
         path: '/',
@@ -38,8 +40,9 @@ const routes = [
             { path: 'register', element: <SignUpView /> },
             // { path: '404', element: <NotFoundView /> },
             { path: '/', element: <Navigate to="/app" /> },
-            { path: '/oauth/:providerCode', element: <OauthRedirect />}
-            // { path: '*', element: <Navigate to="/404" /> }
+            { path: '404', element: <NotFoundView /> },
+            { path: '/oauth/:providerCode', element: <OauthRedirect />},
+            { path: '*', element: <Navigate to="/404" /> }
         ]
     }
 

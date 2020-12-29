@@ -4,7 +4,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { userAction, notificationAction } from '../../actions';
+import { notificationAction } from '../../actions';
 import config from '../../config';
 import FacebookIcon from '../../icons/Facebook';
 
@@ -34,7 +34,6 @@ const LoginForm = () => {
             }
           })
           .then(()=>{
-            dispatch(userAction.getUser())
             navigate("/");
           })
           .catch((err)=>{

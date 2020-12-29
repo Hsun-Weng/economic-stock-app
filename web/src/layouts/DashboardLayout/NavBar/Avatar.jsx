@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { Box, Button, Typography } from '@material-ui/core';
+import React from 'react';
+import { Settings as SettingsIcon } from 'react-feather';
 import { useSelector } from 'react-redux';
-import { Box, Typography, Button } from '@material-ui/core';
-import { LogOut as LogOutIcon, Settings as SettingsIcon } from 'react-feather';
-import LogoutDialog from './LogoutDialog';
 import NavItem from './NavItem';
 
 const items = [{
@@ -14,7 +13,6 @@ const items = [{
 const Avatar = () => {
     const isLoggedIn = useSelector(state=>state.user.isLoggedIn);
     const userInfo = useSelector(state=>state.user.info);
-    const [ openDialog, setOpenDialog ] = useState(false);
 
     if(!isLoggedIn){
         return (
@@ -56,12 +54,6 @@ const Avatar = () => {
                 >
                 {userInfo.lastName}
             </Typography>
-            <Button
-                color="inherit"
-                onClick={e=>setOpenDialog(true)}
-                startIcon={<LogOutIcon/>} >
-                登出
-            </Button>
             {items.map((item) => (
                 <NavItem
                     href={item.href}
@@ -69,7 +61,6 @@ const Avatar = () => {
                     title={item.title}
                     icon={item.icon}/>
             ))}
-            <LogoutDialog open={openDialog} handleClose={e=>setOpenDialog(false)} />
         </Box>
     )
 }

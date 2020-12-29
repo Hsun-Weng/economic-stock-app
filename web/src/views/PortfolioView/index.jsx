@@ -2,7 +2,6 @@ import { Box, Container, makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Page from '../../components/Page';
-import PortfolioSelect from './PortfolioSelect';
 import PortfolioTable from './PortfolioTable';
 import Toolbar from './Toolbar';
 

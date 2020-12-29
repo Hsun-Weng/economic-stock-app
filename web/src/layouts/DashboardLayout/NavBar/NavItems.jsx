@@ -35,11 +35,6 @@ const items = [
       href: '/app/stock/rank',
       icon: SettingsIcon,
       title: '當日個股排行'
-    },
-    {
-      href: '/404',
-      icon: AlertCircleIcon,
-      title: 'Error'
     }
 ];
 

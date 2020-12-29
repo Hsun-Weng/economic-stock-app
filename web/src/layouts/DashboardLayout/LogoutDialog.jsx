@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mate
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { userAction } from '../../../actions';
+import { userAction } from '../../actions';
 
 const LogoutDialog = ({ open, handleClose }) => {
     const dispatch = useDispatch();

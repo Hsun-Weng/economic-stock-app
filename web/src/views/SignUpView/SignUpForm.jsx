@@ -2,12 +2,13 @@ import { Box, Button, Link, TextField, Typography } from '@material-ui/core';
 import { Formik } from 'formik';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { notificationAction } from '../../actions';
 
 const SignUpView = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const signUp = ( values, { setSubmitting } ) => {
     const requestOptions = {
@@ -27,7 +28,7 @@ const SignUpView = () => {
           throw res;
         }
       }).then(()=>{
-        dispatch(notificationAction.enqueueSuccess("註冊成功"));
+        navigate('/');
       })
       .catch((err)=>{
         if (err.json) {
