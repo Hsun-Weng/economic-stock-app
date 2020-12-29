@@ -40,7 +40,7 @@ const Notification = () => {
                         <ClearIcon />
                     </IconButton>
                 ),
-                anchorOrigin: {horizontal: 'right', vertical: 'bottom'},
+                anchorOrigin: {horizontal: 'right', vertical: 'top'},
                 onClose: (event, reason, myKey) => {
                     if (options.onClose) {
                         options.onClose(event, reason, myKey);

@@ -19,15 +19,22 @@ const PortfolioAddDialog = ({ open, handleClose }) => {
         fetch(`/api/portfolio`, requestOptions)
             .then(res=>{
                 if(!res.ok){
-                    throw Error(res.text());
+                    throw res;
                 }
             })
             .then(()=> {
                 handleClose();
                 dispatch(portfolioAction.getPortfolios());
             })
-            .catch(errText=>{
-                dispatch(notificationAction.enqueueError(errText));
+            .catch((err)=>{
+                if (err.json) {
+                  err.json()
+                  .then(data=> {
+                    dispatch(notificationAction.enqueueError(data.message))
+                  })
+                } else {
+                  dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
+                }
             }).finally(()=>{
                 setAdding(false);
             })

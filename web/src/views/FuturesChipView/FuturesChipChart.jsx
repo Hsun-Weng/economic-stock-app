@@ -94,13 +94,20 @@ const FuturesChipChart = ({ className, investorCode, futuresCode, ...rest }) =>{
             fetch(`/api/futures/${futuresCode}/chip?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
                 .then(res=>{
                     if(!res.ok){
-                        throw Error(res.text());
+                        throw res;
                     }
                     return res.json();
                 })
                 .then((data)=>setChips(data))
-                .catch(errText=>{
-                    dispatch(notificationAction.enqueueError(errText));
+                .catch((err)=>{
+                    if (err.json) {
+                      err.json()
+                      .then(data=> {
+                        dispatch(notificationAction.enqueueError(data.message))
+                      })
+                    } else {
+                      dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
+                    }
                 })
         }
         fetchData();

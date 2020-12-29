@@ -45,13 +45,11 @@ public class FuturesChipServiceImpl implements FuturesChipService {
                         .collect(Collectors.groupingBy(Futures::getDate, Collectors.summingInt(Futures::getOpenInterestLot)));
 
         List<FuturesChipBean> futuresChipBeanList = futuresChipList
-                .stream()
+                .parallelStream()
                 .map((futuresChip)->{
             // 未平倉總量
             Integer openInterestLot = openInterestLotMap.get(futuresChip.getDate());
 
-            System.out.println(new BigDecimal(openInterestLot));
-            
             List<InvestorFuturesChipBean> investorFuturesChipList = futuresChip.getInvestorFuturesChip()
                     .stream()
                     .map((investorChip)->InvestorFuturesChipBean
@@ -94,7 +92,7 @@ public class FuturesChipServiceImpl implements FuturesChipService {
 
             return new FuturesChipBean(futuresChip.getDate(), futuresChip.getFuturesCode(), openInterestLot
                     , investorFuturesChipList);
-        }).collect(Collectors.toList());
+        }).sorted((c1, c2)->c2.getDate().compareTo(c1.getDate())).collect(Collectors.toList());
         
         return futuresChipBeanList;
     }

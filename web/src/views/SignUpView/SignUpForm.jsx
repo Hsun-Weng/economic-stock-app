@@ -9,7 +9,7 @@ import { notificationAction } from '../../actions';
 const SignUpView = () => {
   const dispatch = useDispatch();
 
-  const signUp = ( values ) => {
+  const signUp = ( values, { setSubmitting } ) => {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -20,18 +20,26 @@ const SignUpView = () => {
         password: values.password
       })
     };
-
+    setSubmitting(true);
     fetch(`/api/user/signup`, requestOptions)
       .then((res)=>{
         if (!res.ok) {
-          throw Error(res.text());
+          throw res;
         }
       }).then(()=>{
         dispatch(notificationAction.enqueueSuccess("註冊成功"));
       })
-      .catch((errText)=>{
-        dispatch(notificationAction.enqueueError(errText))
-      });
+      .catch((err)=>{
+        if (err.json) {
+          err.json()
+          .then(data=> {
+            dispatch(notificationAction.enqueueError(data.message))
+          })
+        } else {
+          dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
+        }
+      })
+      .finally(()=>setSubmitting(false));
   }
 
   return (

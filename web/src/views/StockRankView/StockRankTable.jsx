@@ -32,7 +32,7 @@ const StockRankTable = ({ className, categoryCode, sortColumn, direction, ...res
             fetch(`/api/stocks/rank/latest?sortColumn=${sortColumn}&page=${page}&size=${size}&direction=${direction}`)
                 .then(res=>{
                     if(!res.ok){
-                        throw Error(res.text());
+                        throw res;
                     }
                     return res.json();
                 })
@@ -40,8 +40,15 @@ const StockRankTable = ({ className, categoryCode, sortColumn, direction, ...res
                     setTotalPage(data.totalPage);
                     setStocks(data.content)
                 })
-                .catch(errText=>{
-                    dispatch(notificationAction.enqueueError(errText));
+                .catch((err)=>{
+                    if (err.json) {
+                      err.json()
+                      .then(data=> {
+                        dispatch(notificationAction.enqueueError(data.message))
+                      })
+                    } else {
+                      dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
+                    }
                 })
         };
         fetchData();

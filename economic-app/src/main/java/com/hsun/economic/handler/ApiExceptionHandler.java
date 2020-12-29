@@ -1,5 +1,6 @@
 package com.hsun.economic.handler;
 
+import com.hsun.economic.bean.ErrorMessage;
 import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.exception.ApiServerException;
 import com.hsun.economic.exception.DuplicateException;
@@ -14,24 +15,24 @@ public class ApiExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ApiClientException.class)
-    public String handleApiClientException(ApiClientException e) {
-        return e.getMessage();
+    public ErrorMessage handleApiClientException(ApiClientException e) {
+        return new ErrorMessage(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ApiServerException.class)
-    public String handleApiServerException(ApiServerException e) {
-        return e.getMessage();
+    public ErrorMessage handleApiServerException(ApiServerException e) {
+        return new ErrorMessage(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DuplicateException.class)
-    public String handleDuplicateException(DuplicateException e) { return e.getMessage(); }
+    public ErrorMessage handleDuplicateException(DuplicateException e) { return new ErrorMessage(e.getMessage()); }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public String handleResourceNotFoundException(ResourceNotFoundException e) {
-        return e.getMessage();
+    public ErrorMessage handleResourceNotFoundException(ResourceNotFoundException e) {
+        return new ErrorMessage(e.getMessage());
     }
 
 }

@@ -18,23 +18,31 @@ const LoginForm = () => {
 
     const redirectUrl = `${authorizationEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&display=page&response_type=code&scopes=${scopes}`;
 
-    const login = ({ values }) => {
+    const login = ( values, { setSubmitting } ) => {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userName: values.email,
                 password: values.password })
         };
+        setSubmitting(true);
         fetch(`/api/user/login`, requestOptions)
           .then(res=>{
             if(!res.ok){
-                throw Error(res.text());
+                throw res;
             }
           })
           .then(()=>dispatch(userAction.getUser()))
-          .catch(errText=>{
-            dispatch(notificationAction.enqueueError(errText));
-          })
+          .catch((err)=>{
+            if (err.json) {
+              err.json()
+              .then(data=> {
+                dispatch(notificationAction.enqueueError(data.message))
+              })
+            } else {
+              dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
+            }
+          }).finally(()=>setSubmitting(false));
     };
 
     return (

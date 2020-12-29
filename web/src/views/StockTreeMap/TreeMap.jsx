@@ -126,15 +126,22 @@ const TreeMap = ({ className, countryCode, dataCode , ...rest}) => {
             fetch(`/api/categories/proportion`)
             .then(res=>{
                 if(!res.ok){
-                    throw Error(res.text());
+                    throw res;
                 }
                 return res.json();
             })
             .then((data)=> {
                 setCategoryProportions(data)
             })
-            .catch(errText=>{
-                dispatch(notificationAction.enqueueError(errText));
+            .catch((err)=>{
+                if (err.json) {
+                  err.json()
+                  .then(data=> {
+                    dispatch(notificationAction.enqueueError(data.message))
+                  })
+                } else {
+                  dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
+                }
             })
         }
         fetchData();
