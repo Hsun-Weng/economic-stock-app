@@ -2,7 +2,8 @@ import { Box, Button, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles((theme) => ({
     root: {},
@@ -10,6 +11,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Toolbar = ({ className, indexCode, ...rest }) => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const portfolios = useSelector(state=>state.portfolio.data);
     const [ anchorEl, setAnchorEl ] = useState(null);
 
@@ -24,7 +26,17 @@ const Toolbar = ({ className, indexCode, ...rest }) => {
         };
     
         fetch(`/api/portfolio/${portfolioId}/product`, requestOptions)
-            .then(res=>res.json());
+            .then(res=>{
+                if(!res.ok){
+                    throw Error(res.text());
+                }
+            })
+            .then(()=> {
+                dispatch(notificationAction.enqueueSuccess('新增成功'));
+            })
+            .catch(errText=>{
+                dispatch(notificationAction.enqueueError(errText));
+            })
     }
 
     return (

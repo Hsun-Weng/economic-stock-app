@@ -1,8 +1,6 @@
 package com.hsun.economic.controller;
 
-import com.hsun.economic.bean.PriceBean;
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.bean.*;
 import com.hsun.economic.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,64 +19,34 @@ public class StockController {
     private StockService service;
     
     @GetMapping("/stocks")
-    public ResponseBean getStockList() {
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getStockList());
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<StockBean> getStockList() {
+        return service.getStockList();
     }
 
     @GetMapping("/stocks/rank/latest")
-    public ResponseBean getStockSortedPage(@RequestParam String sortColumn, @RequestParam Integer page,
-                                         @RequestParam Integer size, @RequestParam String direction) {
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getStockSortedPage(sortColumn, page, size, direction));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public PageInfoBean<StockPriceBean> getStockSortedPage(@RequestParam String sortColumn, @RequestParam Integer page,
+                                                           @RequestParam Integer size, @RequestParam String direction) {
+        return service.getStockSortedPage(sortColumn, page, size, direction);
     }
 
     @GetMapping("/stock/{stockCode}/prices")
-    public ResponseBean<List<PriceBean>> getStockPriceList(@PathVariable String stockCode
+    public List<PriceBean> getStockPriceList(@PathVariable String stockCode
             , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate startDate
             , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate endDate){
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getPriceList(stockCode, startDate, endDate));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+        return service.getPriceList(stockCode, startDate, endDate);
     }
 
     @GetMapping("/stock/{stockCode}/chips")
-    public ResponseBean<List<PriceBean>> getStockChipList(@PathVariable String stockCode
+    public List<StockChipBean> getStockChipList(@PathVariable String stockCode
             , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate startDate
             , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate endDate){
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getChipList(stockCode, startDate, endDate));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+        return service.getChipList(stockCode, startDate, endDate);
     }
 
     @GetMapping("/stock/{stockCode}/margins")
-    public ResponseBean<List<PriceBean>> getStockMarginList(@PathVariable String stockCode
+    public List<StockMarginBean> getStockMarginList(@PathVariable String stockCode
             , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate startDate
             , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate endDate){
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getMarginList(stockCode, startDate, endDate));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+        return service.getMarginList(stockCode, startDate, endDate);
     }
 }

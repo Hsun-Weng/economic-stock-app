@@ -1,10 +1,14 @@
-import { Box, Button, Checkbox, FormHelperText, Link, TextField, Typography } from '@material-ui/core';
+import { Box, Button, Link, TextField, Typography } from '@material-ui/core';
 import { Formik } from 'formik';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import * as Yup from 'yup';
+import { notificationAction } from '../../actions';
 
 const SignUpView = () => {
+  const dispatch = useDispatch();
+
   const signUp = ( values ) => {
     const requestOptions = {
       method: 'POST',
@@ -18,7 +22,14 @@ const SignUpView = () => {
     };
 
     fetch(`/api/user/signup`, requestOptions)
-      .then(res=>res.json());
+      .then((res)=>{
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+      }).then(()=>{
+        dispatch(notificationAction.enqueueSuccess("註冊成功"));
+      })
+      .catch((errText)=>dispatch(notificationAction.enqueueError(errText)));
   }
 
   return (
@@ -27,8 +38,7 @@ const SignUpView = () => {
         email: '',
         firstName: '',
         lastName: '',
-        password: '',
-        policy: false
+        password: ''
       }}
       validationSchema={
         Yup.object().shape({
@@ -36,10 +46,9 @@ const SignUpView = () => {
           firstName: Yup.string().max(255).required('請輸入名字'),
           lastName: Yup.string().max(255).required('請輸入姓氏'),
           password: Yup.string().max(255).required('請輸入密碼'),
-          policy: Yup.boolean().oneOf([true], '請勾選')
         })
       }
-      onSubmit={() => signUp}>
+      onSubmit={signUp}>
       {({
         errors,
         handleBlur,
@@ -113,38 +122,6 @@ const SignUpView = () => {
             value={values.password}
             variant="outlined"
           />
-          <Box
-            alignItems="center"
-            display="flex"
-            ml={-1}
-          >
-            <Checkbox
-              checked={values.policy}
-              name="policy"
-              onChange={handleChange}
-            />
-            <Typography
-              color="textSecondary"
-              variant="body1"
-            >
-              I have read the
-              {' '}
-              <Link
-                color="primary"
-                component={RouterLink}
-                to="#"
-                underline="always"
-                variant="h6"
-              >
-                Terms and Conditions
-              </Link>
-            </Typography>
-          </Box>
-          {Boolean(touched.policy && errors.policy) && (
-            <FormHelperText error>
-              {errors.policy}
-            </FormHelperText>
-          )}
           <Box my={2}>
             <Button
               color="primary"

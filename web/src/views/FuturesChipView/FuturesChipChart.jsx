@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { notificationAction } from '../../actions'; 
 
 const useStyles = makeStyles(() => ({
     root: {}
@@ -80,6 +82,7 @@ const MixedLineBarChart = ({ investorCode, chips }) => {
 
 const FuturesChipChart = ({ className, investorCode, futuresCode, ...rest }) =>{
     const classes = useStyles();
+    const dispatch = useDispatch();
     const [ chips, setChips ] = useState([]);
 
     const formatDate = date => date.toISOString().slice(0,10);
@@ -89,12 +92,19 @@ const FuturesChipChart = ({ className, investorCode, futuresCode, ...rest }) =>{
             let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
             let endDate = new Date();
             fetch(`/api/futures/${futuresCode}/chip?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
-                .then((res)=>res.json())
-                .then((res)=>res.data)
+                .then(res=>{
+                    if(!res.ok){
+                        throw Error(res.text());
+                    }
+                    return res.json();
+                })
                 .then((data)=>setChips(data))
+                .catch(errText=>{
+                    dispatch(notificationAction.enqueueError(errText));
+                })
         }
         fetchData();
-    }, [ futuresCode ])
+    }, [ futuresCode, dispatch ])
 
     if(chips.length>0){
         return (

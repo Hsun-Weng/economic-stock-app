@@ -4,6 +4,7 @@ import com.hsun.economic.bean.*;
 import com.hsun.economic.constants.ProductType;
 import com.hsun.economic.entity.*;
 import com.hsun.economic.exception.ApiClientException;
+import com.hsun.economic.exception.ResourceNotFoundException;
 import com.hsun.economic.repository.*;
 import com.hsun.economic.resource.StockIndexResource;
 import com.hsun.economic.resource.StockResource;
@@ -55,7 +56,7 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Override
     public void addPortfolio(String userName, PortfolioBean portfolioBean) {
         if(StringUtils.isEmpty(portfolioBean.getPortfolioName())){
-            throw new ApiClientException("Portfolio name can't be empty.");
+            throw new ApiClientException("名稱不得為空");
         }
         UserPortfolio userPortfolio = new UserPortfolio();
         userPortfolio.setUserName(userName);
@@ -67,9 +68,9 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Override
     public void deletePortfolio(String userName, Integer portfolioId) {
         UserPortfolio userPortfolio = repository.findById(portfolioId)
-                .orElseThrow(()->new ApiClientException("Portfolio not found."));
+                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
         if(!userPortfolio.getUserName().equals(userName)){
-            throw new ApiClientException("Portfolio not found.");
+            throw new ResourceNotFoundException("投資組合不存在");
         }
         repository.delete(userPortfolio);
     }
@@ -79,9 +80,9 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
         User user = userRepository.findById(userName).get();
         UserPortfolio userPortfolio= user.getUserPortfolioList()
                 .stream().filter((data)->data.getPortfolioId().equals(portfolioId))
-                .findAny().orElseThrow(()->new ApiClientException("Portfolio not found."));
+                .findAny().orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
         if(StringUtils.isEmpty(portfolioBean.getPortfolioName())){
-            throw new ApiClientException("Portfolio name can't be empty.");
+            throw new ApiClientException("名稱不得為空");
         }
         userPortfolio.setPortfolioName(portfolioBean.getPortfolioName());
         repository.save(userPortfolio);
@@ -90,12 +91,12 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Override
     public List<PortfolioProductBean> getProductList(String userName, Integer portfolioId) {
         User user = userRepository.findById(userName)
-                .orElseThrow(()->new ApiClientException("User not found."));
+                .orElseThrow(()->new ResourceNotFoundException("找不到此用戶"));
         UserPortfolio userPortfolio = user.getUserPortfolioList()
                 .stream()
                 .filter((data)->data.getPortfolioId().equals(portfolioId))
                 .findAny()
-                .orElseThrow(()->new ApiClientException("Portfolio not found."));
+                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
 
         return userPortfolio.getPortfolioProductList()
                 .stream()
@@ -128,13 +129,13 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Override
     public List<ProductPriceBean> getProductPriceList(String userName, Integer portfolioId) {
         User user = userRepository.findById(userName)
-                .orElseThrow(()->new ApiClientException("User not found."));
+                .orElseThrow(()->new ResourceNotFoundException("找不到此用戶"));
         System.out.println(user.getUserPortfolioList());
         UserPortfolio userPortfolio = user.getUserPortfolioList()
                 .stream()
                 .filter((data)->data.getPortfolioId().equals(portfolioId))
                 .findAny()
-                .orElseThrow(()->new ApiClientException("Portfolio not found."));
+                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
         List<PortfolioProduct> portfolioProductList = userPortfolio.getPortfolioProductList();
 
         return portfolioProductList

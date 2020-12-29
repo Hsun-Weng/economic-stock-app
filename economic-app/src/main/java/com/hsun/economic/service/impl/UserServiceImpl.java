@@ -8,12 +8,14 @@ import com.hsun.economic.entity.OauthToken;
 import com.hsun.economic.entity.OauthTokenPK;
 import com.hsun.economic.entity.User;
 import com.hsun.economic.exception.ApiClientException;
+import com.hsun.economic.exception.ResourceNotFoundException;
 import com.hsun.economic.repository.OauthTokenRepository;
 import com.hsun.economic.repository.UserRepository;
 import com.hsun.economic.service.OauthTokenService;
 import com.hsun.economic.service.UserService;
 import com.hsun.economic.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +34,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void saveUser(UserBean userBean) {
+        if(repository.findById(userBean.getUserName()).isPresent()) {
+            throw new ApiClientException("帳號重複");
+        }
         User user = new User();
         user.setUserName(userBean.getUserName());
-        user.setPassword(userBean.getPassword());
+        user.setPassword(passwordEncoder.encode(userBean.getPassword()));
         user.setFirstName(userBean.getFirstName());
         user.setLastName(userBean.getLastName());
         repository.save(user);
@@ -44,7 +52,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserBean getUser(String userName) {
-        User user = repository.findById(userName).orElseThrow(()->new ApiClientException("Get User Fail"));
+        User user = repository.findById(userName).orElseThrow(()->new ResourceNotFoundException("找不到此用戶"));
         return new UserBean(user.getUserName(), null, user.getFirstName(), user.getLastName());
     }
 

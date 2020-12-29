@@ -2,9 +2,11 @@ import { Box, Card, CardHeader, Divider, Table, TableBody, TablePagination } fro
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import StockRankTableHead from './StockRankTableHead';
 import StockRankTableRow from './StockRankTableRow';
+import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles(() => ({
     root: {},
@@ -12,6 +14,7 @@ const useStyles = makeStyles(() => ({
 
 const StockRankTable = ({ className, categoryCode, sortColumn, direction, ...rest }) => {
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const [ page, setPage ] = useState(0);
     const [ size, setSize ] = useState(10);
@@ -27,15 +30,22 @@ const StockRankTable = ({ className, categoryCode, sortColumn, direction, ...res
     useEffect(()=>{
         const fetchData = () => {
             fetch(`/api/stocks/rank/latest?sortColumn=${sortColumn}&page=${page}&size=${size}&direction=${direction}`)
-                .then((res)=>res.json())
-                .then((res)=>res.data)
-                .then((data)=>{
+                .then(res=>{
+                    if(!res.ok){
+                        throw Error(res.text());
+                    }
+                    return res.json();
+                })
+                .then((data)=> {
                     setTotalPage(data.totalPage);
                     setStocks(data.content)
-                });
+                })
+                .catch(errText=>{
+                    dispatch(notificationAction.enqueueError(errText));
+                })
         };
         fetchData();
-    }, [ sortColumn, direction, page, size ])
+    }, [ sortColumn, direction, page, size, dispatch ])
 
     return (
         <Card

@@ -3,16 +3,19 @@ import { makeStyles } from '@material-ui/core/styles';
 import arrayMove from 'array-move';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { SortableContainer } from 'react-sortable-hoc';
 import PortfolioTableHead from './PortfolioTableHead';
 import PortfolioTableRow from './PortfolioTableRow';
+import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles(() => ({
     root: {},
 }));
 
 const PortfolioTable = ({ className, portfolioId, ...rest }) => {
+    const dispatch = useDispatch();
     const classes = useStyles();
 
     const [ products, setProducts ] = useState([]);
@@ -20,11 +23,20 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
     useEffect(()=> {
         if( portfolioId !== 0){
             fetch(`/api/portfolio/${portfolioId}/product/prices`)
-                .then(res=>res.json())
-                .then(res=>res.data)
-                .then(data=>setProducts(data))
+                .then(res=>{
+                    if(!res.ok){
+                        throw Error(res.text());
+                    }
+                    return res.json();
+                })
+                .then((data)=> {
+                    setProducts(data);
+                })
+                .catch(errText=>{
+                    dispatch(notificationAction.enqueueError(errText));
+                })
         }
-    }, [ portfolioId ]);
+    }, [ portfolioId, dispatch ]);
 
     const onSortEnd = async ({oldIndex, newIndex}) => {
         let resortedProducts = arrayMove(products, oldIndex, newIndex);
@@ -42,8 +54,7 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
             body: JSON.stringify(updateProducts)
         };
     
-        fetch(`/api/portfolio/${portfolioId}/products`, requestOptions)
-            .then(res=>res.json());
+        fetch(`/api/portfolio/${portfolioId}/products`, requestOptions);
     };
 
     const SortableTableBody = SortableContainer(({children})=>(

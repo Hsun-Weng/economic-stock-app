@@ -2,7 +2,9 @@ import { Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem, Selec
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import countries from '../../data/country.json';
+import { notificationAction } from '../../actions'; 
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -22,17 +24,25 @@ const CountrySelect = ({ countryCode, onCountryChange}) => {
 }
   
 const DataSelect = ({ countryCode, dataCode, onDataChange }) => {
+    const dispatch = useDispatch();
     const [ datas, setDatas ] = useState([]);
 
     useEffect(()=>{
         const fetchData = async() => {
         fetch(`/api/economic/${countryCode}/data`)
-            .then((res)=>res.json())
-            .then((res)=>res.data)
+            .then(res=>{
+                if(!res.ok){
+                    throw Error(res.text());
+                }
+                return res.json();
+            })
             .then((data)=>setDatas(data))
+            .catch(errText=>{
+                dispatch(notificationAction.enqueueError(errText));
+            })
         }
         fetchData();
-    }, [ countryCode ])
+    }, [ countryCode, dispatch ])
   
     return (
         <FormControl fullWidth margin="normal">

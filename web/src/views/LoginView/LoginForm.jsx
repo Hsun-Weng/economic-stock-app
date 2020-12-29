@@ -4,7 +4,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import * as Yup from 'yup';
-import { userAction } from '../../actions';
+import { userAction, notificationAction } from '../../actions';
 import config from '../../config';
 import FacebookIcon from '../../icons/Facebook';
 
@@ -26,8 +26,15 @@ const LoginForm = () => {
                 password: values.password })
         };
         fetch(`/api/user/login`, requestOptions)
-            .then(res=>res.json())
-            .then(data=>dispatch(userAction.getUser()));
+          .then(res=>{
+            if(!res.ok){
+                throw Error(res.text());
+            }
+          })
+          .then(()=>dispatch(userAction.getUser()))
+          .catch(errText=>{
+            dispatch(notificationAction.enqueueError(errText));
+          })
     };
 
     return (

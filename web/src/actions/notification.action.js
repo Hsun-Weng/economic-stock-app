@@ -1,6 +1,6 @@
 import notificationConstants from '../constants/notification.constants';
 
-export const notificationActions = {
+export const notificationAction = {
     enqueueNotification,
     closeNotification,
     removeNotification,

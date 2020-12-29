@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IconButton } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import { useSnackbar } from 'notistack';
-import { notificationActions } from '../actions';
+import { notificationAction } from '../actions';
 
 let displayed = [];
 
@@ -48,7 +48,7 @@ const Notification = () => {
                 },
                 onExited: (event, myKey) => {
                     // removen this snackbar from redux store
-                    dispatch(notificationActions.removeNotification(myKey));
+                    dispatch(notificationAction.removeNotification(myKey));
                     removeDisplayed(myKey);
                 },
             });

@@ -2,15 +2,12 @@ package com.hsun.economic.controller;
 
 import com.hsun.economic.bean.PortfolioBean;
 import com.hsun.economic.bean.PortfolioProductBean;
-import com.hsun.economic.bean.PriceBean;
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.exception.ApiClientException;
-import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.bean.ProductPriceBean;
 import com.hsun.economic.service.PortfolioProductService;
 import com.hsun.economic.service.UserPortfolioService;
 import com.hsun.economic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,126 +26,58 @@ public class UserPortfolioController {
     private PortfolioProductService portfolioProductService;
 
     @GetMapping("/portfolio")
-    public ResponseBean getPortfolioList(Authentication authentication){
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            responseBean.setData(service.getPortfolioList(authentication.getName()));
-        }catch(Exception e){
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<PortfolioBean> getPortfolioList(Authentication authentication){
+        return service.getPortfolioList(authentication.getName());
     }
 
     @GetMapping("/portfolio/{portfolioId}/products")
-    public ResponseBean getPortfolioProductListById(Authentication authentication, @PathVariable Integer portfolioId){
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            responseBean.setData(service.getProductList(authentication.getName(), portfolioId));
-        }catch(ApiClientException e){
-            throw e;
-        }catch(Exception e){
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<PortfolioProductBean> getPortfolioProductListById(Authentication authentication, @PathVariable Integer portfolioId){
+        return service.getProductList(authentication.getName(), portfolioId);
     }
 
     @PostMapping("/portfolio")
-    public ResponseBean addPortfolio(Authentication authentication, @RequestBody PortfolioBean portfolioBean) {
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            service.addPortfolio(authentication.getName(), portfolioBean);
-        }catch(ApiClientException e){
-            throw e;
-        }catch(Exception e){
-            throw new ApiServerException();
-        }
-        return responseBean;
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addPortfolio(Authentication authentication, @RequestBody PortfolioBean portfolioBean) {
+        service.addPortfolio(authentication.getName(), portfolioBean);
     }
 
     @DeleteMapping("/portfolio/{portfolioId}")
-    public ResponseBean deletePortfolio(Authentication authentication, @PathVariable Integer portfolioId) {
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            service.deletePortfolio(authentication.getName(), portfolioId);
-        }catch(ApiClientException e){
-            throw e;
-        }catch(Exception e){
-            throw new ApiServerException();
-        }
-        return responseBean;
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePortfolio(Authentication authentication, @PathVariable Integer portfolioId) {
+        service.deletePortfolio(authentication.getName(), portfolioId);
     }
 
     @PutMapping("/portfolio/{portfolioId}")
-    public ResponseBean updatePortfolio(Authentication authentication, @PathVariable Integer portfolioId
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePortfolio(Authentication authentication, @PathVariable Integer portfolioId
             , @RequestBody PortfolioBean portfolioBean) {
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            service.updatePortfolio(authentication.getName(), portfolioId, portfolioBean);
-        }catch(ApiClientException e){
-            throw e;
-        }catch(Exception e){
-            throw new ApiServerException();
-        }
-        return responseBean;
+        service.updatePortfolio(authentication.getName(), portfolioId, portfolioBean);
     }
 
     @PutMapping("/portfolio/{portfolioId}/products")
-    public ResponseBean updatePortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
             , @RequestBody List<PortfolioProductBean> portfolioProductBeanList){
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            portfolioProductService.savePortfolioProducts(authentication.getName()
-                    , portfolioId, portfolioProductBeanList);
-        }catch(ApiClientException e){
-            throw e;
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new ApiServerException();
-        }
-        return responseBean;
+        portfolioProductService.savePortfolioProducts(authentication.getName()
+                , portfolioId, portfolioProductBeanList);
     }
 
     @PostMapping("/portfolio/{portfolioId}/product")
-    public ResponseBean addPortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addPortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
             , @RequestBody PortfolioProductBean portfolioProductBean) {
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            portfolioProductService.addPortfolioProduct(authentication.getName(), portfolioId, portfolioProductBean);
-        }catch(DataIntegrityViolationException e){
-            throw new ApiClientException("Product has been exists");
-        }catch(ApiClientException e){
-            throw e;
-        }catch(Exception e){
-            throw new ApiServerException();
-        }
-        return responseBean;
+        portfolioProductService.addPortfolioProduct(authentication.getName(), portfolioId, portfolioProductBean);
     }
 
     @DeleteMapping("/portfolio/{portfolioId}/product/{productType}/{productCode}")
-    public ResponseBean deletePortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
             , @PathVariable Integer productType, @PathVariable String productCode) {
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            portfolioProductService.deletePortfolioProduct(authentication.getName(), portfolioId, productType, productCode);
-        }catch(ApiClientException e){
-            throw e;
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new ApiServerException();
-        }
-        return responseBean;
+        portfolioProductService.deletePortfolioProduct(authentication.getName(), portfolioId, productType, productCode);
     }
 
     @GetMapping("/portfolio/{portfolioId}/product/prices")
-    public ResponseBean<List<PriceBean>> getPortfolioProductPriceList(Authentication authentication, @PathVariable Integer portfolioId){
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            responseBean.setData(service.getProductPriceList(authentication.getName(), portfolioId));
-        }catch(ApiClientException e){
-            throw e;
-        }catch(Exception e){
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<ProductPriceBean> getPortfolioProductPriceList(Authentication authentication, @PathVariable Integer portfolioId){
+        return service.getProductPriceList(authentication.getName(), portfolioId);
     }
 }

@@ -2,9 +2,11 @@ import { Box, Card, CardHeader, Divider, Table, TableBody } from '@material-ui/c
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import CategoryStocksTableHead from './CategoryStocksTableHead';
 import CategoryStocksTableRow from './CategoryStocksTableRow';
+import { notificationAction } from '../../actions'; 
 
 const useStyles = makeStyles(() => ({
     root: {},
@@ -12,19 +14,26 @@ const useStyles = makeStyles(() => ({
 
 const CategoryStocksTable = ({ className, categoryCode, ...rest }) => {
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const [ stocks, setStocks ] = useState([]);
 
     useEffect(()=>{
         const fetchData = () => {
             fetch(`/api/category/${categoryCode}/stocks/prices`)
-                .then((res)=>res.json())
-                .then((res)=>res.data)
+                .then(res=>{
+                    if(!res.ok){
+                        throw Error(res.text());
+                    }
+                    return res.json();
+                })
                 .then((data)=>setStocks(data))
-            
+                .catch(errText=>{
+                    dispatch(notificationAction.enqueueError(errText));
+                })
         };
         fetchData();
-    }, [ categoryCode ])
+    }, [ categoryCode, dispatch ])
 
     return (
         <Card

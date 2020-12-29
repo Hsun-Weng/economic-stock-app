@@ -1,7 +1,7 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { portfolioAction } from '../../actions';
+import { portfolioAction, notificationAction } from '../../actions';
 
 const PortfolioAddDialog = ({ open, handleClose }) => {
     const dispatch = useDispatch();
@@ -17,11 +17,18 @@ const PortfolioAddDialog = ({ open, handleClose }) => {
         };
         setAdding(true);
         fetch(`/api/portfolio`, requestOptions)
-            .then((res) => {
-                setAdding(false);
+            .then(res=>{
+                if(!res.ok){
+                    throw Error(res.text());
+                }
+            })
+            .then(()=> {
                 handleClose();
                 dispatch(portfolioAction.getPortfolios());
-            }).catch((err)=>{
+            })
+            .catch(errText=>{
+                dispatch(notificationAction.enqueueError(errText));
+            }).finally(()=>{
                 setAdding(false);
             })
     };

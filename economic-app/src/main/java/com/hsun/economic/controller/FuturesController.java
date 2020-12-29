@@ -1,5 +1,7 @@
 package com.hsun.economic.controller;
 
+import com.hsun.economic.bean.FuturesBean;
+import com.hsun.economic.bean.FuturesChipBean;
 import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.entity.Futures;
 import com.hsun.economic.exception.ApiServerException;
@@ -24,14 +26,8 @@ public class FuturesController {
     private FuturesService service;
     
     @GetMapping("/futures")
-    public ResponseBean getFuturesList() {
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getFuturesList());
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<FuturesBean> getFuturesList() {
+        return service.getFuturesList();
     }
     
     @GetMapping("/futures/{futuresCode}/contract")
@@ -57,15 +53,9 @@ public class FuturesController {
     }
 
     @GetMapping("/futures/{futuresCode}/chip")
-    public ResponseBean getFuturesChipList(@PathVariable String futuresCode
+    public List<FuturesChipBean> getFuturesChipList(@PathVariable String futuresCode
             , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate startDate
             , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate endDate){
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getFuturesChipList(futuresCode, startDate, endDate));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+        return service.getFuturesChipList(futuresCode, startDate, endDate);
     }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { userAction } from '../actions';
+import { userAction, notificationAction } from '../actions';
   
 const OauthReirect = () => {
     const dispatch = useDispatch();
@@ -21,11 +21,15 @@ const OauthReirect = () => {
                 };
             
                 fetch(`/api/user/oauth`, requestOptions)
-                    .then(res=>res.json())
-                    .then((data)=>{
+                    .then(res=>{
+                        if(!res.ok){
+                            throw Error(res.text());
+                        }
+                    })
+                    .then(()=>{
                         dispatch(userAction.getUser());
-                    }).catch(err=>{
-                        
+                    }).catch(errText=>{
+                        dispatch(notificationAction.enqueueError(errText));
                     }).finally(()=>{
                         navigate('/');
                     });

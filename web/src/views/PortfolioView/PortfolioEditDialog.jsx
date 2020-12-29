@@ -1,7 +1,7 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { portfolioAction } from '../../actions';
+import { portfolioAction, notificationAction } from '../../actions';
 
 const PortfolioEditDialog = ({ open, handleClose, portfolioId }) => {
     const dispatch = useDispatch();
@@ -19,11 +19,18 @@ const PortfolioEditDialog = ({ open, handleClose, portfolioId }) => {
         };
         setUpdating(true);
         fetch(`/api/portfolio/${portfolioId}`, requestOptions)
-            .then((res) => {
-                setUpdating(false);
+            .then(res=>{
+                if(!res.ok){
+                    throw Error(res.text());
+                }
+            })
+            .then(()=> {
                 handleClose();
                 dispatch(portfolioAction.getPortfolios());
-            }).catch((err)=>{
+            })
+            .catch(errText=>{
+                dispatch(notificationAction.enqueueError(errText));
+            }).finally(()=>{
                 setUpdating(false);
             })
     };

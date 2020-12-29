@@ -1,7 +1,8 @@
 package com.hsun.economic.controller;
 
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.bean.StockCategoryBean;
+import com.hsun.economic.bean.StockCategoryProportionBean;
+import com.hsun.economic.bean.StockPriceBean;
 import com.hsun.economic.service.StockCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class StockCategoryController {
@@ -18,37 +18,17 @@ public class StockCategoryController {
     private StockCategoryService service;
     
     @GetMapping("/categories")
-    public ResponseBean getCategoryList() {
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getCategoryList());
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<StockCategoryBean> getCategoryList() {
+        return service.getCategoryList();
     }
     
     @GetMapping("/category/{categoryCode}/stocks/prices")
-    public ResponseBean getCategoryStockPriceList(@PathVariable String categoryCode) {
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getStockPriceList(categoryCode));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<StockPriceBean> getCategoryStockPriceList(@PathVariable String categoryCode) {
+        return service.getStockPriceList(categoryCode);
     }
 
     @GetMapping("/categories/proportion")
-    public ResponseBean getCategoriesStockProportionRanked() {
-        ResponseBean responseBean = new ResponseBean();
-        List<Map<String, Object>> dataList = null;
-        try {
-            responseBean.setData(service.getCategoriesStockProportionRanked());
-        }catch(Exception e) {
-            e.printStackTrace();
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<StockCategoryProportionBean> getCategoriesStockProportionRanked() {
+        return service.getCategoriesStockProportionRanked();
     }
 }

@@ -1,5 +1,7 @@
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { notificationAction } from '../../actions';
 
 const calculateMA = (dayCount, data) => {
     let result = [];
@@ -158,6 +160,7 @@ const getOption = (prices) => {
 };
 
 const CandleStickChart = ({ stockCode }) => {
+    const dispatch = useDispatch();
     const [ stockPrices, setStockPrices ] = useState([]);
 
     const formatDate = date => date.toISOString().slice(0,10);
@@ -167,12 +170,21 @@ const CandleStickChart = ({ stockCode }) => {
             let startDate = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
             let endDate = new Date();
             fetch(`/api/stock/${stockCode}/prices?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`)
-                .then((res)=>res.json())
-                .then((res)=>res.data)
-                .then((data)=>setStockPrices(data))
+                .then(res=>{
+                    if(!res.ok){
+                        throw Error(res.text());
+                    }
+                    return res.json();
+                })
+                .then((data)=> {
+                    setStockPrices(data)
+                })
+                .catch(errText=>{
+                    dispatch(notificationAction.enqueueError(errText));
+                })
         }
         fetchData();
-    }, [ stockCode ]);
+    }, [ stockCode, dispatch ]);
 
     return (
         <ReactEcharts option={getOption(stockPrices)} />

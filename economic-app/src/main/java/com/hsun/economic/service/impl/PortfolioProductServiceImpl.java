@@ -8,6 +8,7 @@ import com.hsun.economic.entity.PortfolioProductPK;
 import com.hsun.economic.entity.User;
 import com.hsun.economic.entity.UserPortfolio;
 import com.hsun.economic.exception.ApiClientException;
+import com.hsun.economic.exception.ResourceNotFoundException;
 import com.hsun.economic.repository.*;
 import com.hsun.economic.service.PortfolioProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
         UserPortfolio userPortfolio = user.getUserPortfolioList().stream()
                 .filter((portfolio->portfolio.getPortfolioId()
                         .equals(portfolioId))).findFirst()
-                .orElseThrow(()->new ApiClientException("Portfolio not found."));
+                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
 
         PortfolioProduct portfolioProduct = new PortfolioProduct();
         PortfolioProductPK portfolioProductId = new PortfolioProductPK();
@@ -83,11 +84,11 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
     @Transactional(rollbackFor = Exception.class)
     public void savePortfolioProducts(String userName, Integer portfolioId
             , List<PortfolioProductBean> portfolioProductBeanList) {
-        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
+        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("找不到用戶"));
         UserPortfolio userPortfolio = user.getUserPortfolioList().stream()
                 .filter((entity->entity.getPortfolioId()
                         .equals(portfolioId))).findAny()
-                .orElseThrow(()->new ApiClientException("Portfolio not found."));
+                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
         List<PortfolioProduct> portfolioProductList = portfolioProductBeanList
                 .parallelStream()
                 .map((portfolioProductBean -> {
@@ -110,7 +111,7 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
         user.getUserPortfolioList().stream()
                 .filter((userPortfolio->userPortfolio.getPortfolioId()
                         .equals(portfolioId))).findAny()
-                .orElseThrow(()->new ApiClientException("Portfolio not found."));
+                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
 
         PortfolioProductPK portfolioProductPK = new PortfolioProductPK();
         portfolioProductPK.setPortfolioId(portfolioId);

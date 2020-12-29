@@ -1,7 +1,7 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { portfolioAction } from '../../actions';
+import { portfolioAction, notificationAction } from '../../actions';
 
 const PortfolioDeleteDialog = ({ open, handleClose, portfolioId }) => {
     const dispatch = useDispatch();
@@ -18,11 +18,18 @@ const PortfolioDeleteDialog = ({ open, handleClose, portfolioId }) => {
         };
         setDeleting(true);
         fetch(`/api/portfolio/${portfolioId}`, requestOptions)
-            .then((res) => {
-                setDeleting(false);
+            .then(res=>{
+                if(!res.ok){
+                    throw Error(res.text());
+                }
+            })
+            .then(()=> {
                 handleClose();
                 dispatch(portfolioAction.getPortfolios());
-            }).catch((err)=>{
+            })
+            .catch(errText=>{
+                dispatch(notificationAction.enqueueError(errText));
+            }).finally(()=>{
                 setDeleting(false);
             })
     };

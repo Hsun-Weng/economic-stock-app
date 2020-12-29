@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles(() => ({
     root: {}
@@ -116,17 +118,27 @@ const Chart = ({ categoryProportions }) => {
 
 const TreeMap = ({ className, countryCode, dataCode , ...rest}) => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const [ categoryProportions, setCategoryProportions ] = useState([]);
 
     useEffect(()=>{
         const fetchData = () => {
             fetch(`/api/categories/proportion`)
-            .then((res)=>res.json())
-            .then((res)=>res.data)
-            .then((data)=>setCategoryProportions(data));
+            .then(res=>{
+                if(!res.ok){
+                    throw Error(res.text());
+                }
+                return res.json();
+            })
+            .then((data)=> {
+                setCategoryProportions(data)
+            })
+            .catch(errText=>{
+                dispatch(notificationAction.enqueueError(errText));
+            })
         }
         fetchData();
-    }, [])
+    }, [ dispatch ])
 
     if(categoryProportions.length>0){
         return (

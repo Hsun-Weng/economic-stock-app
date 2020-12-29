@@ -1,12 +1,15 @@
 package com.hsun.economic.controller;
 
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.bean.CountryBean;
+import com.hsun.economic.bean.EconomicDataBean;
+import com.hsun.economic.bean.EconomicValueBean;
 import com.hsun.economic.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class CountryController {
@@ -15,35 +18,17 @@ public class CountryController {
     private CountryService service;
     
     @GetMapping("/countries")
-    public ResponseBean getCountries() {
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getCountryList());
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<CountryBean> getCountries() {
+        return service.getCountryList();
     }
 
     @GetMapping("/economic/{countryCode}/data")
-    public ResponseBean getEconomicDataByCountry(@PathVariable String countryCode){
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            responseBean.setData(service.getEconomicDataList(countryCode));
-        } catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<EconomicDataBean> getEconomicDataByCountry(@PathVariable String countryCode){
+        return service.getEconomicDataList(countryCode);
     }
 
     @GetMapping("/economic/{countryCode}/{dataCode}/values")
-    public ResponseBean getEconomicValue(@PathVariable String countryCode, @PathVariable String dataCode){
-        ResponseBean responseBean = new ResponseBean();
-        try{
-            responseBean.setData(service.getEconomicValueList(countryCode, dataCode));
-        } catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<EconomicValueBean> getEconomicValue(@PathVariable String countryCode, @PathVariable String dataCode){
+        return service.getEconomicValueList(countryCode, dataCode);
     }
 }

@@ -1,8 +1,7 @@
 package com.hsun.economic.controller;
 
 import com.hsun.economic.bean.PriceBean;
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.bean.StockIndexBean;
 import com.hsun.economic.service.StockIndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,26 +20,14 @@ public class StockIndexController {
     private StockIndexService service;
     
     @GetMapping("/indexes")
-    public ResponseBean getStockIndexList() {
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getStockIndexList());
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<StockIndexBean> getStockIndexList() {
+        return service.getStockIndexList();
     }
 
     @GetMapping("/stock/index/{indexCode}/prices")
-    public ResponseBean<List<PriceBean>> getStockPriceList(@PathVariable String indexCode
+    public List<PriceBean> getStockPriceList(@PathVariable String indexCode
             , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate startDate
             , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate endDate){
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            responseBean.setData(service.getPriceList(indexCode, startDate, endDate));
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+        return service.getPriceList(indexCode, startDate, endDate);
     }
 }

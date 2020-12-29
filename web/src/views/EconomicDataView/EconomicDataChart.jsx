@@ -3,7 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
-
+import { useDispatch } from 'react-redux';
+import { notificationAction } from '../../actions'; 
 
 const useStyles = makeStyles(() => ({
     root: {}
@@ -68,6 +69,7 @@ const getDisplayValues = ( unitCode, values ) => {
 
 const EconomicDataChart = ({ className, countryCode, dataCode , ...rest}) => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const [ unitCode, setUnitCode ] = useState("TOTAL");
     const [ values, setValues ] = useState([]);
     const [ chartValues, setChartValues ] = useState([]);
@@ -75,12 +77,19 @@ const EconomicDataChart = ({ className, countryCode, dataCode , ...rest}) => {
     useEffect(()=>{
         const fetchValues = async() => {
             fetch(`/api/economic/${countryCode}/${dataCode}/values`)
-              .then((res)=>res.json())
-              .then((res)=>res.data)
-              .then((data)=>setValues(data))
+                .then(res=>{
+                    if(!res.ok){
+                        throw Error(res.text());
+                    }
+                    return res.json();
+                })
+                .then((data)=>setValues(data))
+                .catch(errText=>{
+                    dispatch(notificationAction.enqueueError(errText));
+                })
         }
         fetchValues();
-    }, [ countryCode, dataCode ]);
+    }, [ countryCode, dataCode, dispatch ]);
 
     useEffect(()=>{
         setChartValues(getDisplayValues(unitCode, values));

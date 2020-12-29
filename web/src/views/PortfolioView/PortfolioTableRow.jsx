@@ -1,10 +1,13 @@
 import { Box, IconButton, Link, TableCell, TableRow } from '@material-ui/core';
 import { Close as CloseIcon, Menu as MenuIcon } from '@material-ui/icons';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { SortableElement, SortableHandle } from 'react-sortable-hoc';
+import { notificationAction } from '../../actions';
 
 const PortfolioTableRow = SortableElement(({product, portfolioId}) => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const DrageHandle = SortableHandle(()=> <MenuIcon />);
@@ -15,7 +18,14 @@ const PortfolioTableRow = SortableElement(({product, portfolioId}) => {
             headers: { 'Content-Type': 'application/json' }
         };
         fetch(`/api/portfolio/${portfolioId}/product/${productType}/${productCode}`, requestOptions)
-            .then(res=>res.json())
+            .then(res=>{
+                if(!res.ok){
+                    throw Error(res.text());
+                }
+            })
+            .catch(errText=>{
+                dispatch(notificationAction.enqueueError(errText));
+            })
     };
 
     const redirectChart = ( event, productCode, productType ) => {

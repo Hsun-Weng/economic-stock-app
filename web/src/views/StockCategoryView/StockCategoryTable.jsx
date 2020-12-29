@@ -2,8 +2,10 @@ import { Box, Card, CardHeader, Divider, Link, Table, TableBody, TableCell, Tabl
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useNavigate } from 'react-router-dom';
+import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles(() => ({
     root: {},
@@ -11,6 +13,7 @@ const useStyles = makeStyles(() => ({
 
 const StockCategoryTable = ({ className, ...rest }) => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [ categories, setCategories ] = useState([]);
@@ -23,12 +26,21 @@ const StockCategoryTable = ({ className, ...rest }) => {
     useEffect(()=>{
         const fetchData = () => {
             fetch(`/api/categories`)
-                .then((res)=>res.json())
-                .then((res)=>res.data)
-                .then((data)=>setCategories(data))
+                .then(res=>{
+                    if(!res.ok){
+                        throw Error(res.text());
+                    }
+                    return res.json();
+                })
+                .then((data)=> {
+                    setCategories(data);
+                })
+                .catch(errText=>{
+                    dispatch(notificationAction.enqueueError(errText));
+                })
         }
         fetchData();
-    }, [])
+    }, [ dispatch ])
 
     return (
         <Card

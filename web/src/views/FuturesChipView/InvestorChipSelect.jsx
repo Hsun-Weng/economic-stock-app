@@ -2,7 +2,9 @@ import { Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem, Selec
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import investors from '../../data/investor.json';
+import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles(() => ({
     root: {}
@@ -22,17 +24,25 @@ const InvestorSelect = ({ investorCode, onInvestorChange }) => {
 }
 
 const FuturesSelect = ({ futuresCode, onFuturesChange }) => {
+    const dispatch = useDispatch();
     const [ futures, setFutures ] = useState([]);
 
     useEffect(()=>{
         const fetchData = () => {
             fetch(`/api/futures`)
-                .then((res)=>res.json())
-                .then((res)=>res.data)
+                .then(res=>{
+                    if(!res.ok){
+                        throw Error(res.text());
+                    }
+                    return res.json();
+                })
                 .then((data)=>setFutures(data))
+                .catch(errText=>{
+                    dispatch(notificationAction.enqueueError(errText));
+                })
         };
         fetchData();
-    }, [])
+    }, [ dispatch ])
 
     return (
         <FormControl fullWidth margin="normal">

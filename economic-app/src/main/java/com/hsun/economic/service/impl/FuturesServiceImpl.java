@@ -4,7 +4,7 @@ import com.hsun.economic.bean.FuturesBean;
 import com.hsun.economic.bean.FuturesChipBean;
 import com.hsun.economic.bean.PriceBean;
 import com.hsun.economic.entity.Futures;
-import com.hsun.economic.exception.ApiClientException;
+import com.hsun.economic.exception.ResourceNotFoundException;
 import com.hsun.economic.repository.FuturesRepository;
 import com.hsun.economic.resource.FuturesResource;
 import com.hsun.economic.resource.StockIndexResource;
@@ -49,7 +49,7 @@ public class FuturesServiceImpl implements FuturesService {
     @Override
     public List<FuturesChipBean> getFuturesChipList(String futuresCode, LocalDate startDate, LocalDate endDate) {
         Futures futures = repository.findById(futuresCode)
-                .orElseThrow(()->new ApiClientException("Futures not found"));
+                .orElseThrow(()->new ResourceNotFoundException("期貨不存在"));
 
         Map<Long, PriceBean> datePriceMap = stockIndexResource.getPriceList(futures.getStockIndex().getIndexCode()
                 , startDate.format(DateTimeFormatter.ISO_DATE), endDate.format(DateTimeFormatter.ISO_DATE)).getData()
