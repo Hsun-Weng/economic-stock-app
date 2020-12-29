@@ -1,11 +1,9 @@
 import {
     AlertCircle as AlertCircleIcon,
     BarChart as BarChartIcon,
-    Lock as LockIcon,
     Settings as SettingsIcon,
     ShoppingBag as ShoppingBagIcon,
     User as UserIcon,
-    UserPlus as UserPlusIcon,
     Users as UsersIcon
   } from 'react-feather';
 import React from 'react';
@@ -38,16 +36,6 @@ const items = [
       href: '/app/stock/rank',
       icon: SettingsIcon,
       title: '當日個股排行'
-    },
-    {
-      href: '/login',
-      icon: LockIcon,
-      title: '登入'
-    },
-    {
-      href: '/register',
-      icon: UserPlusIcon,
-      title: '註冊'
     },
     {
       href: '/404',

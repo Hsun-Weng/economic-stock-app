@@ -1,15 +1,9 @@
-import { Avatar, Box, Divider, Drawer, Hidden, List, makeStyles, Typography } from '@material-ui/core';
+import { Box, Divider, Drawer, Hidden, List, makeStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
-import LogoutButton from './LogoutButton';
+import { useLocation } from 'react-router-dom';
 import NavItems from './NavItems';
-
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
-};
+import Avatar from './Avatar';
 
 const useStyles = makeStyles(() => ({
   mobileDrawer: {
@@ -44,31 +38,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
       display="flex"
       flexDirection="column"
     >
-      <Box
-        alignItems="center"
-        display="flex"
-        flexDirection="column"
-        p={2}
-      >
-        <Avatar
-          className={classes.avatar}
-          component={RouterLink}
-          src={user.avatar}
-          to="/app/account"
-        />
-        <Typography
-          className={classes.name}
-          color="textPrimary"
-          variant="h5"
-        >
-          {user.name}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2">
-          {user.jobTitle}
-        </Typography>
-      </Box>
+      <Avatar />
       <Divider />
       <Box p={2}>
         <List>
@@ -76,9 +46,6 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         </List>
       </Box>
       <Box flexGrow={1} />
-      <Box p={2}>
-        <LogoutButton />
-      </Box>
     </Box>
   );
 
