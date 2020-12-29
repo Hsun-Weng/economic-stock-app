@@ -1,14 +1,13 @@
-import {
-    AlertCircle as AlertCircleIcon,
-    BarChart as BarChartIcon,
-    Settings as SettingsIcon,
-    ShoppingBag as ShoppingBagIcon,
-    User as UserIcon,
-    Users as UsersIcon
-  } from 'react-feather';
-import React from 'react';
-import { useSelector } from 'react-redux';
 import { List } from '@material-ui/core';
+import React from 'react';
+import {
+  AlertCircle as AlertCircleIcon,
+  BarChart as BarChartIcon,
+  Settings as SettingsIcon,
+  ShoppingBag as ShoppingBagIcon,
+  User as UserIcon,
+  Users as UsersIcon
+} from 'react-feather';
 import NavItem from './NavItem';
 
 const items = [
@@ -44,16 +43,7 @@ const items = [
     }
 ];
 
-const userItems = [
-  {
-    href: '/app/portfolio',
-    icon: SettingsIcon,
-    title: '投資組合'
-  }
-];
-
 const NavItems = () => {
-  const isLoggedIn = useSelector(state=>state.user.isLoggedIn);
 
   return (
     <List>
@@ -65,16 +55,6 @@ const NavItems = () => {
           icon={item.icon}
         />
       ))}
-      {isLoggedIn&&
-        userItems.map((item) => (
-          <NavItem
-            href={item.href}
-            key={item.title}
-            title={item.title}
-            icon={item.icon}
-          />
-        ))
-      }
     </List>
   );
 }

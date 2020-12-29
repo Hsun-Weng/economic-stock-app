@@ -29,9 +29,8 @@ const PortfolioView = () => {
       <Page
         className={classes.root}
         title="投資組合">
-        <Toolbar  portfolioId={portfolioId} onPortfolioChange={e=>setPortfolioId(e.target.value)}/>
         <Container maxWidth="lg">
-          <PortfolioSelect portfolioId={portfolioId} onPortfolioChange={e=>setPortfolioId(e.target.value)}/>
+          <Toolbar portfolioId={portfolioId} onPortfolioChange={e=>setPortfolioId(e.target.value)}/>
           <Box mt={3}>
             <PortfolioTable portfolioId={portfolioId} />
           </Box>

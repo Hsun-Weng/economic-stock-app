@@ -7,7 +7,7 @@ const PortfolioSelect = ({ portfolioId, onPortfolioChange }) =>{
 
     return (
         <FormControl fullWidth margin="normal">
-            <InputLabel>Add to portfolio</InputLabel>
+            <InputLabel>投資組合</InputLabel>
             <Select
                 value={portfolioId}
                 onChange={onPortfolioChange}>

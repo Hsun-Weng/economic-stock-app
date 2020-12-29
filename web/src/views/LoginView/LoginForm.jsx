@@ -2,7 +2,7 @@ import { Box, Button, Grid, Link, TextField, Typography } from '@material-ui/cor
 import { Formik } from 'formik';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { userAction, notificationAction } from '../../actions';
 import config from '../../config';
@@ -10,6 +10,7 @@ import FacebookIcon from '../../icons/Facebook';
 
 const LoginForm = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const authorizationEndpoint = config.oauth.facebook.authorizationEndpoint;
     const clientId = config.oauth.facebook.clientId;
@@ -32,7 +33,10 @@ const LoginForm = () => {
                 throw res;
             }
           })
-          .then(()=>dispatch(userAction.getUser()))
+          .then(()=>{
+            dispatch(userAction.getUser())
+            navigate("/");
+          })
           .catch((err)=>{
             if (err.json) {
               err.json()

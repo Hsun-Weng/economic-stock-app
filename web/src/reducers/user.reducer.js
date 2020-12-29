@@ -16,25 +16,37 @@ export const user = (state=userInitState, action) =>{
       return {...state,
         loading: true,
         isLoggedIn: false,
-        data: null,
+        info: {
+          email: null,
+          firstName: null,
+          lastName: null
+        }
       };
     case userConstants.GET_USER_SUCCESS:
       return {...state,
         loading: false, 
         isLoggedIn: true,
-        data: action.user,
+        info: action.user,
       }
     case userConstants.GET_USER_FAILURE:
       return {...state,
         loading: false,
         isLoggedIn: false,
-        data: null,
+        info: {
+          email: null,
+          firstName: null,
+          lastName: null
+        }
       };
     case userConstants.REMOVE_USER:
       return {...state,
         loading: false,
         isLoggedIn: false,
-        data: null,
+        info: {
+          email: null,
+          firstName: null,
+          lastName: null
+        }
       };
     default:
       return state;

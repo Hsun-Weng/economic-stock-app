@@ -5,11 +5,11 @@ import { LogOut as LogOutIcon, Settings as SettingsIcon } from 'react-feather';
 import LogoutDialog from './LogoutDialog';
 import NavItem from './NavItem';
 
-const items = {
+const items = [{
     href: '/app/portfolio',
     icon: SettingsIcon,
     title: '投資組合'
-};
+}];
 
 const Avatar = () => {
     const isLoggedIn = useSelector(state=>state.user.isLoggedIn);

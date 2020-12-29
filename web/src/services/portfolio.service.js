@@ -12,16 +12,10 @@ function getPortfolios(){
     };
 
     return fetch(`/api/portfolio`, requestOptions)
-        .then(handleResponse)
+        .then((res)=>{
+            if(!res.ok){
+                return Promise.reject(res);
+            }
+            return res.json();
+        });
 }
-
-const handleResponse = (httpResponse) => {
-    return httpResponse.json().then(res => {
-        if (!httpResponse.ok) {
-            const error = res;
-            return Promise.reject(error);
-         }
-
-        return res.data;
-    });
-} 
