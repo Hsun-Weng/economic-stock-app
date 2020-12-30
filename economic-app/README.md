@@ -1,11 +1,6 @@
 application.yml template
 ```yml
 spring: 
-  http:
-    converters:
-      preferred-json-mapper: gson
-  gson:
-    date-format: yyyy-MM-dd
   datasource: 
     url: jdbc:mariadb://{host}:{port}/{database}
     username: {username}
@@ -13,7 +8,10 @@ spring:
     driverClassName: org.mariadb.jdbc.Driver
   jpa: 
     hibernate:
-      ddl-auto: update  
+      ddl-auto: validate  
+retrofit:
+  global-converter-factories:
+    - retrofit2.converter.gson.GsonConverterFactory
 security:
   key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   expirationTime: 10000000
@@ -31,4 +29,7 @@ security:
         fields:
           - name
           - email
+service:
+  data:
+    url: {data url}
 ```
