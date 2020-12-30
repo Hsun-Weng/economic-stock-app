@@ -10,6 +10,51 @@ const useStyles = makeStyles(() => ({
     root: {}
 }));
 
+const getItemColor = (changePercent) => {
+    let base = changePercent + 10;
+    
+    let fadeFraction = (base * 5) / 100;
+    let minRgbColor = { red: 200, green: 0, blue: 0};
+    let midRgbColor = { red: 200, green: 200, blue: 200};
+    let maxRgbColor = { red: 0, green: 200, blue: 0};
+    
+    return colorGradient(fadeFraction, minRgbColor, midRgbColor, maxRgbColor);
+}
+
+const rgbToHex = (r, g, b) => {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+const colorGradient = (fadeFraction, rgbColor1, rgbColor2, rgbColor3) => {
+    let color1 = rgbColor1;
+    let color2 = rgbColor2;
+    let fade = fadeFraction;
+
+    // Do we have 3 colors for the gradient? Need to adjust the params.
+    if (rgbColor3) {
+      fade = fade * 2;
+
+      // Find which interval to use and adjust the fade percentage
+      if (fade >= 1) {
+        fade -= 1;
+        color1 = rgbColor2;
+        color2 = rgbColor3;
+      }
+    }
+
+    let diffRed = color2.red - color1.red;
+    let diffGreen = color2.green - color1.green;
+    let diffBlue = color2.blue - color1.blue;
+
+    let gradient = {
+      red: parseInt(Math.floor(color1.red + (diffRed * fade)), 10),
+      green: parseInt(Math.floor(color1.green + (diffGreen * fade)), 10),
+      blue: parseInt(Math.floor(color1.blue + (diffBlue * fade)), 10),
+    };
+
+    return rgbToHex(gradient.red, gradient.green, gradient.blue);
+}
+
 const formatTreeMapData = ( categoryProportions ) => {
     return categoryProportions
         .map((categoryProportion)=>{
@@ -23,7 +68,10 @@ const formatTreeMapData = ( categoryProportions ) => {
                             code: stockProportion.stockCode,
                             name: stockProportion.stockName,
                             value: stockProportion.proportion,
-                            changePercent: stockProportion.changePercent
+                            changePercent: stockProportion.changePercent,
+                            itemStyle: {
+                                color: getItemColor(stockProportion.changePercent)
+                            }
                         }
                     })
             }
@@ -35,10 +83,10 @@ const Chart = ({ categoryProportions }) => {
     const levelOption = [
         {
             itemStyle: {
-                borderWidth: 1,
-                borderColor: '#333',
+                borderWidth: 0,
+                borderColor: '#777',
                 gapWidth: 1
-            }
+            },
         },
         {
             color: ['#942e38', '#aaa', '#269f3c'],
@@ -50,10 +98,6 @@ const Chart = ({ categoryProportions }) => {
     ];
     
     const option = {
-        title: {
-            text: '上市公司股價指數',
-            left: 'center'
-        },
         tooltip: {
             formatter: function (params) {
                 let data = params.data;
@@ -67,7 +111,7 @@ const Chart = ({ categoryProportions }) => {
 
         series: [
             {
-                name: '上市公司股價指數',
+                name: '上市公司',
                 type: 'treemap',
                 visibleMin: -10,
                 visibleMax: 10,
@@ -81,6 +125,10 @@ const Chart = ({ categoryProportions }) => {
                             return `${data.name}`;
                         }       
                     }
+                },
+                upperLabel: {
+                    show: true,
+                    height: 20
                 },
                 itemStyle: {
                     borderColor: 'black'
