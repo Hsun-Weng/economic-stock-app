@@ -46,11 +46,11 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
                         , stock.getStockName()))
                 .collect(Collectors.toList());
 
-        List<ProductBean> stockIndexProductList = stockRepository
+        List<ProductBean> stockIndexProductList = stockIndexRepository
                 .findAll()
                 .parallelStream()
-                .map((stockIndex)->new ProductBean(ProductType.INDEX.getValue(), stockIndex.getStockCode()
-                        , stockIndex.getStockName()))
+                .map((stockIndex)->new ProductBean(ProductType.INDEX.getValue(), stockIndex.getIndexCode()
+                        , stockIndex.getIndexName()))
                 .collect(Collectors.toList());
 
         return Stream.concat(stockProductList.stream(), stockIndexProductList.stream())

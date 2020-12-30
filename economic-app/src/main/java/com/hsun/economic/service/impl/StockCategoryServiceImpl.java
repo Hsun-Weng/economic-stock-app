@@ -4,6 +4,7 @@ import com.hsun.economic.bean.StockCategoryBean;
 import com.hsun.economic.bean.StockCategoryProportionBean;
 import com.hsun.economic.bean.StockPriceBean;
 import com.hsun.economic.bean.StockProportionBean;
+import com.hsun.economic.entity.Stock;
 import com.hsun.economic.entity.StockCategory;
 import com.hsun.economic.repository.StockCategoryProportionViewRepository;
 import com.hsun.economic.repository.StockCategoryRepository;
@@ -14,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,20 +51,33 @@ public class StockCategoryServiceImpl implements StockCategoryService {
         if(!stockCategoryOptional.isPresent()){
             return Collections.EMPTY_LIST;
         }
-        return stockCategoryOptional.get()
+        StockCategory stockCategory = stockCategoryOptional.get();
+        List<String> stockCodeList = stockCategory
+                .getStockList()
+                .stream()
+                .map(Stock::getStockCode)
+                .collect(Collectors.toList());
+        Map<String, StockPriceBean> stockPriceMap = stockResource.getLatestPriceList(stockCodeList)
+                .parallelStream()
+                .collect(Collectors.toMap(StockPriceBean::getStockCode, Function.identity()));
+
+        return stockCategory
                 .getStockList()
                 .parallelStream()
                 .map((stock)->{
-                    StockPriceBean priceBean = stockResource.getLatestPrice(stock.getStockCode());
-                    priceBean.setStockName(stock.getStockName());
-                    return priceBean;
-                }).collect(Collectors.toList());
+                    if(stockPriceMap.containsKey(stock.getStockCode())) {
+                        StockPriceBean priceBean = stockPriceMap.get(stock.getStockCode());
+                        priceBean.setStockName(stock.getStockName());
+                        return priceBean;
+                    }else{
+                        return null;
+                    }
+                })
+                .filter((price)->!ObjectUtils.isEmpty(price)).collect(Collectors.toList());
     }
 
     @Override
     public List<StockCategoryProportionBean> getCategoriesStockProportionRanked() {
-        List<StockCategory> categoryList = repository.findAll();
-
         List<StockCategoryProportionBean> categoryProportionList = categoryProportionViewRepository
                 .findAll()
                 .parallelStream()
