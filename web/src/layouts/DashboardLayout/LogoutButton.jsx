@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import React, { useState } from 'react';
 import { LogOut as LogOutIcon } from 'react-feather';
 import { useSelector } from 'react-redux';
@@ -11,12 +11,11 @@ const LogoutButton = () => {
     if(isLoggedIn){
         return (
             <>
-                <Button
+                <IconButton
                     color="inherit"
-                    onClick={e=>setOpenDialog(true)}
-                    startIcon={<LogOutIcon/>} >
-                    登出
-                </Button>
+                    onClick={e=>setOpenDialog(true)}>
+                    <LogOutIcon/>
+                </IconButton>
                 <LogoutDialog open={openDialog} handleClose={()=>setOpenDialog(false)} />
             </>
         )

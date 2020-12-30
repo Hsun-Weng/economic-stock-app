@@ -58,7 +58,7 @@ const Toolbar = ({ className, stockCode, ...rest }) => {
                 open={Boolean(anchorEl)}
                 onClose={e=>setAnchorEl(null)}>
                 {portfolios.map((prop, key)=>
-                    <MenuItem key={key} onClick={e=>addProduct(prop.portoflioId)}>
+                    <MenuItem key={key} onClick={e=>addProduct(prop.portfolioId)}>
                         <ListItemText>
                             {prop.portfolioName}
                         </ListItemText>

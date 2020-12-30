@@ -45,7 +45,7 @@ const LoginForm = () => {
             } else {
               dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
             }
-          }).finally(()=>setSubmitting(false));
+          });
     };
 
     return (

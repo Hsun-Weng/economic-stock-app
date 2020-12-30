@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SearchButton from './SearchButton';
+import LogoutButton from './LogoutButton';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -36,6 +37,8 @@ const TopBar = ({
         </Hidden>
         <Box flexGrow={1} />
         <SearchButton />
+        <Box flexGrow={1} />
+        <LogoutButton />
       </Toolbar>
     </AppBar>
   );

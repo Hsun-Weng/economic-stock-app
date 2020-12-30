@@ -62,8 +62,8 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updateProducts)
         };
-    
         fetch(`/api/portfolio/${portfolioId}/products`, requestOptions);
+        setProducts(resortedProducts);
     };
 
     const SortableTableBody = SortableContainer(({children})=>(
@@ -83,7 +83,7 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
                         <Table>
                             <PortfolioTableHead />
                             <SortableTableBody onSortEnd={onSortEnd} useDragHandle>
-                                {products.map((prop, key)=> <PortfolioTableRow key={key} product={prop} />)}
+                                {products.map((prop, key)=> <PortfolioTableRow key={key} index={key} product={prop} />)}
                             </SortableTableBody>
                         </Table>
                     </Box>

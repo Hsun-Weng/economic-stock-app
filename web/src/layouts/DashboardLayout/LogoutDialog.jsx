@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mate
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { userAction } from '../../actions';
+import { userAction, notificationAction } from '../../actions';
 
 const LogoutDialog = ({ open, handleClose }) => {
     const dispatch = useDispatch();
@@ -17,15 +17,24 @@ const LogoutDialog = ({ open, handleClose }) => {
         };
         setLoading(true);
         fetch(`/api/user/logout`, requestOptions)
-            .then(res=>res.json())
-            .then((res) => {
-                setLoading(false);
-                dispatch(userAction.removeUser);
-                handleClose();
+            .then(res=>{
+                if(!res.ok){
+                    throw res;
+                }
+            })
+            .then(() => {
+                dispatch(userAction.removeUser());
                 navigate('/');
             }).catch((err)=>{
-                setLoading(false);
-            })
+                if (err.json) {
+                  err.json()
+                  .then(data=> {
+                    dispatch(notificationAction.enqueueError(data.message))
+                  })
+                } else {
+                  dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
+                }
+            });
     };
 
     return (
