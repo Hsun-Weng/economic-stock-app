@@ -1,7 +1,7 @@
 import { Box, Container, makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
 import Page from '../../components/Page';
-import CountryDataSelect from './CountryDataSelect';
+import Toolbar from './Toolbar';
 import EconomicDataChart from './EconomicDataChart';
 
 const useStyles = makeStyles((theme) => ({
@@ -25,7 +25,7 @@ const EconomicDataView = () => {
         title="經濟數據"
       >
         <Container maxWidth="lg">
-          <CountryDataSelect countryCode={countryCode} dataCode={dataCode}
+          <Toolbar countryCode={countryCode} dataCode={dataCode}
             onCountryChange={e=>setCountryCode(e.target.value)} onDataChange={e=>setDataCode(e.target.value)}/>
           <Box mt={3}>
             <EconomicDataChart countryCode={countryCode} dataCode={dataCode} />
