@@ -36,16 +36,19 @@ const MixedLineBarChart = ({ investorCode, chips }) => {
                 type: 'value',
                 name: '現貨指數',
                 offset: 80,
-                interval: 300,
-                min: 10000,
-                max: 15000,
+                min: Math.min(...chips.map((chip)=>chip.close).filter((close)=>close>0)),
+                max: Math.max(...chips.map((chip)=>chip.close)),
             },
             {
                 type: 'value',
                 name: '未平倉口數',
-                interval: 1000,
-                min: -10000,
-                max: 10000,
+                min: Math.min(...chips.flatMap((chip)=>chip.investorChip)
+                    .filter((investorChip)=>investorChip.investorCode===investorCode)
+                    .map((investorChip)=>investorChip.openInterestNetLot)),
+                max: Math.max(...chips.flatMap((chip)=>chip.investorChip)
+                    .filter((investorChip)=>investorChip.investorCode===investorCode)
+                    .map((investorChip)=>investorChip.openInterestNetLot)),
+                    
             },
         ],
         legend: {
