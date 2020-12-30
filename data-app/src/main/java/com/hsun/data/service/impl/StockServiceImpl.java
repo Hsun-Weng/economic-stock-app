@@ -46,6 +46,7 @@ public class StockServiceImpl implements StockService {
                 .low(price.getLow())
                 .high(price.getHigh())
                 .close(price.getClose())
+                .volume(price.getVolume())
                 .change(price.getChange())
                 .changePercent(Optional.ofNullable(price.getChangePercent())
                         .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
@@ -83,6 +84,7 @@ public class StockServiceImpl implements StockService {
                 .low(price.getLow())
                 .high(price.getHigh())
                 .close(price.getClose())
+                .volume(price.getVolume())
                 .change(price.getChange())
                 .changePercent(Optional.ofNullable(price.getChangePercent())
                         .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
