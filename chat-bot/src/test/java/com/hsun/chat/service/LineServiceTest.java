@@ -12,7 +12,7 @@ public class LineServiceTest {
 
     @Test
     public void testHandleTextMessage(){
-        System.out.println(service.handleTextMessage("小台期貨籌碼"));
+        System.out.println(service.handleTextMessage("2020-09-04 小台期貨籌碼"));
     }
 
 }
