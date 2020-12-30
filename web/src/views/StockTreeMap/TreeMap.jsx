@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, Divider, LinearProgress } from '@material-ui/core';
+import { Card, CardContent, CardHeader, Divider, LinearProgress, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import ReactEcharts from 'echarts-for-react';
@@ -24,9 +24,6 @@ const formatTreeMapData = ( categoryProportions ) => {
                             name: stockProportion.stockName,
                             value: stockProportion.proportion,
                             changePercent: stockProportion.changePercent
-                            ,itemStyle: {
-                                color: 'blue'
-                              }
                         }
                     })
             }
@@ -38,32 +35,16 @@ const Chart = ({ categoryProportions }) => {
     const levelOption = [
         {
             itemStyle: {
-                borderColor: '#777',
-                borderWidth: 0,
+                borderWidth: 1,
+                borderColor: '#333',
                 gapWidth: 1
-            },
-            upperLabel: {
-                show: false
             }
         },
         {
+            color: ['#942e38', '#aaa', '#269f3c'],
+            colorMappingBy: 'changePercent',
             itemStyle: {
-                borderColor: '#555',
-                borderWidth: 5,
                 gapWidth: 1
-            },
-            emphasis: {
-                itemStyle: {
-                    borderColor: '#ddd'
-                }
-            }
-        },
-        {
-            colorSaturation: [0.35, 0.5],
-            itemStyle: {
-                borderWidth: 5,
-                gapWidth: 1,
-                borderColorSaturation: 0.6
             }
         }
     ];
@@ -88,7 +69,8 @@ const Chart = ({ categoryProportions }) => {
             {
                 name: '上市公司股價指數',
                 type: 'treemap',
-                visibleMin: 300,
+                visibleMin: -10,
+                visibleMax: 10,
                 label: {
                     show: true,
                     formatter: function(params) {
@@ -100,12 +82,8 @@ const Chart = ({ categoryProportions }) => {
                         }       
                     }
                 },
-                upperLabel: {
-                    show: true,
-                    height: 30
-                },
                 itemStyle: {
-                    borderColor: '#fff'
+                    borderColor: 'black'
                 },
                 levels: levelOption,
                 data: categoryProportions
@@ -161,7 +139,9 @@ const TreeMap = ({ className, countryCode, dataCode , ...rest}) => {
                 </CardHeader>
                 <Divider />
                 <CardContent>
-                    <Chart categoryProportions={formatTreeMapData(categoryProportions)} />
+                    <Box position="relative">
+                        <Chart categoryProportions={formatTreeMapData(categoryProportions)} />
+                    </Box>
                 </CardContent>
             </>
             }

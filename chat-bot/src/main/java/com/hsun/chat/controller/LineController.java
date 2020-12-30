@@ -36,7 +36,6 @@ public class LineController {
 
     private void replyText(@NonNull String replyToken, String message){
         if(!StringUtils.isEmpty(replyToken)&&!StringUtils.isEmpty(message)){
-            System.out.println(message);
             reply(replyToken, Collections.singletonList(new TextMessage(message)), false);
         }
     }

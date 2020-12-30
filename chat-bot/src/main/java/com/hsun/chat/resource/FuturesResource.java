@@ -12,6 +12,6 @@ import java.util.List;
 @RetrofitClient(baseUrl = "${service.data.url}")
 public interface FuturesResource {
     @GET("futures/{futuresCode}/chip")
-    ResponseBean<List<FuturesChipBean>> getFuturesChipList(@Path("futuresCode") String futuresCode, @Query("startDate") String startDate
+    List<FuturesChipBean> getFuturesChipList(@Path("futuresCode") String futuresCode, @Query("startDate") String startDate
             , @Query("endDate") String endDate);
 }

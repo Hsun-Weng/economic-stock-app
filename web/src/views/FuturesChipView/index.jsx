@@ -2,7 +2,7 @@ import { Box, Container, makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
 import Page from '../../components/Page';
 import FuturesChipChart from './FuturesChipChart';
-import InvestorChipSelect from './InvestorChipSelect';
+import Toolbar from './Toolbar';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +24,7 @@ const FuturesChipView = () => {
         className={classes.root}
         title="期貨未平倉籌碼">
         <Container maxWidth="lg">
-          <InvestorChipSelect investorCode={investorCode} futuresCode={futuresCode}
+          <Toolbar investorCode={investorCode} futuresCode={futuresCode}
             onInvestorChange={e=>setInvestorCode(e.target.value)} onFuturesChange={e=>setFuturesCode(e.target.value)}/>
           <Box mt={3}>
             <FuturesChipChart investorCode={investorCode} futuresCode={futuresCode} />

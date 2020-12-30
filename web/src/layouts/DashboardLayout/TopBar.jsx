@@ -1,10 +1,9 @@
-import { AppBar, Badge, Box, Hidden, IconButton, makeStyles, Toolbar } from '@material-ui/core';
+import { AppBar, Box, Hidden, IconButton, makeStyles, Toolbar } from '@material-ui/core';
 import { Menu as MenuIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Home as HomeIcon } from 'react-feather';
-import LogoutButton from './LogoutButton';
+import SearchButton from './SearchButton';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -28,25 +27,15 @@ const TopBar = ({
       {...rest}
     >
       <Toolbar>
-        <IconButton color="inherit" href="/">
-            <Badge
-                color="primary"
-                variant="dot">
-                <HomeIcon />
-            </Badge>
-        </IconButton>
-        <Box flexGrow={1} />
-        <Hidden mdDown>
-          <LogoutButton />
-        </Hidden>
         <Hidden lgUp>
           <IconButton
-            color="inherit"
-            onClick={onMobileNavOpen}
-          >
-            <MenuIcon />
+              color="inherit"
+              onClick={onMobileNavOpen}>
+              <MenuIcon />
           </IconButton>
         </Hidden>
+        <Box flexGrow={1} />
+        <SearchButton />
       </Toolbar>
     </AppBar>
   );

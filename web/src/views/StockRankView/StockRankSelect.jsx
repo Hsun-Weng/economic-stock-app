@@ -8,7 +8,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const SortColumnSelect = ({ sortColumn, onSortColumnChange }) => (
-    <FormControl>
+    <FormControl fullWidth margin="normal">
         <InputLabel>排序欄位</InputLabel>
         <Select
             value={sortColumn}
@@ -20,7 +20,7 @@ const SortColumnSelect = ({ sortColumn, onSortColumnChange }) => (
 )
   
 const DirectionRadioGroup = ({ direction, onDirectionChange }) => (
-    <FormControl>
+    <FormControl fullWidth margin="normal">
         <FormLabel component="legend" >順序</FormLabel>
         <RadioGroup row
         value={direction}
@@ -41,7 +41,7 @@ const StockRankSelect = ({ className, sortColumn, direction, onSortColumnChange,
             className={clsx(classes.root, className)}
             {...rest}>
             <Card>
-                <CardHeader title="國家經濟數據" />
+                <CardHeader title="個股成交排行" />
                 <CardContent>
                     <SortColumnSelect sortColumn={sortColumn} onSortColumnChange={onSortColumnChange} />
                     <DirectionRadioGroup direction={direction} onDirectionChange={onDirectionChange} />

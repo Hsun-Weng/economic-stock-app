@@ -20,39 +20,4 @@ public class ChatBotApplication {
 		SpringApplication.run(ChatBotApplication.class, args);
 	}
 
-	@Bean
-	public Gson gson() {
-		return new GsonBuilder()
-				.setDateFormat("yyyy-MM-dd")
-				.addSerializationExclusionStrategy(new ExclusionStrategy() {
-					@Override
-					public boolean shouldSkipField(FieldAttributes fieldAttributes) {
-						final Expose expose = fieldAttributes.getAnnotation(Expose.class);
-						return expose != null && !expose.serialize();
-					}
-
-					@Override
-					public boolean shouldSkipClass(Class<?> aClass) {
-						return false;
-					}
-				})
-				.addDeserializationExclusionStrategy(new ExclusionStrategy() {
-					@Override
-					public boolean shouldSkipField(FieldAttributes fieldAttributes) {
-						final Expose expose = fieldAttributes.getAnnotation(Expose.class);
-						return expose != null && !expose.deserialize();
-					}
-
-					@Override
-					public boolean shouldSkipClass(Class<?> aClass) {
-						return false;
-					}
-				})
-				.create();
-	}
-
-	@Bean
-	public GsonConverterFactory gsonConverterFactory() {
-		return GsonConverterFactory.create(gson());
-	}
 }

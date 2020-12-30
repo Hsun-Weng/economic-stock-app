@@ -16,6 +16,9 @@ const MixedLineBarChart = ({ investorCode, chips }) => {
             {
                 type: 'category',
                 data: chips.map((chip)=>chip.date),
+                axisTick: {
+                    alignWithLabel: true
+                },
             }
         ],
         yAxis: [
@@ -32,12 +35,17 @@ const MixedLineBarChart = ({ investorCode, chips }) => {
             {
                 type: 'value',
                 name: '現貨指數',
+                offset: 80,
                 interval: 300,
+                min: 10000,
+                max: 15000,
             },
             {
                 type: 'value',
                 name: '未平倉口數',
-                interval: 100,
+                interval: 1000,
+                min: -10000,
+                max: 10000,
             },
         ],
         legend: {
@@ -68,6 +76,9 @@ const MixedLineBarChart = ({ investorCode, chips }) => {
                 smooth: true
             },
         ],
+        grid: {
+            right: '20%'
+        },
         tooltip: {
             trigger: 'axis',
             // formatter: (params) => {
@@ -122,7 +133,7 @@ const FuturesChipChart = ({ className, investorCode, futuresCode, ...rest }) =>{
             {loading?<LinearProgress/>:
             <>
                 <CardHeader
-                    title={`期貨指數以及籌碼`}>
+                    title={`期貨未平倉籌碼以及指數`}>
                 </CardHeader>
                 <Divider />
                 <CardContent>

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -65,7 +66,7 @@ public class FuturesServiceImpl implements FuturesService {
                     }
                     return chip;
                 })
-                .sorted((c1, c2)->Long.compare(c2.getDate().getTime(), c1.getDate().getTime()))
+                .sorted(Comparator.comparing(FuturesChipBean::getDate))
                 .collect(Collectors.toList());
     }
 }
