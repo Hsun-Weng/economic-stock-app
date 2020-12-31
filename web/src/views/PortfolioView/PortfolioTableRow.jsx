@@ -39,10 +39,10 @@ const PortfolioTableRow = SortableElement(({product, portfolioId}) => {
         event.preventDefault();
         switch(productType){
             case 0:
-                navigate(`/app/stock/index/${productCode}`);
+                navigate(`/stock/index/${productCode}`);
                 break;
             case 1:
-                navigate(`/app/stock/${productCode}`);
+                navigate(`/stock/${productCode}`);
                 break;
             default:
         }

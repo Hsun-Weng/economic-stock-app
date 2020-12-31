@@ -11,27 +11,27 @@ import NavItem from './NavItem';
 
 const items = [
     {
-      href: '/app',
+      href: '/',
       icon: BarChartIcon,
       title: '儀表板'
     },
     {
-      href: '/app/economic',
+      href: '/economic',
       icon: UsersIcon,
       title: '經濟數據'
     },
     {
-      href: '/app/futures/chip',
+      href: '/futures/chip',
       icon: ShoppingBagIcon,
       title: '期貨未平倉'
     },
     {
-      href: '/app/stock/category',
+      href: '/stock/category',
       icon: UserIcon,
       title: '個股類別'
     },
     {
-      href: '/app/stock/rank',
+      href: '/stock/rank',
       icon: SettingsIcon,
       title: '當日個股排行'
     }

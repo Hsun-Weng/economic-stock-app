@@ -7,7 +7,7 @@ const StockRankTableRow = ({ stock }) => {
 
     const redirectStockChart = ( event, stockCode ) => {
         event.preventDefault();
-        navigate(`/app/stock/${stockCode}`);
+        navigate(`/stock/${stockCode}`);
     }
 
     const CellValue = ({children}) => {

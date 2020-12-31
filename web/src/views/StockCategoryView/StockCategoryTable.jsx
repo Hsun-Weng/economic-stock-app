@@ -21,7 +21,7 @@ const StockCategoryTable = ({ className, ...rest }) => {
 
     const redirectCategoryStockTable = (event, categoryCode) =>{
         event.preventDefault();
-        navigate(`/app/stock/category/${categoryCode}`);
+        navigate(`/stock/category/${categoryCode}`);
     };
 
     useEffect(()=>{

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import NavItem from './NavItem';
 
 const items = [{
-    href: '/app/portfolio',
+    href: '/portfolio',
     icon: SettingsIcon,
     title: '投資組合'
 }];
