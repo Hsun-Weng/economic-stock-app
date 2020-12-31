@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, Divider, LinearProgress, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import ReactEcharts from 'echarts-for-react';
+import Echart from '../../components/Echart';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { notificationAction } from '../../actions';
@@ -139,7 +139,7 @@ const Chart = ({ categoryProportions }) => {
         ]
     };
 
-    return (<ReactEcharts option={option} />);
+    return (<Echart option={option} />);
 } 
 
 const TreeMap = ({ className, countryCode, dataCode , ...rest}) => {

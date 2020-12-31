@@ -1,5 +1,5 @@
 import { LinearProgress } from '@material-ui/core';
-import ReactEcharts from 'echarts-for-react';
+import Echart from '../../components/Echart';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { notificationAction } from '../../actions';
@@ -198,7 +198,7 @@ const CandleStickChart = ({ indexCode }) => {
 
     return (
         loading?<LinearProgress/>:
-        <ReactEcharts option={getOption(indexPrices)} />
+        <Echart option={getOption(indexPrices)} />
     )
 }
 

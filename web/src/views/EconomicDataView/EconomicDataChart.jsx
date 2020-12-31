@@ -1,7 +1,7 @@
 import { Box, Button, ButtonGroup, Card, CardContent, CardHeader, Divider, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import ReactEcharts from 'echarts-for-react';
+import Echart from '../../components/Echart';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { notificationAction } from '../../actions';
@@ -39,7 +39,7 @@ const LineChart = ({ values }) => {
             }
         }
     };
-    return (<ReactEcharts
+    return (<Echart
         option={option} />);
 }
 
