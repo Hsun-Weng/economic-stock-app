@@ -2,6 +2,7 @@ package com.hsun.economic.service.impl;
 
 import com.hsun.economic.bean.FuturesBean;
 import com.hsun.economic.bean.FuturesChipBean;
+import com.hsun.economic.bean.FuturesContractBean;
 import com.hsun.economic.bean.PriceBean;
 import com.hsun.economic.entity.Futures;
 import com.hsun.economic.exception.ResourceNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -43,8 +45,12 @@ public class FuturesServiceImpl implements FuturesService {
     }
 
     @Override
-    public Futures getFuturesByCode(String futuresCode) {
-        return repository.findById(futuresCode).orElse(null);
+    public List<FuturesContractBean> getFuturesByCode(String futuresCode) {
+        Futures futures = repository.findById(futuresCode)
+                .orElseThrow(()->new ResourceNotFoundException("期貨不存在"));
+        return futures.getFuturesContractList().stream()
+                .map((futuresContract)->new FuturesContractBean(futuresContract.getId().getContractDate()))
+                .collect(Collectors.toList());
     }
 
     @Override
