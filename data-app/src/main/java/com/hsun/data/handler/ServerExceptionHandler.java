@@ -1,4 +1,4 @@
-package com.hsun.data.exception;
+package com.hsun.data.handler;
 
 import com.hsun.data.bean.ErrorMessage;
 import org.springframework.core.Ordered;
