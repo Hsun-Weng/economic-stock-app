@@ -12,13 +12,6 @@ const LoginForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const authorizationEndpoint = config.oauth.facebook.authorizationEndpoint;
-    const clientId = config.oauth.facebook.clientId;
-    const redirectUri = config.oauth.facebook.redirectUri;
-    const scopes = config.oauth.facebook.scopes;
-
-    const redirectUrl = `${authorizationEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&display=page&response_type=code&scopes=${scopes}`;
-
     const login = ( values, { setSubmitting } ) => {
         const requestOptions = {
             method: 'POST',
@@ -92,7 +85,7 @@ const LoginForm = () => {
                       startIcon={<FacebookIcon />}
                       size="large"
                       variant="contained"
-                      href={redirectUrl}>
+                      href={config.oauth.facebook.authorizationUrl}>
                       以Facebook登入
                     </Button>
                   </Grid>

@@ -13,8 +13,12 @@ import com.hsun.economic.resource.FacebookResource;
 import com.hsun.economic.service.OauthService;
 import com.hsun.economic.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.transaction.Transactional;
+
+@Service
 public class OauthServiceImpl implements OauthService {
 
     @Autowired
@@ -32,6 +36,7 @@ public class OauthServiceImpl implements OauthService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Transactional
     @Override
     public String oauthFacebook(String code) {
         if(StringUtils.isEmpty(code)){

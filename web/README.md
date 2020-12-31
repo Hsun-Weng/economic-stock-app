@@ -82,28 +82,15 @@ module.exports = function (app) {
             }
         })
     );
-    app.use(
-        '/data',
-        createProxyMiddleware({
-            target: 'http://localhost:8079',
-            changeOrigin: true,
-            pathRewrite: {
-                '^/data':'' 
-            }
-        })
-    );
 };
 ```
 
 Add config.js in src/
 ```javascript
 export default {
-    domainName: "http://xxxxxxxx:oooo",
     oauth: {
         facebook: {
-            authorizationEndpoint: "https://www.facebook.com/dialog/oauth",
-            clientId: "xxxxxxxxxxxxx",
-            scopes: "email,publish_actions"
+            authorizationUrl: "{facebnook endpoint with clientId etc...}",
         }
     }
 }

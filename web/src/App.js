@@ -4,7 +4,7 @@ import { useRoutes } from 'react-router-dom';
 import './App.css';
 import GlobalStyles from './components/GlobalStyles';
 import Notification from './components/Notification';
-import routes from './newRoutes';
+import routes from './Routes';
 import theme from './theme';
 
 const App = () => {
