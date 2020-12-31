@@ -22,13 +22,14 @@ const SignUpView = () => {
       })
     };
     setSubmitting(true);
-    fetch(`/api/user/signup`, requestOptions)
+    fetch(`/api/signup`, requestOptions)
       .then((res)=>{
         if (!res.ok) {
           throw res;
         }
       }).then(()=>{
-        navigate('/');
+        dispatch(notificationAction.enqueueSuccess("註冊成功，請使用帳號及密碼登入"));
+        navigate('/login');
       })
       .catch((err)=>{
         if (err.json) {

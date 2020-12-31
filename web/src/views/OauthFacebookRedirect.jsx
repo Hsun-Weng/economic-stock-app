@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { notificationAction } from '../actions';
   
 const OauthReirect = () => {
     const dispatch = useDispatch();
     const location = useLocation();
-    const { providerCode } = useParams();
     const navigate = useNavigate();
 
     useEffect(()=>{
@@ -17,10 +16,10 @@ const OauthReirect = () => {
                 const requestOptions = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ providerCode, code })
+                    body: JSON.stringify({ code })
                 };
             
-                fetch(`/api/user/oauth`, requestOptions)
+                fetch(`/api/oauth/facebook`, requestOptions)
                     .then(res=>{
                         if(!res.ok){
                             throw res;
@@ -40,7 +39,7 @@ const OauthReirect = () => {
                     });
             }
         }
-    }, [ dispatch, location, navigate, providerCode ])
+    }, [ dispatch, location, navigate ])
 
     return (<div />)
 }

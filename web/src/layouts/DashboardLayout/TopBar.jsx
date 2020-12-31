@@ -5,13 +5,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SearchButton from './SearchButton';
 import LogoutButton from './LogoutButton';
+import DarkModeToggle from '../../components/DarkModeToggle';
 
 const useStyles = makeStyles(() => ({
   root: {},
-  avatar: {
-    width: 60,
-    height: 60
-  }
 }));
 
 const TopBar = ({
@@ -25,8 +22,7 @@ const TopBar = ({
     <AppBar
       className={clsx(classes.root, className)}
       elevation={0}
-      {...rest}
-    >
+      {...rest}>
       <Toolbar>
         <Hidden lgUp>
           <IconButton
@@ -38,6 +34,7 @@ const TopBar = ({
         <Box flexGrow={1} />
         <SearchButton />
         <Box flexGrow={1} />
+        <DarkModeToggle />
         <LogoutButton />
       </Toolbar>
     </AppBar>

@@ -26,21 +26,10 @@ public class UserController {
         return service.getUser(authentication.getName());
     }
     
-    @PostMapping("/user/signup")
+    @PostMapping("/signup")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void saveUser(@RequestBody UserBean userBean){
         service.saveUser(userBean);
-    }
-
-    @PostMapping("/user/oauth")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void oauth(@RequestBody RequestOauthBean requestOauthBean, HttpServletResponse response){
-        Cookie cookie = new Cookie("token", service.oauth(requestOauthBean));
-        cookie.setMaxAge(365*24*60*60);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
     }
 
     @PostMapping("/user/logout")

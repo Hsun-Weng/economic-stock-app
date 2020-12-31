@@ -1,122 +1,51 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
-
-import StockTreeMap from './components/StockTreeMap';
-import EconomicData from './components/EconomicData';
-import StockChart from './components/StockChart';
-import StockIndexChart from './components/StockIndexChart';
-import StockCategory from './components/StockCategory';
-import StockCategoryTable from './components/StockCategoryTable';
-import StockRank from './components/StockRank';
-import FuturesChip from './components/FuturesChip';
-
-import Portfolio from './components/Portfolio';
-
-import SignUp from './components/SignUp';
-import OauthRedirect from './components/OauthRedirect';
+import { Navigate } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
+import MainLayout from './layouts/MainLayout';
+import CategoryStocksView from './views/CategoryStocksView';
 import EconomicDataView from './views/EconomicDataView';
+import FuturesChipView from './views/FuturesChipView';
+import LoginView from './views/LoginView';
+import OauthFacebookRedirect from './views/OauthFacebookRedirect';
+import PortfolioView from './views/PortfolioView';
+import SignUpView from './views/SignUpView';
+import StockCategoryView from './views/StockCategoryView';
+import StockIndexView from './views/StockIndexView';
+import StockRankView from './views/StockRankView';
+import StockTreeMapView from './views/StockTreeMap';
+import StockView from './views/StockView';
+import NotFoundView from './views/NotFoundView';
 
-export const mainItemRoutes = [
+const routes = [
     {
+        path: 'app',
+        element: <DashboardLayout />,
+        children: [
+            { path: '/', element: <StockTreeMapView /> },
+            { path: '/economic', element: <EconomicDataView /> },
+            { path: '/futures/chip', element: <FuturesChipView />},
+            { path: '/stock/category', element: <StockCategoryView />},
+            { path: '/stock/category/:categoryCode', element: <CategoryStocksView />},
+            { path: '/stock/rank', element: <StockRankView />},
+            { path: '/portfolio', element: <PortfolioView />},
+            { path: '/stock/:stockCode', element: <StockView />},
+            { path: '/stock/index/:indexCode', element: <StockIndexView />},
+            { path: '*', element: <Navigate to="/404" /> }
+        ]
+    },{
         path: '/',
-        itemName: '儀表板',
-        component: StockTreeMap,
-        exact: true,
-        itemType: 0
-    },
-    {
-        path: '/economicdata',
-        itemName: '經濟數據',
-        component: EconomicData,
-        exact: false,
-        itemType: 0
-    },
-    // {
-    //     path: '/worldeconomic',
-    //     itemName: "World Economic",
-    //     component: WorldEconomic,
-    //     exact: false,
-    //     itemType: 0
-    // },
-    {
-        path: '/futuresChip',
-        itemName: "期貨籌碼多空比",
-        component: FuturesChip,
-        exact: false,
-        itemType: 0
-    },
-    {
-        path: '/stockCategories',
-        itemName: "個股類別",
-        component: StockCategory,
-        exact: false,
-        itemType: 0
-    },
-    {
-        path: '/stockRank',
-        itemName: "個股成交排行",
-        component: StockRank,
-        itemType: 0
-    },
-]
-
-export const userItemRoutes = [
-    {
-        path: '/portfolio',
-        itemName: "投資組合",
-        component: Portfolio,
-        exact: false,
-        itemType: 0
+        element: <MainLayout />,
+        children: [
+            { path: 'login', element: <LoginView /> },
+            { path: 'register', element: <SignUpView /> },
+            // { path: '404', element: <NotFoundView /> },
+            { path: '/', element: <Navigate to="/app" /> },
+            { path: '404', element: <NotFoundView /> },
+            { path: '/oauth/facebook', element: <OauthFacebookRedirect />},
+            { path: '*', element: <Navigate to="/404" /> }
+        ]
     }
+
 ]
 
-const RouteComponent = () => (
-    <div>
-        {mainItemRoutes.map((prop, key) => {
-            if(prop.itemType === 0){
-                return (
-                <Route path={prop.path} exact={prop.exact} key={key}><prop.component /></Route>
-                );
-            }else if (prop.itemType === 1){
-                const routeItems = prop.children;
-                return (
-                <div key={key}>
-                    {routeItems.map((itemProp, itemKey)=>
-                        <Route path={itemProp.path} 
-                        exact={itemProp.exact}
-                        key={itemKey}><itemProp.component /></Route>)}
-                </div>
-                )
-            }else{
-                return(<div />)
-            }
-        })}
-        {userItemRoutes.map((prop, key) => {
-            if(prop.itemType === 0){
-                return (
-                <Route path={prop.path} exact={prop.exact} key={key}><prop.component /></Route>
-                );
-            }else if (prop.itemType === 1){
-                const routeItems = prop.children;
-                return (
-                <div key={key}>
-                    {routeItems.map((itemProp, itemKey)=>
-                        <Route path={itemProp.path} 
-                        exact={itemProp.exact}
-                        key={itemKey}><itemProp.component /></Route>)}
-                </div>
-                )
-            }else{
-                return(<div />)
-            }
-        })}
-        <Route path="/user/signUp" ><SignUp /></Route>
-        <Route path="/oauth/:providerCode" children={<OauthRedirect/>} />
-        <Route path="/stock/:stockCode" children={<StockChart />} />
-        <Route path="/stockCategory/:categoryCode" children={<StockCategoryTable />} />
-        <Route path="/index/:indexCode" children={<StockIndexChart />} />
-    </div>
-);
-
-export default RouteComponent;
+export default routes;

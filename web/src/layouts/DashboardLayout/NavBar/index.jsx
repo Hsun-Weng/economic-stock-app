@@ -14,11 +14,6 @@ const useStyles = makeStyles(() => ({
     top: 64,
     height: 'calc(100% - 64px)'
   },
-  avatar: {
-    cursor: 'pointer',
-    width: 64,
-    height: 64
-  }
 }));
 
 const NavBar = ({ onMobileClose, openMobile }) => {
