@@ -1,7 +1,6 @@
 package com.hsun.economic.filter;
 
 import com.google.gson.Gson;
-import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.entity.User;
 import com.hsun.economic.util.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +23,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     
     private AuthenticationManager authenticationManager;
     private JwtUtil jwtUtil = null;
-    
+
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
@@ -68,8 +67,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         cookie.setHttpOnly(true);
         cookie.setPath("/");
 
-        ResponseBean responseBean = new ResponseBean();
         response.addCookie(cookie);
     }
-    
 }

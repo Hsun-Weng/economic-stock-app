@@ -5,6 +5,7 @@ import CategoryStocksView from './views/CategoryStocksView';
 import EconomicDataView from './views/EconomicDataView';
 import FuturesChipView from './views/FuturesChipView';
 import LoginView from './views/LoginView';
+import UserInfoView from './views/UserInfoView';
 import NotFoundView from './views/NotFoundView';
 import OauthFacebookRedirect from './views/OauthFacebookRedirect';
 import PortfolioView from './views/PortfolioView';
@@ -23,6 +24,7 @@ const routes = [
             { path: '/', element: <StockTreeMapView /> },
             { path: '/login', element: <LoginView /> },
             { path: '/register', element: <SignUpView /> },
+            { path: '/user/info', element: <UserInfoView /> },
             { path: '/oauth/facebook', element: <OauthFacebookRedirect />},
             { path: '/economic', element: <EconomicDataView /> },
             { path: '/futures/chip', element: <FuturesChipView />},

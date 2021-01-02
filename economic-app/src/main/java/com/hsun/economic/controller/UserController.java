@@ -1,6 +1,7 @@
 package com.hsun.economic.controller;
 
-import com.hsun.economic.bean.RequestOauthBean;
+import com.google.gson.JsonObject;
+import com.hsun.economic.bean.PasswordBean;
 import com.hsun.economic.bean.UserBean;
 import com.hsun.economic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,23 @@ public class UserController {
     public UserBean getUser(Authentication authentication){
         return service.getUser(authentication.getName());
     }
+
+    @PatchMapping("/user")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void partialUpdateUser(Authentication authentication, @RequestBody JsonObject body) {
+        service.partialUpdateUser(authentication.getName(), body);
+    }
     
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void saveUser(@RequestBody UserBean userBean){
         service.saveUser(userBean);
+    }
+
+    @PutMapping("/user/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePassword(Authentication authentication, @RequestBody PasswordBean passwordBean) {
+        service.updatePassword(authentication.getName(), passwordBean);
     }
 
     @PostMapping("/user/logout")
