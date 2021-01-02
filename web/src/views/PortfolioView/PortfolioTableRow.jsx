@@ -1,6 +1,6 @@
 import { Box, IconButton, Link, TableCell, TableRow } from '@material-ui/core';
-import { Close as CloseIcon, Menu as MenuIcon } from '@material-ui/icons';
 import React from 'react';
+import { AlignJustify as AlignJustifyIcon, X as XIcon } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { SortableElement, SortableHandle } from 'react-sortable-hoc';
@@ -10,7 +10,7 @@ const PortfolioTableRow = SortableElement(({product, portfolioId}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const DrageHandle = SortableHandle(()=> <MenuIcon />);
+    const DrageHandle = SortableHandle(()=> <AlignJustifyIcon />);
 
     const deleteProduct = ( productCode, productType ) => {
         const requestOptions = {
@@ -67,7 +67,7 @@ const PortfolioTableRow = SortableElement(({product, portfolioId}) => {
     return (<TableRow >
         <TableCell>
             <IconButton onClick={event=>deleteProduct(product.productCode, product.productType)}>
-                <CloseIcon />
+                <XIcon />
             </IconButton>
         </TableCell>
         <TableCell>
