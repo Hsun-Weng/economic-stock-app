@@ -1,5 +1,6 @@
-import { Switch, useMediaQuery } from '@material-ui/core';
+import { IconButton, useMediaQuery } from '@material-ui/core';
 import React, { useEffect } from 'react';
+import { Sun as SunIcon, Moon as MoonIcon} from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { themeAction } from '../actions';
 
@@ -12,10 +13,13 @@ const DarkModeToggle = () => {
         dispatch(themeAction.setDarkMode(prefersDarkScheme));
     }, [ dispatch, prefersDarkScheme ])
     
-
-    return (<Switch checked ={darkMode} 
-        color="default"
-        onChange = {() => dispatch(themeAction.setDarkMode(!darkMode)) } />)
+    return (
+        <IconButton color="inherit" onClick={e=>dispatch(themeAction.setDarkMode(!darkMode))}>
+            {darkMode?
+                <MoonIcon />
+            :<SunIcon />}
+        </IconButton>
+    )
 }
 
 export default DarkModeToggle;
