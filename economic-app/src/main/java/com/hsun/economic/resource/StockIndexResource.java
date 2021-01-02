@@ -2,7 +2,6 @@ package com.hsun.economic.resource;
 
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitClient;
 import com.hsun.economic.bean.PriceBean;
-import com.hsun.economic.bean.ResponseBean;
 import com.hsun.economic.bean.StockIndexPriceBean;
 import retrofit2.http.*;
 

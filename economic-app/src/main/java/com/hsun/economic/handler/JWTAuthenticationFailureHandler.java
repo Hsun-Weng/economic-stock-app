@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
-import com.hsun.economic.bean.ResponseBean;
 
 @Component
 public class JWTAuthenticationFailureHandler implements AuthenticationFailureHandler {
