@@ -1,13 +1,17 @@
 import { Box, Button, Typography } from '@material-ui/core';
 import React from 'react';
-import { Settings as SettingsIcon } from 'react-feather';
+import { User as UserIcon, Briefcase as BriefcaseIcon } from 'react-feather';
 import { useSelector } from 'react-redux';
 import NavItem from './NavItem';
 
 const items = [{
     href: '/portfolio',
-    icon: SettingsIcon,
+    icon: BriefcaseIcon,
     title: '投資組合'
+},{
+    href: '/user/info',
+    icon: UserIcon,
+    title: '基本資料變更'
 }];
 
 const Avatar = () => {

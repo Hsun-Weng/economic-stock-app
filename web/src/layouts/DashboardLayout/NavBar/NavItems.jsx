@@ -1,38 +1,34 @@
 import { List } from '@material-ui/core';
 import React from 'react';
 import {
-  BarChart as BarChartIcon,
-  Settings as SettingsIcon,
-  ShoppingBag as ShoppingBagIcon,
-  User as UserIcon,
-  Users as UsersIcon
+  BarChart as BarChartIcon, Globe as GlobeIcon, Grid as GridIcon, Home as HomeIcon, Inbox as InboxIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
 const items = [
     {
       href: '/',
-      icon: BarChartIcon,
+      icon: HomeIcon,
       title: '儀表板'
     },
     {
       href: '/economic',
-      icon: UsersIcon,
+      icon: GlobeIcon,
       title: '經濟數據'
     },
     {
       href: '/futures/chip',
-      icon: ShoppingBagIcon,
+      icon: InboxIcon,
       title: '期貨未平倉'
     },
     {
       href: '/stock/category',
-      icon: UserIcon,
+      icon: GridIcon,
       title: '個股類別'
     },
     {
       href: '/stock/rank',
-      icon: SettingsIcon,
+      icon: BarChartIcon,
       title: '當日個股排行'
     }
 ];
