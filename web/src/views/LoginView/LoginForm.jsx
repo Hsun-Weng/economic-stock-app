@@ -4,7 +4,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { notificationAction } from '../../actions';
+import { notificationAction, userAction } from '../../actions';
 import config from '../../config';
 import FacebookIcon from '../../icons/Facebook';
 
@@ -20,13 +20,14 @@ const LoginForm = () => {
                 password: values.password })
         };
         setSubmitting(true);
-        fetch(`/api/user/login`, requestOptions)
+        fetch(`/api/login`, requestOptions)
           .then(res=>{
             if(!res.ok){
                 throw res;
             }
           })
           .then(()=>{
+            dispatch(userAction.getUser());
             navigate("/");
           })
           .catch((err)=>{
@@ -38,6 +39,7 @@ const LoginForm = () => {
             } else {
               dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
             }
+            setSubmitting(false)
           });
     };
 
@@ -78,7 +80,7 @@ const LoginForm = () => {
                   <Grid
                     item
                     xs={12}
-                    md={6}>
+                    md={12}>
                     <Button
                       color="primary"
                       fullWidth
@@ -87,19 +89,6 @@ const LoginForm = () => {
                       variant="contained"
                       href={config.oauth.facebook.authorizationUrl}>
                       以Facebook登入
-                    </Button>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}>
-                    <Button
-                      fullWidth
-                    //   startIcon={<GoogleIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained">
-                      以Google登入
                     </Button>
                   </Grid>
                 </Grid>

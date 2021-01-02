@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { notificationAction } from '../actions';
+import { notificationAction, userAction } from '../actions';
   
 const OauthReirect = () => {
     const dispatch = useDispatch();
@@ -24,6 +24,9 @@ const OauthReirect = () => {
                         if(!res.ok){
                             throw res;
                         }
+                    })
+                    .then(()=>{
+                        dispatch(userAction.getUser());
                     })
                     .catch((err)=>{
                         if (err.json) {
