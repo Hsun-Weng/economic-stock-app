@@ -4,9 +4,9 @@ const userInitState = {
   loading: false,
   isLoggedIn: false,
   info: {
-    email: null,
-    firstName: null,
-    lastName: null
+    email: '',
+    firstName: '',
+    lastName: ''
   }
 };
 
@@ -17,9 +17,9 @@ export const user = (state=userInitState, action) =>{
         loading: true,
         isLoggedIn: false,
         info: {
-          email: null,
-          firstName: null,
-          lastName: null
+          email: '',
+          firstName: '',
+          lastName: ''
         }
       };
     case userConstants.GET_USER_SUCCESS:
@@ -33,9 +33,9 @@ export const user = (state=userInitState, action) =>{
         loading: false,
         isLoggedIn: false,
         info: {
-          email: null,
-          firstName: null,
-          lastName: null
+          email: '',
+          firstName: '',
+          lastName: ''
         }
       };
     case userConstants.REMOVE_USER:
@@ -43,9 +43,9 @@ export const user = (state=userInitState, action) =>{
         loading: false,
         isLoggedIn: false,
         info: {
-          email: null,
-          firstName: null,
-          lastName: null
+          email: '',
+          firstName: '',
+          lastName: ''
         }
       };
     default:
