@@ -1,4 +1,3 @@
-import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -14,11 +13,9 @@ const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 ReactDOM.render(
   <Provider store={store}>
-    <SnackbarProvider>
-      <Router>
-        <App />
-      </Router>
-    </SnackbarProvider>
+    <Router>
+      <App />
+    </Router>
   </Provider>,
   document.getElementById('root'));
 

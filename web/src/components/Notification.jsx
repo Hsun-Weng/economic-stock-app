@@ -36,7 +36,7 @@ const Notification = () => {
                 key,
                 ...options,
                 action: key => (
-                    <IconButton onClick={() => closeSnackbar(key)} color="inherit">
+                    <IconButton onClick={() => closeSnackbar(key)}>
                         <ClearIcon />
                     </IconButton>
                 ),
