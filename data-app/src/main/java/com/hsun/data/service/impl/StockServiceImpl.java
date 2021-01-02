@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.hsun.data.entity.Stock;
 import com.hsun.data.repository.StockRepository;
 import com.hsun.data.service.StockService;
+import org.springframework.util.ObjectUtils;
 
 @Service
 public class StockServiceImpl implements StockService {
@@ -94,6 +95,7 @@ public class StockServiceImpl implements StockService {
         Page<Stock> stockPricePage = repository.findByDateBetween(queryStartDate, queryEndDate, pageRequest);
         List<StockPriceBean> stockPriceList = stockPricePage.getContent()
                 .parallelStream()
+                .filter((stockPrice)->!ObjectUtils.isEmpty(stockPrice.getVolume())&&stockPrice.getVolume()>0)
                 .map((price)->StockPriceBean.builder()
                         .date(price.getDate())
                         .stockCode(price.getStockCode())
