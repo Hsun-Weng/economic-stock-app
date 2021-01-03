@@ -7,8 +7,8 @@ export default {
     type: 'dark',
     background: {
       dark: '#303030',
-      default: colors.common.blueGrey,
-      paper: colors.common.blueGrey
+      // default: colors.common.blueGrey,
+      // paper: colors.common.blueGrey
     },
     primary: {
       main: colors.orange[500]
