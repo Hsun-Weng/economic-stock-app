@@ -2,7 +2,6 @@ import { AppBar, Box, Card, CardContent, Tab, Tabs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import CandleStickChart from './CandleStickChart';
 import ChipTable from './ChipTable';
 import MarginTable from './MarginTable';
@@ -26,19 +25,17 @@ const StockTabs = ({className, stockCode, ...rest }) => {
                         <Tab label="資券變化" />
                     </Tabs>
                 </AppBar>
-                <PerfectScrollbar>
-                    <Box minWidth={1050}>
-                        <TabPanel value={tabValue} index={0}>
-                            <CandleStickChart stockCode={stockCode} />
-                        </TabPanel>
-                        <TabPanel value={tabValue} index={1}>
-                            <ChipTable stockCode={stockCode} />
-                        </TabPanel>
-                        <TabPanel value={tabValue} index={2}>
-                            <MarginTable stockCode={stockCode} />
-                        </TabPanel>
-                    </Box>
-                </PerfectScrollbar>
+                <Box minWidth={1050}>
+                    <TabPanel value={tabValue} index={0}>
+                        <CandleStickChart stockCode={stockCode} />
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={1}>
+                        <ChipTable stockCode={stockCode} />
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={2}>
+                        <MarginTable stockCode={stockCode} />
+                    </TabPanel>
+                </Box>
             </CardContent>
         </Card>
     );

@@ -1,4 +1,4 @@
-import { Table, TableBody, LinearProgress } from '@material-ui/core';
+import { TableContainer, Table, TableBody, LinearProgress } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import MarginTableHead from './MarginTableHead';
@@ -43,12 +43,14 @@ const MarginTable = ({ stockCode }) => {
 
     return (
         loading?<LinearProgress/>:
-        <Table>
-            <MarginTableHead />
-            <TableBody>
-                {margins.map((prop, key)=><MarginTableRow key={key} margin={prop} />)}
-            </TableBody>
-        </Table>
+        <TableContainer>
+            <Table>
+                <MarginTableHead />
+                <TableBody>
+                    {margins.map((prop, key)=><MarginTableRow key={key} margin={prop} />)}
+                </TableBody>
+            </Table>
+        </TableContainer>
     )
 }
 

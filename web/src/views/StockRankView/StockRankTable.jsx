@@ -1,12 +1,11 @@
-import { Box, Card, CardHeader, Divider, Table, TableBody, TablePagination, LinearProgress } from '@material-ui/core';
+import { Card, CardHeader, Divider, LinearProgress, Table, TableBody, TableContainer, TableFooter, TablePagination, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import { notificationAction } from '../../actions';
 import StockRankTableHead from './StockRankTableHead';
 import StockRankTableRow from './StockRankTableRow';
-import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles(() => ({
     root: {},
@@ -62,27 +61,28 @@ const StockRankTable = ({ className, categoryCode, sortColumn, direction, ...res
             {...rest}>
             {loading?<LinearProgress/>:
             <>
-                <CardHeader title="個股類別" />
+                <CardHeader title="排行清單" />
                 <Divider />    
-                <PerfectScrollbar>
-                    <Box minWidth={800}>
-                        <Table>
-                            <StockRankTableHead />
-                            <TableBody>
-                                {stocks.map((prop, key)=> <StockRankTableRow key={key} stock={prop} />)}
-                            </TableBody>
-                        </Table>
-                    </Box>
-                </PerfectScrollbar>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    colSpan={10}
-                    count={totalPage}
-                    rowsPerPage={size}
-                    page={page}
-                    onChangePage={(event, newPage) => setPage(newPage)}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                />
+                <TableContainer>
+                    <Table size="small">
+                        <StockRankTableHead />
+                        <TableBody>
+                            {stocks.map((prop, key)=> <StockRankTableRow key={key} stock={prop} />)}
+                        </TableBody>
+                        <TableFooter>
+                            <TableRow>
+                                <TablePagination
+                                    rowsPerPageOptions={[5, 10, 25]}
+                                    colSpan={10}
+                                    count={totalPage}
+                                    rowsPerPage={size}
+                                    page={page}
+                                    onChangePage={(event, newPage) => setPage(newPage)}
+                                    onChangeRowsPerPage={handleChangeRowsPerPage} />
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+                </TableContainer>
             </>}
         </Card>
     );

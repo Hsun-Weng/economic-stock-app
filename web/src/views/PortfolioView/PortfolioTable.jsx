@@ -1,14 +1,13 @@
-import { Box, Card, CardHeader, Divider, Table, TableBody, LinearProgress } from '@material-ui/core';
+import { Card, CardHeader, Divider, LinearProgress, Table, TableBody, TableContainer } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import arrayMove from 'array-move';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import { SortableContainer } from 'react-sortable-hoc';
+import { notificationAction } from '../../actions';
 import PortfolioTableHead from './PortfolioTableHead';
 import PortfolioTableRow from './PortfolioTableRow';
-import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles(() => ({
     root: {},
@@ -78,16 +77,14 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
             <>
                 <CardHeader title="個股清單" />
                 <Divider />    
-                <PerfectScrollbar>
-                    <Box minWidth={800}>
-                        <Table>
-                            <PortfolioTableHead />
-                            <SortableTableBody onSortEnd={onSortEnd} useDragHandle>
-                                {products.map((prop, key)=> <PortfolioTableRow key={key} index={key} product={prop} />)}
-                            </SortableTableBody>
-                        </Table>
-                    </Box>
-                </PerfectScrollbar>
+                <TableContainer>
+                    <Table>
+                        <PortfolioTableHead />
+                        <SortableTableBody onSortEnd={onSortEnd} useDragHandle>
+                            {products.map((prop, key)=> <PortfolioTableRow key={key} index={key} product={prop} />)}
+                        </SortableTableBody>
+                    </Table>
+                </TableContainer>
             </>}
         </Card>
     );

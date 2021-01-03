@@ -29,7 +29,7 @@ const StockCategoryView = () => {
               md={12}
               xl={9}
               xs={12}>
-            <StockCategoryTable />
+              <StockCategoryTable />
             </Grid>
           </Grid>
         </Container>

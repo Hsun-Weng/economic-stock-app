@@ -1,12 +1,11 @@
-import { Box, Card, CardHeader, Divider, Table, TableBody, LinearProgress } from '@material-ui/core';
+import { Card, CardHeader, Divider, LinearProgress, Table, TableBody, TableContainer } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import { notificationAction } from '../../actions';
 import CategoryStocksTableHead from './CategoryStocksTableHead';
 import CategoryStocksTableRow from './CategoryStocksTableRow';
-import { notificationAction } from '../../actions'; 
 
 const useStyles = makeStyles(() => ({
     root: {},
@@ -51,17 +50,15 @@ const CategoryStocksTable = ({ className, categoryCode, ...rest }) => {
             {loading?<LinearProgress/>:
             <>
                 <CardHeader title="個股類別" />
-                <Divider />    
-                <PerfectScrollbar>
-                    <Box minWidth={800}>
-                        <Table>
-                            <CategoryStocksTableHead />
-                            <TableBody>
-                                {stocks.map((prop, key)=> <CategoryStocksTableRow key={key} stock={prop} />)}
-                            </TableBody>
-                        </Table>
-                    </Box>
-                </PerfectScrollbar>
+                <Divider />
+                <TableContainer>
+                    <Table>
+                        <CategoryStocksTableHead />
+                        <TableBody>
+                            {stocks.map((prop, key)=> <CategoryStocksTableRow key={key} stock={prop} />)}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </>
             }
         </Card>

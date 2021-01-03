@@ -1,9 +1,8 @@
-import { Box, Card, CardHeader, Divider, Link, Table, TableBody, TableCell, TableRow, Typography, LinearProgress } from '@material-ui/core';
+import { Card, CardHeader, Divider, LinearProgress, Link, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useNavigate } from 'react-router-dom';
 import { notificationAction } from '../../actions';
 
@@ -59,24 +58,22 @@ const StockCategoryTable = ({ className, ...rest }) => {
             <>
                 <CardHeader title="個股類別" />
                 <Divider />    
-                <PerfectScrollbar>
-                    <Box minWidth={800}>
-                        <Table>
-                            <TableBody>
-                                {categories.map((prop, key)=>
-                                    <TableRow key={key}>
-                                        <TableCell>
-                                            <Typography>
-                                                <Link href="#" onClick={event=>redirectCategoryStockTable(event, prop.categoryCode)}>
-                                                    {prop.categoryName}
-                                                </Link>
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>)}
-                            </TableBody>
-                        </Table>
-                    </Box>
-                </PerfectScrollbar>
+                <TableContainer>
+                    <Table>
+                        <TableBody>
+                            {categories.map((prop, key)=>
+                                <TableRow key={key}>
+                                    <TableCell>
+                                        <Typography>
+                                            <Link href="#" onClick={event=>redirectCategoryStockTable(event, prop.categoryCode)}>
+                                                {prop.categoryName}
+                                            </Link>
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>)}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </>}
         </Card>
     );

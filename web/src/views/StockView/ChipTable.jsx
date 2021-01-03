@@ -1,4 +1,4 @@
-import { Table, TableBody, LinearProgress } from '@material-ui/core';
+import { TableContainer, Table, TableBody, LinearProgress } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import ChipTableHead from './ChipTableHead';
@@ -43,12 +43,14 @@ const ChipTable = ({ stockCode }) => {
 
     return (
         loading?<LinearProgress/>:
-        <Table>
-            <ChipTableHead />
-            <TableBody>
-                {chips.map((prop, key)=><ChipTableRow key={key} chip={prop} />)}
-            </TableBody>
-        </Table>
+        <TableContainer>
+            <Table>
+                <ChipTableHead />
+                <TableBody>
+                    {chips.map((prop, key)=><ChipTableRow key={key} chip={prop} />)}
+                </TableBody>
+            </Table>
+        </TableContainer>
     )
 }
 
