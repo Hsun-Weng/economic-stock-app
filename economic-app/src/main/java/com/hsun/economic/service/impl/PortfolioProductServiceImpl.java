@@ -8,14 +8,17 @@ import com.hsun.economic.entity.PortfolioProductPK;
 import com.hsun.economic.entity.User;
 import com.hsun.economic.entity.UserPortfolio;
 import com.hsun.economic.exception.ApiClientException;
+import com.hsun.economic.exception.DuplicateException;
 import com.hsun.economic.exception.ResourceNotFoundException;
 import com.hsun.economic.repository.*;
 import com.hsun.economic.service.PortfolioProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -66,8 +69,8 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
                 .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
 
         PortfolioProduct portfolioProduct = new PortfolioProduct();
+        portfolioProduct.setUserPortfolio(userPortfolio);
         PortfolioProductPK portfolioProductId = new PortfolioProductPK();
-        portfolioProductId.setPortfolioId(portfolioId);
         portfolioProductId.setProductType(portfolioProductBean.getProductType());
         portfolioProductId.setProductCode(portfolioProductBean.getProductCode());
 
@@ -77,11 +80,15 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
 
         portfolioProduct.setId(portfolioProductId);
         portfolioProduct.setSort(++maxSort);
-        repository.save(portfolioProduct);
+        try {
+            repository.save(portfolioProduct);
+        }catch(DataIntegrityViolationException e){
+            throw new DuplicateException("已存在投資組合中");
+        }
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void savePortfolioProducts(String userName, Integer portfolioId
             , List<PortfolioProductBean> portfolioProductBeanList) {
         User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("找不到用戶"));
@@ -89,35 +96,25 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
                 .filter((entity->entity.getPortfolioId()
                         .equals(portfolioId))).findAny()
                 .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
+
         List<PortfolioProduct> portfolioProductList = portfolioProductBeanList
                 .parallelStream()
                 .map((portfolioProductBean -> {
-                    PortfolioProduct portfolioProduct = new PortfolioProduct();
                     PortfolioProductPK portfolioProductId = new PortfolioProductPK();
                     portfolioProductId.setPortfolioId(portfolioId);
                     portfolioProductId.setProductType(portfolioProductBean.getProductType());
                     portfolioProductId.setProductCode(portfolioProductBean.getProductCode());
+
+                    Optional<PortfolioProduct> portfolioProductOptional = repository.findById(portfolioProductId);
+                    if(!portfolioProductOptional.isPresent()){
+                        return null;
+                    }
+                    PortfolioProduct portfolioProduct = portfolioProductOptional.get();
+                    portfolioProduct.setUserPortfolio(userPortfolio);
                     portfolioProduct.setSort(portfolioProductBean.getSort());
-                    portfolioProduct.setId(portfolioProductId);
                     return portfolioProduct;
                 })).collect(Collectors.toList());
         userPortfolio.setPortfolioProductList(portfolioProductList);
         userPortfolioRepository.save(userPortfolio);
-    }
-
-    @Override
-    public void deletePortfolioProduct(String userName, Integer portfolioId, Integer productType, String productCode) {
-        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
-        user.getUserPortfolioList().stream()
-                .filter((userPortfolio->userPortfolio.getPortfolioId()
-                        .equals(portfolioId))).findAny()
-                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
-
-        PortfolioProductPK portfolioProductPK = new PortfolioProductPK();
-        portfolioProductPK.setPortfolioId(portfolioId);
-        portfolioProductPK.setProductType(productType);
-        portfolioProductPK.setProductCode(productCode);
-
-        repository.deleteById(portfolioProductPK);
     }
 }

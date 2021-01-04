@@ -4,7 +4,6 @@ import React from 'react';
 const ProductHead = () => (
     <TableHead>
         <TableRow>
-            <TableCell></TableCell>
             <TableCell>
                 Code 
             </TableCell>
@@ -35,7 +34,6 @@ const ProductHead = () => (
             <TableCell>
                 Time
             </TableCell>
-            <TableCell />
         </TableRow>
     </TableHead>
 )

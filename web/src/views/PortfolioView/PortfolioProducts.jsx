@@ -1,12 +1,11 @@
-import { Card, CardHeader, Divider, LinearProgress, TableContainer, IconButton } from '@material-ui/core';
+import { Card, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { notificationAction } from '../../actions';
-import ProductSortTable from './ProductSortTable';
-import ProductTable from './ProductTable';
-import { Edit as EditIcon } from 'react-feather';
+import ProductCardContent from './ProductCardContent';
+import ProductSortCardContent from './ProductSortCardContent';
 
 const useStyles = makeStyles(() => ({
     root: {},
@@ -46,31 +45,31 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
         }
     }, [ portfolioId, dispatch ]);
 
+    const finishSortProducts = (sortProducts) => {
+        let sortIndex = 0;
+        let srotedProducts = sortProducts.map((product)=>{
+            return {
+                ...product,
+                sort: ++sortIndex
+            };
+        });
+        setProducts(srotedProducts);
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(srotedProducts)
+        };
+        fetch(`/api/portfolio/${portfolioId}/products`, requestOptions);
+        setOpenEdit(false);
+    }
+
     return (
         <Card
             className={clsx(classes.root, className)}
             {...rest}>
             {loading?<LinearProgress/>:
-            <>
-                <CardHeader title="自選清單" action={
-                    openEdit?
-                    <IconButton color="inherit"
-                        onClick={e=>setOpenEdit(true)}>
-                        <EditIcon />
-                    </IconButton>
-                    :<IconButton color="inherit"
-                        onClick={e=>setOpenEdit(false)}>
-                        <EditIcon />
-                    </IconButton>
-                }/>
-                <Divider />    
-                <TableContainer>
-                    {openEdit?
-                    <ProductSortTable products={products} />
-                    :<ProductTable products={products} />
-                    }
-                </TableContainer>
-            </>}
+            openEdit?<ProductSortCardContent products={products} finishSortProducts={finishSortProducts} cancel={e=>setOpenEdit(false)} />
+                :<ProductCardContent products={products} closeContent={e=>setOpenEdit(true)} />}
         </Card>
     );
 }

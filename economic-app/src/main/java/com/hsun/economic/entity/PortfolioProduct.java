@@ -1,5 +1,6 @@
 package com.hsun.economic.entity;
 
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,4 +18,10 @@ public class PortfolioProduct implements Serializable {
 
     @Column(name="sort")
     private Integer sort;
+
+    @ManyToOne
+    @JoinColumn(name = "portfolio_id", referencedColumnName = "portfolio_id")
+    @MapsId("portfolioId")
+    @Expose(serialize = false)
+    private UserPortfolio userPortfolio;
 }

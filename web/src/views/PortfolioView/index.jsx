@@ -2,7 +2,7 @@ import { Box, Container, makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Page from '../../components/Page';
-import PortfolioTable from './PortfolioTable';
+import PortfolioProducts from './PortfolioProducts';
 import Toolbar from './Toolbar';
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +31,7 @@ const PortfolioView = () => {
         <Container maxWidth="lg">
           <Toolbar portfolioId={portfolioId} onPortfolioChange={e=>setPortfolioId(e.target.value)}/>
           <Box mt={3}>
-            <PortfolioTable portfolioId={portfolioId} />
+            <PortfolioProducts portfolioId={portfolioId} />
           </Box>
         </Container>
       </Page>
