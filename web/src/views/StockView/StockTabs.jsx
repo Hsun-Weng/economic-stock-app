@@ -25,7 +25,7 @@ const StockTabs = ({className, stockCode, ...rest }) => {
                         <Tab label="資券變化" />
                     </Tabs>
                 </AppBar>
-                <Box minWidth={1050}>
+                <Box >
                     <TabPanel value={tabValue} index={0}>
                         <CandleStickChart stockCode={stockCode} />
                     </TabPanel>
