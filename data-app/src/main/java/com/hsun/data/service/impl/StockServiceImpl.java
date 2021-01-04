@@ -92,10 +92,9 @@ public class StockServiceImpl implements StockService {
         Date queryStartDate = Date.from(localLatestDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
         Date queryEndDate = Date.from(localLatestDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
 
-        Page<Stock> stockPricePage = repository.findByDateBetween(queryStartDate, queryEndDate, pageRequest);
+        Page<Stock> stockPricePage = repository.findByDateBetweenAndVolumeGreaterThan(queryStartDate, queryEndDate, 0, pageRequest);
         List<StockPriceBean> stockPriceList = stockPricePage.getContent()
                 .parallelStream()
-                .filter((stockPrice)->!ObjectUtils.isEmpty(stockPrice.getVolume())&&stockPrice.getVolume()>0)
                 .map((price)->StockPriceBean.builder()
                         .date(price.getDate())
                         .stockCode(price.getStockCode())
@@ -106,7 +105,9 @@ public class StockServiceImpl implements StockService {
                         .volume(price.getVolume())
                         .change(price.getChange())
                         .changePercent(Optional.ofNullable(price.getChangePercent())
-                                .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
+                                .map(changePercent->changePercent*100)
+                                .orElse(0f))
+                        .build()).collect(Collectors.toList());
 
         return PageInfoBean.<StockPriceBean>builder()
                 .totalPage(stockPricePage.getTotalPages())

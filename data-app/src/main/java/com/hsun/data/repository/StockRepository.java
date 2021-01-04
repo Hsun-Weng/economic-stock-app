@@ -15,9 +15,8 @@ import com.hsun.data.entity.Stock;
 
 @Repository
 public interface StockRepository extends PagingAndSortingRepository<Stock, String> {
-    @Query("{ 'stockCode': ?0, 'date': { $gte: ?1, $lte: ?2} }")
     List<Stock> findByStockCodeAndDateBetween(String stockCode, Date startDate, Date endDate);
-    Page<Stock> findByDateBetween(Date startDate, Date endDate, Pageable pageable);
+    Page<Stock> findByDateBetweenAndVolumeGreaterThan(Date startDate,  Date endDate, Integer volume, Pageable pageable);
     Optional<Stock> findFirstByOrderByDateDesc();
     Optional<Stock> findFirstByStockCodeOrderByDateDesc(String stockCode);
     List<Stock> findByStockCodeInAndDateBetween(List<String> stockCodeList, Date startDate, Date endDate);
