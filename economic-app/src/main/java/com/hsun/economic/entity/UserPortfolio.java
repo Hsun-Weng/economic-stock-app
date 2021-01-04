@@ -32,8 +32,7 @@ public class UserPortfolio implements Serializable {
     @Column(name="user_name")
     private String userName;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    @JoinColumn(name = "portfolio_id")
+    @OneToMany(mappedBy = "userPortfolio",cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @ToString.Exclude
     @Setter(AccessLevel.NONE)
     private List<PortfolioProduct> portfolioProductList = new ArrayList<>();

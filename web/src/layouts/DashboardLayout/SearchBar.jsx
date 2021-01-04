@@ -21,10 +21,10 @@ const SearchBar = () => {
         if(value != null){
             switch(value.productType){
                 case 0:
-                    navigate(`/app/stcok/index/${value.productCode}`);
+                    navigate(`/stock/index/${value.productCode}`);
                     break;
                 case 1:
-                    navigate(`/app/stock/${value.productCode}`);
+                    navigate(`/stock/${value.productCode}`);
                     break;
                 case 2:
                     break;

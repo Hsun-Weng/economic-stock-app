@@ -58,8 +58,7 @@ public class UserPortfolioController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updatePortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
             , @RequestBody List<PortfolioProductBean> portfolioProductBeanList){
-        portfolioProductService.savePortfolioProducts(authentication.getName()
-                , portfolioId, portfolioProductBeanList);
+        portfolioProductService.savePortfolioProducts(authentication.getName(), portfolioId, portfolioProductBeanList);
     }
 
     @PostMapping("/portfolio/{portfolioId}/product")
@@ -67,13 +66,6 @@ public class UserPortfolioController {
     public void addPortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
             , @RequestBody PortfolioProductBean portfolioProductBean) {
         portfolioProductService.addPortfolioProduct(authentication.getName(), portfolioId, portfolioProductBean);
-    }
-
-    @DeleteMapping("/portfolio/{portfolioId}/product/{productType}/{productCode}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
-            , @PathVariable Integer productType, @PathVariable String productCode) {
-        portfolioProductService.deletePortfolioProduct(authentication.getName(), portfolioId, productType, productCode);
     }
 
     @GetMapping("/portfolio/{portfolioId}/product/prices")

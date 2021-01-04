@@ -9,5 +9,4 @@ public interface PortfolioProductService {
     List<ProductBean> getProductList();
     void addPortfolioProduct(String userName, Integer portfolioId, PortfolioProductBean portfolioProductBean);
     void savePortfolioProducts(String userName, Integer portfolioId, List<PortfolioProductBean> portfolioProductList);
-    void deletePortfolioProduct(String userName, Integer portfolioId, Integer productType, String productCode);
 }
