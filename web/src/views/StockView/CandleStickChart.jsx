@@ -1,11 +1,8 @@
 import { LinearProgress } from '@material-ui/core';
-import Echart from '../../components/Echart';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { notificationAction } from '../../actions';
-
-const upColor = '#00da3c';
-const downColor = '#ec0000';
+import Echart from '../../components/Echart';
 
 const calculateMA = (dayCount, data) => {
     let result = [];
@@ -47,80 +44,45 @@ const splitData = (rawData) => {
     };
 }
 
-const formatPrices = (prices) => {
-    return prices.sort((p1, p2)=>{
-        let date1 = new Date(p1.date);
-        let date2 = new Date(p2.date);
-        if(date1<date2) return -1;
-        if(date1>date2) return 1;
-        return 0;
-    }).map((price)=>{
-        return [ price.open, price.close, price.low, price.high ]
-    });
-}
-
-const formatDates = (prices) => {
-    return prices.sort((p1, p2)=>{
-        let date1 = new Date(p1.date);
-        let date2 = new Date(p2.date);
-        if(date1<date2) return -1;
-        if(date1>date2) return 1;
-        return 0;
-    }).map((price)=>price.date);
-}
-
 const getOption = (prices) => {
     const data = splitData(prices);
-    console.log(data);
-    const priceData = formatPrices(prices);
+    const dataMA5 = calculateMA(5, data.values);
+    const dataMA10 = calculateMA(10, data.values);
+    const dataMA20 = calculateMA(20, data.values);
+    const labelFont = 'bold 12px Sans-serif';
     return {
-        backgroundColor: '#21202D',
+        animation: false,
         legend: {
-            data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'],
-            inactiveColor: '#777',
-            textStyle: {
-                color: '#fff'
-            }
+            top: 30,
+            data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30']
         },
         tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                animation: false,
-                type: 'cross',
-                lineStyle: {
-                    color: '#376df4',
-                    width: 2,
-                    opacity: 1
-                }
+            triggerOn: 'none',
+            transitionDuration: 0,
+            confine: true,
+            bordeRadius: 4,
+            borderWidth: 1,
+            borderColor: '#333',
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            textStyle: {
+                fontSize: 12,
+                color: '#333'
+            },
+            position: function (pos, params, el, elRect, size) {
+                let obj = {
+                    top: 60
+                };
+                obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+                return obj;
             }
         },
-        xAxis: [
-            {
-                type: 'category',
-                data: data.categoryData,
-                boundaryGap: false,
-                axisLine: { lineStyle: { color: '#8392A5' } },
-            },
-            {
-                type: 'category',
-                gridIndex: 1,
-                data: data.categoryData,
-                boundaryGap: false,
-                axisLine: { lineStyle: { color: '#8392A5' } },
-                splitNumber: 20,
-                min: 'dataMin',
-                max: 'dataMax'
-            }
-        ],
+        axisPointer: {
+            link: [{
+                xAxisIndex: [0, 1]
+            }]
+        },
         dataZoom: [{
             type: 'slider',
-            xAxisIndex: [0, 1],
-            start: 40,
-            end: 70,
-            top: 30,
-            height: 20
-        }, {
-            type: 'inside',
             xAxisIndex: [0, 1],
             realtime: false,
             start: 20,
@@ -128,105 +90,163 @@ const getOption = (prices) => {
             top: 65,
             height: 20,
             handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-            handleSize: '80%'
+            handleSize: '120%'
+        }, {
+            type: 'inside',
+            xAxisIndex: [0, 1],
+            start: 40,
+            end: 70,
+            top: 30,
+            height: 20
         }],
-        yAxis: [
-            {
-                scale: true,
-                splitArea: {
-                    show: true
+        xAxis: [{
+            type: 'category',
+            data: data.categoryData,
+            boundaryGap : false,
+            axisLine: { lineStyle: { color: '#777' } },
+            min: 'dataMin',
+            max: 'dataMax',
+            axisPointer: {
+                show: true
+            }
+        }, {
+            type: 'category',
+            gridIndex: 1,
+            data: data.categoryData,
+            scale: true,
+            boundaryGap : false,
+            splitLine: {show: false},
+            axisLabel: {show: false},
+            axisTick: {show: false},
+            axisLine: { lineStyle: { color: '#777' } },
+            splitNumber: 20,
+            min: 'dataMin',
+            max: 'dataMax',
+            axisPointer: {
+                type: 'shadow',
+                label: {show: false},
+                triggerTooltip: true,
+                handle: {
+                    show: true,
+                    margin: 30,
+                    color: '#B80C00'
                 }
-            },
-            {
-                scale: true,
-                gridIndex: 1,
-                splitNumber: 2,
-                axisLabel: {show: false},
-                axisLine: {show: false},
-                axisTick: {show: false},
-                splitLine: {show: false}
             }
-        ],
-        brush: {
-            xAxisIndex: 'all',
-            brushLink: 'all',
-            outOfBrush: {
-                colorAlpha: 0.1
+        }],
+        yAxis: [{
+            scale: true,
+            splitNumber: 2,
+            axisLine: { lineStyle: { color: '#777' } },
+            splitLine: { show: true },
+            axisTick: { show: false },
+            axisLabel: {
+                inside: true,
+                formatter: '{value}\n'
             }
-        },
-        grid:  [{
+        }, {
+            scale: true,
+            gridIndex: 1,
+            splitNumber: 2,
+            axisLabel: {show: false},
+            axisLine: {show: false},
+            axisTick: {show: false},
+            splitLine: {show: false}
+        }],
+        grid: [{
             left: 20,
             right: 20,
             top: 110,
-            height: 120
+            height: 150
         }, {
             left: 20,
             right: 20,
-            height: 40,
-            top: 260
+            height: 70,
+            top: 270
         }],
-        animation: false,
-        series: [
-            {
-                type: 'candlestick',
-                name: '日K',
-                data: data.values,
+        graphic: [{
+            type: 'group',
+            left: 'center',
+            top: 70,
+            width: 300,
+            bounding: 'raw',
+            children: [{
+                id: 'MA5',
+                type: 'text',
+                style: {font: labelFont},
+                left: 0
+            }, {
+                id: 'MA10',
+                type: 'text',
+                style: {font: labelFont},
+                left: 'center'
+            }, {
+                id: 'MA20',
+                type: 'text',
+                style: {font: labelFont},
+                right: 0
+            }]
+        }],
+        series: [{
+            name: 'Volume',
+            type: 'bar',
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+            itemStyle: {
+                color: '#7fbe9e'
+            },
+            emphasis: {
                 itemStyle: {
-                    color: '#FD1050',
-                    color0: '#0CF49B',
-                    borderColor: '#FD1050',
-                    borderColor0: '#0CF49B'
+                    color: '#140'
                 }
             },
-            {
-                name: 'MA5',
-                type: 'line',
-                data: calculateMA(5, data.values),
-                smooth: true,
-                showSymbol: false,
-                lineStyle: {
-                    width: 1
-                }
+            data: data.volumes
+        }, {
+            type: 'candlestick',
+            name: '日K',
+            data: data.values,
+            itemStyle: {
+                color: '#00da3c',
+                color0: '#ec0000',
+                borderColor: '#008F28',
+                borderColor0: '#8A0000'
             },
-            {
-                name: 'MA10',
-                type: 'line',
-                data: calculateMA(10, data.values),
-                smooth: true,
-                showSymbol: false,
-                lineStyle: {
-                    width: 1
+            emphasis: {
+                itemStyle: {
+                    color: 'black',
+                    color0: '#444',
+                    borderColor: 'black',
+                    borderColor0: '#444'
                 }
-            },
-            {
-                name: 'MA20',
-                type: 'line',
-                data: calculateMA(20, data.values),
-                smooth: true,
-                showSymbol: false,
-                lineStyle: {
-                    width: 1
-                }
-            },
-            {
-                name: 'MA30',
-                type: 'line',
-                data: calculateMA(30, data),
-                smooth: true,
-                showSymbol: false,
-                lineStyle: {
-                    width: 1
-                }
-            },
-            {
-                name: 'Volume',
-                type: 'bar',
-                xAxisIndex: 1,
-                yAxisIndex: 1,
-                data: data.volumes
             }
-        ]
-    }
+        }, {
+            name: 'MA5',
+            type: 'line',
+            data: dataMA5,
+            smooth: true,
+            showSymbol: false,
+            lineStyle: {
+                width: 1
+            }
+        }, {
+            name: 'MA10',
+            type: 'line',
+            data: dataMA10,
+            smooth: true,
+            showSymbol: false,
+            lineStyle: {
+                width: 1
+            }
+        }, {
+            name: 'MA20',
+            type: 'line',
+            data: dataMA20,
+            smooth: true,
+            showSymbol: false,
+            lineStyle: {
+                width: 1
+            }
+        }]
+    };
 };
 
 const CandleStickChart = ({ stockCode }) => {
@@ -267,7 +287,7 @@ const CandleStickChart = ({ stockCode }) => {
 
     return (
         loading?<LinearProgress/>:
-        <Echart option={getOption(stockPrices)} />
+        <Echart style={{height: 400}} option={getOption(stockPrices)} />
     )
 }
 
