@@ -20,7 +20,7 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
     const [ openEdit, setOpenEdit ] = useState(false);
 
     useEffect(()=> {
-        if( portfolioId !== 0){
+        const fetchData = async() => {
             setLoading(true);
             fetch(`/api/portfolio/${portfolioId}/product/prices`)
                 .then(res=>{
@@ -43,21 +43,27 @@ const PortfolioTable = ({ className, portfolioId, ...rest }) => {
                     }
                 }).finally(()=>setLoading(false));
         }
+        fetchData();
     }, [ portfolioId, dispatch ]);
 
     const finishSortProducts = (sortProducts) => {
         let sortIndex = 0;
-        let srotedProducts = sortProducts.map((product)=>{
+        let sortedProducts = sortProducts.map((product)=>{
             return {
                 ...product,
                 sort: ++sortIndex
             };
         });
-        setProducts(srotedProducts);
+        setProducts(sortedProducts);
+        let putSortedProducts = sortedProducts.map((product)=>({
+            productType: product.productType,
+            productCode: product.productCode,
+            sort: product.sort
+        }));
         const requestOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(srotedProducts)
+            body: JSON.stringify(putSortedProducts)
         };
         fetch(`/api/portfolio/${portfolioId}/products`, requestOptions);
         setOpenEdit(false);

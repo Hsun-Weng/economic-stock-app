@@ -1,58 +1,20 @@
-import { Box, IconButton, Link, TableCell, TableRow } from '@material-ui/core';
+import { Box, Link, TableCell, TableRow, IconButton } from '@material-ui/core';
 import React from 'react';
-import { AlignJustify as AlignJustifyIcon, X as XIcon } from 'react-feather';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { notificationAction } from '../../actions';
+import { Edit as EditIcon, Trash2 as Trash2Icon } from 'react-feather';
 
-const PortfolioTableRow = SortableElement(({product, portfolioId}) => {
-    const dispatch = useDispatch();
+const PortfolioTableRow = ({ portfolio, openEdit, openDelete }) => {
     const navigate = useNavigate();
 
-    const DrageHandle = SortableHandle(()=> <AlignJustifyIcon />);
-
-    const deleteProduct = ( productCode, productType ) => {
-        const requestOptions = {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
-        };
-        fetch(`/api/portfolio/${portfolioId}/product/${productType}/${productCode}`, requestOptions)
-            .then(res=>{
-                if(!res.ok){
-                    throw res;
-                }
-            })
-            .catch((err)=>{
-                if (err.json) {
-                  err.json()
-                  .then(data=> {
-                    dispatch(notificationAction.enqueueError(data.message))
-                  })
-                } else {
-                  dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
-                }
-            })
-    };
-
-    const redirectChart = ( event, productCode, productType ) => {
-        event.preventDefault();
-        switch(productType){
-            case 0:
-                navigate(`/stock/index/${productCode}`);
-                break;
-            case 1:
-                navigate(`/stock/${productCode}`);
-                break;
-            default:
-        }
+    const redirectProducts = ( portfolioId ) => {
+        navigate(`/portfolio/${portfolioId}`);
     }
 
     const CellValue = ({children}) => {
         let fontColor = "";
-        if(product.change > 0){
+        if(portfolio.change > 0){
             fontColor = "green";
-        }else if(product.change < 0) {
+        }else if(portfolio.change < 0) {
             fontColor = "red";
         }else {
             fontColor = "";
@@ -66,62 +28,51 @@ const PortfolioTableRow = SortableElement(({product, portfolioId}) => {
 
     return (<TableRow >
         <TableCell>
-            <IconButton onClick={event=>deleteProduct(product.productCode, product.productType)}>
-                <XIcon />
+            <IconButton color="inherit"
+                onClick={e=>openDelete(portfolio.portfolioId, portfolio.portfolioName)}>
+                <Trash2Icon />
             </IconButton>
         </TableCell>
         <TableCell>
-            <Link href="#" onClick={event=>redirectChart(event, product.productCode, product.productType)}>
-                {product.productCode}
-            </Link>
-        </TableCell>
-        <TableCell>
-            <Link href="#" onClick={event=>redirectChart(event, product.productCode, product.productType)}>
-                {product.productName}
+            <Link href="#" onClick={e=>redirectProducts(portfolio.portfolioId)}>
+                {portfolio.portfolioName}
             </Link>
         </TableCell>
         <TableCell>
             <CellValue>
-                {product.close}
+                {portfolio.close}
             </CellValue>
         </TableCell>
         <TableCell>
             <CellValue>
-                {product.open}
+                {portfolio.open}
             </CellValue>
         </TableCell>
         <TableCell>
             <CellValue>
-                {product.high}
+                {portfolio.high}
             </CellValue>
         </TableCell>
         <TableCell>
             <CellValue>
-                {product.low}
+                {portfolio.low}
             </CellValue>
         </TableCell>
         <TableCell>
             <CellValue>
-                {product.change}
+                {portfolio.change}
             </CellValue>
         </TableCell>
         <TableCell>
-            <CellValue>
-                {product.changePercent}
-            </CellValue>
+            {portfolio.date}
         </TableCell>
         <TableCell>
-            <CellValue>
-                {product.volume}
-            </CellValue>
-        </TableCell>
-        <TableCell>
-            {product.date}
-        </TableCell>
-        <TableCell>
-            <DrageHandle />
+            <IconButton color="inherit"
+                onClick={e=>openEdit(portfolio.portfolioId, portfolio.portfolioName)}>
+                <EditIcon />
+            </IconButton>
         </TableCell>
     </TableRow>
-)});
+)};
 
 export default PortfolioTableRow;

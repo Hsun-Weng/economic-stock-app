@@ -1,14 +1,12 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { portfolioAction, notificationAction } from '../../actions';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { notificationAction } from '../../actions';
 
-const PortfolioDeleteDialog = ({ open, handleClose, portfolioId }) => {
+const PortfolioDeleteDialog = ({ open, handleClose, portfolioId, portfolioName }) => {
     const dispatch = useDispatch();
-    const userPortfolios = useSelector(state=>state.portfolio.data);
 
     const [ deleting, setDeleting ] = useState(false); 
-    const [ deletePortfolioName, setDeletePortfolioName ] = useState("");
 
     const deletePortfolio = (event) => {
         event.preventDefault();
@@ -24,8 +22,7 @@ const PortfolioDeleteDialog = ({ open, handleClose, portfolioId }) => {
                 }
             })
             .then(()=> {
-                handleClose();
-                dispatch(portfolioAction.getPortfolios());
+                window.location.reload();
             })
             .catch((err)=>{
                 if (err.json) {
@@ -36,23 +33,15 @@ const PortfolioDeleteDialog = ({ open, handleClose, portfolioId }) => {
                 } else {
                   dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                 }
-            }).finally(()=>{
                 setDeleting(false);
-            })
+            });
     };
-
-    useEffect(()=>{
-        let filteredPortfolios = userPortfolios.filter((userPortfolio)=>userPortfolio.portfolioId===portfolioId);
-        if(filteredPortfolios.length>0){
-            setDeletePortfolioName(filteredPortfolios[0].portfolioName);
-        }
-    }, [ portfolioId, userPortfolios ])
 
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>刪除</DialogTitle>
             <DialogContent>
-                確定刪除 {deletePortfolioName} ?
+                確定刪除 {portfolioName} ?
             </DialogContent>
             <DialogActions>
                 <Button color="primary" disabled={deleting} onClick={deletePortfolio}>

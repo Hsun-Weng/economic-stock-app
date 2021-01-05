@@ -1,7 +1,7 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { portfolioAction, notificationAction } from '../../actions';
+import { notificationAction } from '../../actions';
 
 const PortfolioAddDialog = ({ open, handleClose }) => {
     const dispatch = useDispatch();
@@ -23,8 +23,7 @@ const PortfolioAddDialog = ({ open, handleClose }) => {
                 }
             })
             .then(()=> {
-                handleClose();
-                dispatch(portfolioAction.getPortfolios());
+                window.location.reload();
             })
             .catch((err)=>{
                 if (err.json) {
@@ -35,9 +34,8 @@ const PortfolioAddDialog = ({ open, handleClose }) => {
                 } else {
                   dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                 }
-            }).finally(()=>{
                 setAdding(false);
-            })
+            });
     };
 
     return (

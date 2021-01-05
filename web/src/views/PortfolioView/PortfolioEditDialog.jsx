@@ -1,12 +1,10 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { portfolioAction, notificationAction } from '../../actions';
+import { useDispatch } from 'react-redux';
+import { notificationAction } from '../../actions';
 
-const PortfolioEditDialog = ({ open, handleClose, portfolioId }) => {
+const PortfolioEditDialog = ({ open, handleClose, portfolioId, portfolioName }) => {
     const dispatch = useDispatch();
-    const userPortfolios = useSelector(state=>state.portfolio.data);
-
     const [ updating, setUpdating ] = useState(false);
     const [ updatePortfolioName, setUpdatePortfolioName ] = useState("");
 
@@ -25,8 +23,7 @@ const PortfolioEditDialog = ({ open, handleClose, portfolioId }) => {
                 }
             })
             .then(()=> {
-                handleClose();
-                dispatch(portfolioAction.getPortfolios());
+                window.location.reload();
             })
             .catch((err)=>{
                 if (err.json) {
@@ -37,17 +34,13 @@ const PortfolioEditDialog = ({ open, handleClose, portfolioId }) => {
                 } else {
                   dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                 }
-            }).finally(()=>{
                 setUpdating(false);
-            })
+            });
     };
 
     useEffect(()=>{
-        let filteredPortfolios = userPortfolios.filter((userPortfolio)=>userPortfolio.portfolioId===portfolioId);
-        if(filteredPortfolios.length>0){
-            setUpdatePortfolioName(filteredPortfolios[0].portfolioName);
-        }
-    }, [ portfolioId, userPortfolios ])
+        setUpdatePortfolioName(portfolioName);
+    }, [ portfolioName ]);
 
     return (
         <Dialog open={open} onClose={handleClose}>

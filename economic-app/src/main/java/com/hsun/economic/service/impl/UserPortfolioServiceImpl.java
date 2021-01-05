@@ -27,15 +27,6 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     private UserRepository userRepository;
 
     @Autowired
-    private PortfolioProductRepository portfolioProductRepository;
-
-    @Autowired
-    private StockRepository stockRepository;
-
-    @Autowired
-    private StockIndexRepository stockIndexRepository;
-
-    @Autowired
     private StockResource stockResource;
 
     @Autowired
@@ -55,7 +46,7 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Transactional
     @Override
     public void addPortfolio(String userName, PortfolioBean portfolioBean) {
-        if(StringUtils.isEmpty(portfolioBean.getPortfolioName())){
+        if (StringUtils.isEmpty(portfolioBean.getPortfolioName())) {
             throw new ApiClientException("名稱不得為空");
         }
         UserPortfolio userPortfolio = new UserPortfolio();
@@ -68,8 +59,8 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Override
     public void deletePortfolio(String userName, Integer portfolioId) {
         UserPortfolio userPortfolio = repository.findById(portfolioId)
-                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
-        if(!userPortfolio.getUserName().equals(userName)){
+                .orElseThrow(() -> new ResourceNotFoundException("投資組合不存在"));
+        if (!userPortfolio.getUserName().equals(userName)) {
             throw new ResourceNotFoundException("投資組合不存在");
         }
         repository.delete(userPortfolio);
@@ -78,10 +69,10 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     @Override
     public void updatePortfolio(String userName, Integer portfolioId, PortfolioBean portfolioBean) {
         User user = userRepository.findById(userName).get();
-        UserPortfolio userPortfolio= user.getUserPortfolioList()
-                .stream().filter((data)->data.getPortfolioId().equals(portfolioId))
-                .findAny().orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
-        if(StringUtils.isEmpty(portfolioBean.getPortfolioName())){
+        UserPortfolio userPortfolio = user.getUserPortfolioList()
+                .stream().filter((data) -> data.getPortfolioId().equals(portfolioId))
+                .findAny().orElseThrow(() -> new ResourceNotFoundException("投資組合不存在"));
+        if (StringUtils.isEmpty(portfolioBean.getPortfolioName())) {
             throw new ApiClientException("名稱不得為空");
         }
         userPortfolio.setPortfolioName(portfolioBean.getPortfolioName());
@@ -89,91 +80,52 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     }
 
     @Override
-    public List<PortfolioProductBean> getProductList(String userName, Integer portfolioId) {
-        User user = userRepository.findById(userName)
-                .orElseThrow(()->new ResourceNotFoundException("找不到此用戶"));
-        UserPortfolio userPortfolio = user.getUserPortfolioList()
-                .stream()
-                .filter((data)->data.getPortfolioId().equals(portfolioId))
-                .findAny()
-                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
-
-        return userPortfolio.getPortfolioProductList()
-                .stream()
-                .map((portfolioProduct)->{
-                    String productName = null;
-                    switch(ProductType.fromValue(portfolioProduct.getId().getProductType())){
-                        case INDEX:
-                            StockIndex stockIndex = stockIndexRepository.findById(portfolioProduct.getId().getProductCode())
-                                    .orElse(new StockIndex());
-                            productName = stockIndex.getIndexName();
-                            break;
-                        case STOCK:
-                            Stock stock = stockRepository.findById(portfolioProduct.getId().getProductCode())
-                                    .orElse(new Stock());
-                            productName = stock.getStockName();
-                            break;
-                        case FUTURES:
-                            break;
-                    }
-                    return PortfolioProductBean
-                            .builder()
-                            .productType(portfolioProduct.getId().getProductType())
-                            .productCode(portfolioProduct.getId().getProductCode())
-                            .productName(productName)
-                            .sort(portfolioProduct.getSort())
-                            .build();
-                }).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductPriceBean> getProductPriceList(String userName, Integer portfolioId) {
-        User user = userRepository.findById(userName)
-                .orElseThrow(()->new ResourceNotFoundException("找不到此用戶"));
-        System.out.println(user.getUserPortfolioList());
-        UserPortfolio userPortfolio = user.getUserPortfolioList()
-                .stream()
-                .filter((data)->data.getPortfolioId().equals(portfolioId))
-                .findAny()
-                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
-        List<PortfolioProduct> portfolioProductList = userPortfolio.getPortfolioProductList();
-
-        return portfolioProductList
+    public List<PortfolioPriceBean> getPortfolioPriceList(String userName) {
+        User user = userRepository.findById(userName).get();
+        List<UserPortfolio> userPortfolioList = user.getUserPortfolioList();
+        Date today = new Date();
+        return userPortfolioList
                 .parallelStream()
-                .map((portfolioProduct -> {
-                    PortfolioProductBean portfolioProductBean = null;
-                    String productCode = portfolioProduct.getId().getProductCode();
-                    String productName = null;
-                    ProductType productType = ProductType.fromValue(portfolioProduct.getId().getProductType());
-                    PriceBean priceBean = null;
-                    switch(productType){
-                        case INDEX:
-                            productName = stockIndexRepository.findById(productCode).get().getIndexName();
-                            priceBean = stockIndexResource.getLatestPrice(productCode);
-                            break;
-                        case STOCK:
-                            productName = stockRepository.findById(productCode).get().getStockName();
-                            priceBean = stockResource.getLatestPrice(productCode);
-                            break;
-                        case FUTURES:
-                            break;
+                .map((userPortfolio) -> {
+                    List<PortfolioProduct> portfolioProductList = userPortfolio.getPortfolioProductList();
+
+                    List<String> stockCodeList = portfolioProductList
+                            .parallelStream()
+                            .filter((portfolioProduct) -> portfolioProduct.getId().getProductType()
+                                    .equals(ProductType.STOCK.getValue()))
+                            .map((portfolioProduct)->portfolioProduct.getId().getProductCode())
+                            .collect(Collectors.toList());
+                    if(stockCodeList.size()>0){
+                        // batch get prices
+                        List<StockPriceBean> stockLatestPriceList = stockResource.getLatestPriceList(stockCodeList);
+                        // Calculate aggregation
+                        PriceBean priceBean = stockLatestPriceList
+                                .parallelStream()
+                                .map((stockPriceBean)->(PriceBean)stockPriceBean)
+                                .reduce((total, price)->{
+                                    total.setOpen(total.getOpen()+price.getOpen());
+                                    total.setLow(total.getLow()+price.getLow());
+                                    total.setHigh(total.getHigh()+price.getHigh());
+                                    total.setClose(total.getClose()+price.getClose());
+                                    total.setChange(total.getChange()+price.getChange());
+                                    return total;
+                                }).get();
+                        return PortfolioPriceBean.builder()
+                                .portfolioId(userPortfolio.getPortfolioId())
+                                .portfolioName(userPortfolio.getPortfolioName())
+                                .date(today)
+                                .open(priceBean.getOpen())
+                                .low(priceBean.getLow())
+                                .high(priceBean.getHigh())
+                                .close(priceBean.getClose())
+                                .change(priceBean.getChange())
+                                .build();
+                    }else{
+                        return PortfolioPriceBean.builder()
+                                .portfolioId(userPortfolio.getPortfolioId())
+                                .portfolioName(userPortfolio.getPortfolioName())
+                                .build();
                     }
-                    return ProductPriceBean.builder()
-                            .date(priceBean.getDate())
-                            .productType(productType.getValue())
-                            .productCode(productCode)
-                            .productName(productName)
-                            .open(priceBean.getOpen())
-                            .low(priceBean.getLow())
-                            .high(priceBean.getHigh())
-                            .close(priceBean.getClose())
-                            .volume(priceBean.getVolume())
-                            .change(priceBean.getChange())
-                            .changePercent(priceBean.getChangePercent())
-                            .sort(portfolioProduct.getSort())
-                            .build();
-                }))
-                .sorted(Comparator.comparing(ProductPriceBean::getSort))
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
     }
 }

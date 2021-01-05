@@ -1,7 +1,6 @@
 package com.hsun.economic.service.impl;
 
-import com.hsun.economic.bean.PortfolioProductBean;
-import com.hsun.economic.bean.ProductBean;
+import com.hsun.economic.bean.*;
 import com.hsun.economic.constants.ProductType;
 import com.hsun.economic.entity.PortfolioProduct;
 import com.hsun.economic.entity.PortfolioProductPK;
@@ -11,12 +10,15 @@ import com.hsun.economic.exception.ApiClientException;
 import com.hsun.economic.exception.DuplicateException;
 import com.hsun.economic.exception.ResourceNotFoundException;
 import com.hsun.economic.repository.*;
+import com.hsun.economic.resource.StockIndexResource;
+import com.hsun.economic.resource.StockResource;
 import com.hsun.economic.service.PortfolioProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,6 +41,12 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
 
     @Autowired
     private StockIndexRepository stockIndexRepository;
+
+    @Autowired
+    private StockResource stockResource;
+
+    @Autowired
+    private StockIndexResource stockIndexResource;
 
     @Override
     public List<ProductBean> getProductList() {
@@ -116,5 +124,87 @@ public class PortfolioProductServiceImpl implements PortfolioProductService {
                 })).collect(Collectors.toList());
         userPortfolio.setPortfolioProductList(portfolioProductList);
         userPortfolioRepository.save(userPortfolio);
+    }
+
+    @Override
+    public List<ProductPriceBean> getProductPriceList(String userName, Integer portfolioId) {
+        User user = userRepository.findById(userName)
+                .orElseThrow(()->new ResourceNotFoundException("找不到此用戶"));
+        System.out.println(user.getUserPortfolioList());
+        UserPortfolio userPortfolio = user.getUserPortfolioList()
+                .stream()
+                .filter((data)->data.getPortfolioId().equals(portfolioId))
+                .findAny()
+                .orElseThrow(()->new ResourceNotFoundException("投資組合不存在"));
+        List<PortfolioProduct> portfolioProductList = userPortfolio.getPortfolioProductList();
+
+        List<String> indexCodeList = portfolioProductList
+                .parallelStream()
+                .filter((portfolioProduct) -> portfolioProduct.getId().getProductType()
+                        .equals(ProductType.INDEX.getValue()))
+                .map((portfolioProduct)->portfolioProduct.getId().getProductCode())
+                .collect(Collectors.toList());
+
+        List<String> stockCodeList = portfolioProductList
+                .parallelStream()
+                .filter((portfolioProduct) -> portfolioProduct.getId().getProductType()
+                        .equals(ProductType.STOCK.getValue()))
+                .map((portfolioProduct)->portfolioProduct.getId().getProductCode())
+                .collect(Collectors.toList());
+        // batch get prices
+        List<StockIndexPriceBean> indexLatestPriceList = stockIndexResource.getLatestPriceList(indexCodeList);
+        List<StockPriceBean> stockLatestPriceList = stockResource.getLatestPriceList(stockCodeList);
+
+        return portfolioProductList
+                .parallelStream()
+                .map((portfolioProduct -> {
+                    String productCode = portfolioProduct.getId().getProductCode();
+                    String productName = null;
+                    Optional<PriceBean> priceBeanOptional = null;
+                    switch(ProductType.fromValue(portfolioProduct.getId().getProductType())){
+                        case INDEX:
+                            productName = stockIndexRepository.findById(productCode).get().getIndexName();
+                            priceBeanOptional = indexLatestPriceList.stream()
+                                    .filter((indexLatestPrice)->indexLatestPrice.getIndexCode().equals(productCode))
+                                    .findAny()
+                                    .map((indexLatestPrice)->(PriceBean)indexLatestPrice);
+                            break;
+                        case STOCK:
+                            productName = stockRepository.findById(productCode).get().getStockName();
+                            priceBeanOptional = stockLatestPriceList.stream()
+                                    .filter((stockLatestPrice)->stockLatestPrice.getStockCode().equals(productCode))
+                                    .findAny()
+                                    .map((stockLatestPrice)->(PriceBean)stockLatestPrice);
+                            break;
+                        case FUTURES:
+                            break;
+                    }
+                    if(priceBeanOptional.isPresent()){
+                        PriceBean priceBean = priceBeanOptional.get();
+                        return ProductPriceBean.builder()
+                                .date(priceBean.getDate())
+                                .productType(portfolioProduct.getId().getProductType())
+                                .productCode(productCode)
+                                .productName(productName)
+                                .open(priceBean.getOpen())
+                                .low(priceBean.getLow())
+                                .high(priceBean.getHigh())
+                                .close(priceBean.getClose())
+                                .volume(priceBean.getVolume())
+                                .change(priceBean.getChange())
+                                .changePercent(priceBean.getChangePercent())
+                                .sort(portfolioProduct.getSort())
+                                .build();
+                    }else{
+                        return ProductPriceBean.builder()
+                                .productType(portfolioProduct.getId().getProductType())
+                                .productCode(productCode)
+                                .productName(productName)
+                                .sort(portfolioProduct.getSort())
+                                .build();
+                    }
+                }))
+                .sorted(Comparator.comparing(ProductPriceBean::getSort))
+                .collect(Collectors.toList());
     }
 }

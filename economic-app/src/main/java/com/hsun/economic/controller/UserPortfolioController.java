@@ -1,6 +1,7 @@
 package com.hsun.economic.controller;
 
 import com.hsun.economic.bean.PortfolioBean;
+import com.hsun.economic.bean.PortfolioPriceBean;
 import com.hsun.economic.bean.PortfolioProductBean;
 import com.hsun.economic.bean.ProductPriceBean;
 import com.hsun.economic.service.PortfolioProductService;
@@ -19,20 +20,9 @@ public class UserPortfolioController {
     @Autowired
     private UserPortfolioService service;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PortfolioProductService portfolioProductService;
-
-    @GetMapping("/portfolio")
+    @GetMapping("/portfolios")
     public List<PortfolioBean> getPortfolioList(Authentication authentication){
         return service.getPortfolioList(authentication.getName());
-    }
-
-    @GetMapping("/portfolio/{portfolioId}/products")
-    public List<PortfolioProductBean> getPortfolioProductListById(Authentication authentication, @PathVariable Integer portfolioId){
-        return service.getProductList(authentication.getName(), portfolioId);
     }
 
     @PostMapping("/portfolio")
@@ -54,22 +44,8 @@ public class UserPortfolioController {
         service.updatePortfolio(authentication.getName(), portfolioId, portfolioBean);
     }
 
-    @PutMapping("/portfolio/{portfolioId}/products")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updatePortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
-            , @RequestBody List<PortfolioProductBean> portfolioProductBeanList){
-        portfolioProductService.savePortfolioProducts(authentication.getName(), portfolioId, portfolioProductBeanList);
-    }
-
-    @PostMapping("/portfolio/{portfolioId}/product")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addPortfolioProduct(Authentication authentication, @PathVariable Integer portfolioId
-            , @RequestBody PortfolioProductBean portfolioProductBean) {
-        portfolioProductService.addPortfolioProduct(authentication.getName(), portfolioId, portfolioProductBean);
-    }
-
-    @GetMapping("/portfolio/{portfolioId}/product/prices")
-    public List<ProductPriceBean> getPortfolioProductPriceList(Authentication authentication, @PathVariable Integer portfolioId){
-        return service.getProductPriceList(authentication.getName(), portfolioId);
+    @GetMapping("/portfolios/price/latest")
+    public List<PortfolioPriceBean> getPortfolioPriceList(Authentication authentication){
+        return service.getPortfolioPriceList(authentication.getName());
     }
 }

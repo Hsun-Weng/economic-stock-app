@@ -1,6 +1,7 @@
 package com.hsun.economic.service;
 
 import com.hsun.economic.bean.PortfolioBean;
+import com.hsun.economic.bean.PortfolioPriceBean;
 import com.hsun.economic.bean.PortfolioProductBean;
 import com.hsun.economic.bean.ProductPriceBean;
 
@@ -11,6 +12,5 @@ public interface UserPortfolioService {
     void addPortfolio(String userName, PortfolioBean portfolioBean);
     void deletePortfolio(String userName, Integer portfolioId);
     void updatePortfolio(String userName, Integer portfolioId, PortfolioBean portfolioBean);
-    List<PortfolioProductBean> getProductList(String userName, Integer portfolioId);
-    List<ProductPriceBean> getProductPriceList(String userName, Integer portfolioId);
+    List<PortfolioPriceBean> getPortfolioPriceList(String userName);
 }
