@@ -2,7 +2,7 @@ import { Box, Button, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { notificationAction } from '../../actions';
 
 const useStyles = makeStyles(() => ({
@@ -12,6 +12,7 @@ const useStyles = makeStyles(() => ({
 const Toolbar = ({ className, stockCode, ...rest }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const isLoggedIn = useSelector(state=>state.user.isLoggedIn);
     const [ portfolios, setPortfolios ] = useState([]);
     const [ anchorEl, setAnchorEl ] = useState(null);
 
@@ -57,8 +58,10 @@ const Toolbar = ({ className, stockCode, ...rest }) => {
                 })
                 .then((data)=>setPortfolios(data));
         };
-        fetchData();
-    }, []);
+        if(isLoggedIn){
+            fetchData();
+        }
+    }, [ isLoggedIn ]);
 
     return (
         <div className={clsx(classes.root, className)} {...rest}>
