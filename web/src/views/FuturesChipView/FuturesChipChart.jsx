@@ -1,10 +1,10 @@
-import { Box, Card, CardContent, CardHeader, Divider, LinearProgress } from '@material-ui/core';
+import { Card, CardContent, CardHeader, Divider, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import Echart from '../../components/Echart';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { notificationAction } from '../../actions';
+import Echart from '../../components/Echart';
 
 const useStyles = makeStyles(() => ({
     root: {}
@@ -16,9 +16,16 @@ const MixedLineBarChart = ({ investorCode, chips }) => {
             {
                 type: 'category',
                 data: chips.map((chip)=>chip.date),
-                axisTick: {
-                    alignWithLabel: true
-                },
+                axisPointer: {
+                    type: 'shadow',
+                    label: {show: false},
+                    triggerTooltip: true,
+                    handle: {
+                        show: true,
+                        margin: 45,
+                        color: '#B80C00'
+                    }
+                }
             }
         ],
         yAxis: [
@@ -80,18 +87,31 @@ const MixedLineBarChart = ({ investorCode, chips }) => {
             },
         ],
         grid: {
-            right: '20%'
+            right: '20%',
+            height: 250
         },
         tooltip: {
-            trigger: 'axis',
-            // formatter: (params) => {
-            //     console.log(params);
-                // let param = params[0];
-                // return param.name + ' : ' + param.value;
-            // }
-        }
+            triggerOn: 'none',
+            transitionDuration: 0,
+            confine: true,
+            bordeRadius: 4,
+            borderWidth: 1,
+            borderColor: '#333',
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            textStyle: {
+                fontSize: 12,
+                color: '#333'
+            },
+            position: function (pos, params, el, elRect, size) {
+                let obj = {
+                    top: 60
+                };
+                obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+                return obj;
+            }
+        },
     };
-    return (<Echart option={option} />)
+    return (<Echart style={{height: 400}} option={option} />)
 }
 
 const FuturesChipChart = ({ className, investorCode, futuresCode, ...rest }) =>{
@@ -140,9 +160,7 @@ const FuturesChipChart = ({ className, investorCode, futuresCode, ...rest }) =>{
                 </CardHeader>
                 <Divider />
                 <CardContent>
-                    <Box position="relative" height={400}>
-                        <MixedLineBarChart investorCode={investorCode} chips={chips} />
-                    </Box>
+                    <MixedLineBarChart investorCode={investorCode} chips={chips} />
                 </CardContent>
             </>}
         </Card>

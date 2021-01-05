@@ -1,4 +1,4 @@
-import { Container, Grid, makeStyles } from '@material-ui/core';
+import { Container, Box, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import Page from '../../components/Page';
@@ -21,19 +21,10 @@ const CategoryStocksView = () => {
       <Page
         className={classes.root}
         title="個股類別">
-        <Container maxWidth={false}>
-          <Grid
-            container
-            spacing={3}>
-            <Grid
-              item
-              lg={8}
-              md={12}
-              xl={9}
-              xs={12}>
+        <Container maxWidth="lg">
+          <Box mt={3}>
               <CategoryStocksTable categoryCode={categoryCode} />
-            </Grid>
-          </Grid>
+          </Box>
         </Container>
       </Page>
     );
