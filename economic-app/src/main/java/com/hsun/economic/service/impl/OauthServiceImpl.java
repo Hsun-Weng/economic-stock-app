@@ -65,7 +65,7 @@ public class OauthServiceImpl implements OauthService {
         User user = userRepository.findById(facebookUserBean.getEmail()).orElseGet(()->{
             User newUser = new User();
             newUser.setUserName(facebookUserBean.getEmail());
-            newUser.setLastName(facebookUserBean.getName());
+            newUser.setNickName(facebookUserBean.getName());
             return newUser;
         });
 

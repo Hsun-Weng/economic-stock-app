@@ -5,8 +5,7 @@ const userInitState = {
   isLoggedIn: false,
   info: {
     email: '',
-    firstName: '',
-    lastName: ''
+    nickName: ''
   }
 };
 
@@ -18,8 +17,7 @@ export const user = (state=userInitState, action) =>{
         isLoggedIn: false,
         info: {
           email: '',
-          firstName: '',
-          lastName: ''
+          nickName: ''
         }
       };
     case userConstants.GET_USER_SUCCESS:
@@ -34,8 +32,7 @@ export const user = (state=userInitState, action) =>{
         isLoggedIn: false,
         info: {
           email: '',
-          firstName: '',
-          lastName: ''
+          nickName: ''
         }
       };
     case userConstants.REMOVE_USER:
@@ -44,8 +41,7 @@ export const user = (state=userInitState, action) =>{
         isLoggedIn: false,
         info: {
           email: '',
-          firstName: '',
-          lastName: ''
+          nickName: ''
         }
       };
     default:

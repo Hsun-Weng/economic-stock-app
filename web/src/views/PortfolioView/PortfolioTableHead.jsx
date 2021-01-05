@@ -4,36 +4,27 @@ import React from 'react';
 const PortfolioTableHead = () => (
     <TableHead>
         <TableRow>
-            <TableCell></TableCell>
+            <TableCell />
             <TableCell>
-                Code 
+                名稱
             </TableCell>
             <TableCell>
-                Name
+                收盤總價格
             </TableCell>
             <TableCell>
-                Last
+                開盤總價格
             </TableCell>
             <TableCell>
-                Open
+                最高總價格
             </TableCell>
             <TableCell>
-                High
+                最低總價格
             </TableCell>
             <TableCell>
-                Low
+                總變動價
             </TableCell>
             <TableCell>
-                Chg
-            </TableCell>
-            <TableCell>
-                Chg %
-            </TableCell>
-            <TableCell>
-                Vol
-            </TableCell>
-            <TableCell>
-                Time
+                日期
             </TableCell>
             <TableCell />
         </TableRow>

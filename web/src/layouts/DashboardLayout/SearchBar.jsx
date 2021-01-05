@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme)=>({
     }
 }));
 
-const SearchBar = () => {
+const SearchBar = ({ handleClose }) => {
     const classes = useStyles();
     const [ products, setProducts ] = useState([]);
 
@@ -31,6 +31,7 @@ const SearchBar = () => {
                 default:
             }
         }
+        handleClose();
     }
 
     useEffect(()=>{

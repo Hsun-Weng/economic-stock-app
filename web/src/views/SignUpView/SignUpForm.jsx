@@ -16,8 +16,7 @@ const SignUpView = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         userName: values.email,
-        firstName: values.firstName,
-        lastName: values.lastName,
+        nickName: values.nickName,
         password: values.password
       })
     };
@@ -48,15 +47,13 @@ const SignUpView = () => {
     <Formik
       initialValues={{
         email: '',
-        firstName: '',
-        lastName: '',
+        nickName: '',
         password: ''
       }}
       validationSchema={
         Yup.object().shape({
           email: Yup.string().email('請輸入email').max(255).required('請輸入email'),
-          firstName: Yup.string().max(255).required('請輸入名字'),
-          lastName: Yup.string().max(255).required('請輸入姓氏'),
+          nickName: Yup.string().max(255).required('請輸入暱稱'),
           password: Yup.string().max(255).required('請輸入密碼'),
         })
       }
@@ -85,27 +82,15 @@ const SignUpView = () => {
             </Typography>
           </Box>
           <TextField
-            error={Boolean(touched.firstName && errors.firstName)}
+            error={Boolean(touched.nickName && errors.nickName)}
             fullWidth
-            helperText={touched.firstName && errors.firstName}
-            label="名字"
+            helperText={touched.nickName && errors.nickName}
+            label="暱稱"
             margin="normal"
-            name="firstName"
+            name="nickName"
             onBlur={handleBlur}
             onChange={handleChange}
-            value={values.firstName}
-            variant="outlined"
-          />
-          <TextField
-            error={Boolean(touched.lastName && errors.lastName)}
-            fullWidth
-            helperText={touched.lastName && errors.lastName}
-            label="姓氏"
-            margin="normal"
-            name="lastName"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            value={values.lastName}
+            value={values.nickName}
             variant="outlined"
           />
           <TextField

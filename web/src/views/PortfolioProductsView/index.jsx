@@ -1,8 +1,8 @@
 import { Box, Container, makeStyles } from '@material-ui/core';
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import Page from '../../components/Page';
-import PortfolioTable from './PortfolioTable';
-import Toolbar from './Toolbar';
+import PortfolioProducts from './PortfolioProducts';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -13,21 +13,21 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const PortfolioView = () => {
+const PortfolioProductsView = () => {
     const classes = useStyles();
+    const { portfolioId } = useParams();
 
     return (
       <Page
         className={classes.root}
         title="投資組合">
         <Container maxWidth="lg">
-          <Toolbar />
           <Box mt={3}>
-            <PortfolioTable />
+            <PortfolioProducts portfolioId={portfolioId} />
           </Box>
         </Container>
       </Page>
     );
 }
 
-export default PortfolioView;
+export default PortfolioProductsView;

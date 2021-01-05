@@ -50,6 +50,11 @@ const getOption = (prices) => {
     const dataMA10 = calculateMA(10, data.values);
     const dataMA20 = calculateMA(20, data.values);
     const labelFont = 'bold 12px Sans-serif';
+    const upColor = '#00da3c';
+    const downColor = '#ec0000';
+    const upBorderColor = '#008F28';
+    const downBorderColor = '#8A0000';
+
     return {
         animation: false,
         legend: {
@@ -85,8 +90,8 @@ const getOption = (prices) => {
             type: 'slider',
             xAxisIndex: [0, 1],
             realtime: false,
-            start: 20,
-            end: 70,
+            start: 50,
+            end: 100,
             top: 65,
             height: 20,
             handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
@@ -152,6 +157,18 @@ const getOption = (prices) => {
             axisTick: {show: false},
             splitLine: {show: false}
         }],
+        visualMap: {
+            show: false,
+            seriesIndex: 0,
+            dimension: 2,
+            pieces: [{
+                value: 1,
+                color: upColor
+            }, {
+                value: -1,
+                color: downColor
+            }]
+        },
         grid: [{
             left: 20,
             right: 20,
@@ -191,24 +208,16 @@ const getOption = (prices) => {
             type: 'bar',
             xAxisIndex: 1,
             yAxisIndex: 1,
-            itemStyle: {
-                color: '#7fbe9e'
-            },
-            emphasis: {
-                itemStyle: {
-                    color: '#140'
-                }
-            },
             data: data.volumes
         }, {
             type: 'candlestick',
             name: '日K',
             data: data.values,
             itemStyle: {
-                color: '#00da3c',
-                color0: '#ec0000',
-                borderColor: '#008F28',
-                borderColor0: '#8A0000'
+                color: upColor,
+                color0: downColor,
+                borderColor: upBorderColor,
+                borderColor0: downBorderColor
             },
             emphasis: {
                 itemStyle: {

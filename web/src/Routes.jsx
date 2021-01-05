@@ -9,6 +9,7 @@ import UserInfoView from './views/UserInfoView';
 import NotFoundView from './views/NotFoundView';
 import OauthFacebookRedirect from './views/OauthFacebookRedirect';
 import PortfolioView from './views/PortfolioView';
+import PorftolioProductsView from './views/PortfolioProductsView';
 import SignUpView from './views/SignUpView';
 import StockCategoryView from './views/StockCategoryView';
 import StockIndexView from './views/StockIndexView';
@@ -32,6 +33,7 @@ const routes = [
             { path: '/stock/category/:categoryCode', element: <CategoryStocksView />},
             { path: '/stock/rank', element: <StockRankView />},
             { path: '/portfolio', element: <PortfolioView />},
+            { path: '/portfolio/:portfolioId', element: <PorftolioProductsView />},
             { path: '/stock/:stockCode', element: <StockView />},
             { path: '/stock/index/:indexCode', element: <StockIndexView />},
             { path: '/404', element: <NotFoundView to="/404" /> },

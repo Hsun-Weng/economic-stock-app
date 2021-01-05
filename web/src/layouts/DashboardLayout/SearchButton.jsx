@@ -7,7 +7,7 @@ const SearchButton = () => {
     const [ anchorEl, setAnchorEl ] = useState(null);
     return (
         <>
-            <IconButton color="inherit" onClick={e=>setAnchorEl(e.currentTarget)} >
+            <IconButton color="inherit" onClick={e=>setAnchorEl(e.currentTarget)}>
                 <SearchIcon />
             </IconButton>
             <Popover
@@ -22,7 +22,7 @@ const SearchButton = () => {
                     vertical: 'top',
                     horizontal: 'center',
                 }}>
-                <SearchBar />
+                <SearchBar handleClose={e=>setAnchorEl(null)}/>
             </Popover>
         </>
     )

@@ -10,6 +10,8 @@ pylint = "*"
 pymongo = "*"
 requests = "*"
 mysql-connector-python = "*"
+pyquery = "*"
+chardet = "*"
 
 [requires]
 python_version = "3.7"

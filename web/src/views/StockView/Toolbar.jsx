@@ -1,18 +1,19 @@
 import { Box, Button, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { notificationAction } from '../../actions';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     root: {},
 }));
 
 const Toolbar = ({ className, stockCode, ...rest }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const portfolios = useSelector(state=>state.portfolio.data);
+    const isLoggedIn = useSelector(state=>state.user.isLoggedIn);
+    const [ portfolios, setPortfolios ] = useState([]);
     const [ anchorEl, setAnchorEl ] = useState(null);
 
     const addProduct = ( portfolioId ) => {
@@ -24,7 +25,7 @@ const Toolbar = ({ className, stockCode, ...rest }) => {
                 productCode: stockCode
             })
         };
-    
+        setAnchorEl(null);
         fetch(`/api/portfolio/${portfolioId}/product`, requestOptions)
             .then(res=>{
                 if(!res.ok){
@@ -43,14 +44,30 @@ const Toolbar = ({ className, stockCode, ...rest }) => {
                 } else {
                   dispatch(notificationAction.enqueueError("伺服器錯誤，請稍後再試。"))
                 }
-            })
+            });
     }
+
+    useEffect(()=>{
+        const fetchData = async() =>{
+            fetch(`/api/portfolios`)
+                .then(res=>{
+                    if(!res.ok){
+                        throw res;
+                    }
+                    return res.json();
+                })
+                .then((data)=>setPortfolios(data));
+        };
+        if(isLoggedIn){
+            fetchData();
+        }
+    }, [ isLoggedIn ]);
 
     return (
         <div className={clsx(classes.root, className)} {...rest}>
             <Box display="flex"
                 justifyContent="flex-end">
-                <Button onClick={e=>setAnchorEl(e.currentTarget)}>
+                <Button onClick={e=>setAnchorEl(e.currentTarget)} color="primary" variant="contained">
                     加入
                 </Button>
             </Box>

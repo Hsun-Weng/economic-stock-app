@@ -27,7 +27,7 @@ const ProductSortCardContent = ({ products, finishSortProducts, cancel }) => {
         let sorts = [];
         products.forEach(product=>sorts.push(product));
         setSortProducts(sorts);
-    }, [ products ])
+    }, [ products ]);
 
     return (
         <>

@@ -1,10 +1,10 @@
-import { Box, Button, ButtonGroup, Card, CardContent, CardHeader, Divider, LinearProgress } from '@material-ui/core';
+import { Button, ButtonGroup, Card, CardContent, CardHeader, Divider, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import Echart from '../../components/Echart';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { notificationAction } from '../../actions';
+import Echart from '../../components/Echart';
 
 const useStyles = makeStyles(() => ({
     root: {}
@@ -21,7 +21,17 @@ const LineChart = ({ values }) => {
     const option = {
         xAxis: {
             type: 'category',
-            data: values.map((value)=>value.date)
+            data: values.map((value)=>value.date),
+            axisPointer: {
+                type: 'shadow',
+                label: {show: false},
+                triggerTooltip: true,
+                handle: {
+                    show: true,
+                    margin: 45,
+                    color: '#B80C00'
+                }
+            }
         },
         yAxis: {
             type: 'value'
@@ -31,16 +41,31 @@ const LineChart = ({ values }) => {
             type: 'line',
             smooth: true
         }],
+        grid: {
+            height: 250
+        },
         tooltip: {
-            trigger: 'axis',
-            formatter: (params) => {
-                let param = params[0];
-                return param.name + ' : ' + param.value;
+            triggerOn: 'none',
+            transitionDuration: 0,
+            confine: true,
+            bordeRadius: 4,
+            borderWidth: 1,
+            borderColor: '#333',
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            textStyle: {
+                fontSize: 12,
+                color: '#333'
+            },
+            position: function (pos, params, el, elRect, size) {
+                let obj = {
+                    top: 60
+                };
+                obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+                return obj;
             }
-        }
+        },
     };
-    return (<Echart
-        option={option} />);
+    return (<Echart style={{height: 400}} option={option} />);
 }
 
 const convertChangeData = (values) => {
@@ -116,9 +141,7 @@ const EconomicDataChart = ({ className, countryCode, dataCode , ...rest}) => {
             </CardHeader>
             <Divider />
             <CardContent>
-                <Box position="relative" height={400}>
-                    <LineChart values={chartValues}/>
-                </Box>
+                <LineChart values={chartValues}/>
             </CardContent>
             </>}
         </Card>

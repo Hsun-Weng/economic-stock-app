@@ -88,7 +88,7 @@ public class StockCategoryServiceImpl implements StockCategoryService {
                         .proportion(categoryProportion.getProportion())
                         //只取前5筆
                         .children(stockProportionViewRepository.findByCategoryCode(categoryProportion.getCategoryCode()
-                                , PageRequest.of(0, 5, Sort.Direction.DESC, "proportion"))
+                                , PageRequest.of(0, 15, Sort.Direction.DESC, "proportion"))
                                 .stream()
                                 .map((stockProportion)->StockProportionBean.builder()
                                         .stockCode(stockProportion.getStockCode())

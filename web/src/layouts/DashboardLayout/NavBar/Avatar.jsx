@@ -56,7 +56,7 @@ const Avatar = () => {
                 color="textPrimary"
                 variant="h5"
                 >
-                {userInfo.lastName}
+                {userInfo.nickName}
             </Typography>
             {items.map((item) => (
                 <NavItem
