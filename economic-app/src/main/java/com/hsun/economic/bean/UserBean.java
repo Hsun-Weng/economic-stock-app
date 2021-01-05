@@ -10,6 +10,5 @@ public class UserBean {
     private String userName;
     @Expose(serialize = false)
     private String password;
-    private String firstName;
-    private String lastName;
+    private String nickName;
 }

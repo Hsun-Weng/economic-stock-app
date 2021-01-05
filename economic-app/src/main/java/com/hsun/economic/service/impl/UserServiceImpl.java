@@ -36,8 +36,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUserName(userBean.getUserName());
         user.setPassword(passwordEncoder.encode(userBean.getPassword()));
-        user.setFirstName(userBean.getFirstName());
-        user.setLastName(userBean.getLastName());
+        user.setNickName(userBean.getNickName());
         repository.save(user);
     }
 
@@ -46,11 +45,8 @@ public class UserServiceImpl implements UserService {
         User user = repository.findById(userName).orElseThrow(()->new ResourceNotFoundException("找不到此用戶"));
         for(String key : body.keySet()){
             switch(key){
-                case "firstName":
-                    user.setFirstName(body.get(key).getAsString());
-                    break;
-                case "lastName":
-                    user.setLastName(body.get(key).getAsString());
+                case "nickName":
+                    user.setNickName(body.get(key).getAsString());
                     break;
             }
         }
@@ -78,6 +74,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserBean getUser(String userName) {
         User user = repository.findById(userName).orElseThrow(()->new ResourceNotFoundException("找不到此用戶"));
-        return new UserBean(user.getUserName(), null, user.getFirstName(), user.getLastName());
+        return new UserBean(user.getUserName(), null, user.getNickName());
     }
 }

@@ -12,18 +12,15 @@ const UserInfoForm = ({ className, ...rest }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const userInfo = useSelector(state=>state.user.info);
-    const [ firstName, setFirstName ] = useState("");
-    const [ lastName, setLastName ] = useState("");
+    const [ nickName, setNickName ] = useState("");
     const [ updating, setUpdating ] = useState(false);
 
     useEffect(()=>{
-        setFirstName(userInfo.firstName);
-        setLastName(userInfo.lastName);
+        setNickName(userInfo.nickName);
     }, [ userInfo ])
 
     const reset = () =>{
-        setFirstName(userInfo.firstName);
-        setLastName(userInfo.lastName);
+        setNickName(userInfo.nickName);
     }
 
     const update = () => {
@@ -31,8 +28,7 @@ const UserInfoForm = ({ className, ...rest }) => {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                firstName: firstName,
-                lastName: lastName
+                nickName: nickName
             })
         };
         setUpdating(true);
@@ -66,17 +62,9 @@ const UserInfoForm = ({ className, ...rest }) => {
             <CardContent>
                 <TextField 
                     fullWidth
-                    label="名字"
-                    name="名字"
-                    value={firstName}
-                    onChange={event=>setFirstName(event.target.value)}
-                    variant="outlined" />
-                <TextField 
-                    fullWidth
-                    label="姓氏"
-                    name="姓氏"
-                    value={lastName}
-                    onChange={event=>setLastName(event.target.value)}
+                    label="暱稱"
+                    value={nickName}
+                    onChange={event=>setNickName(event.target.value)}
                     variant="outlined" />
                 <Divider />
                 <Box my={2}>
