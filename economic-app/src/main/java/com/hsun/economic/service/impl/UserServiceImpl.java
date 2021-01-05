@@ -52,9 +52,6 @@ public class UserServiceImpl implements UserService {
                 case "lastName":
                     user.setLastName(body.get(key).getAsString());
                     break;
-                case "password":
-                    user.setPassword(body.get(key).getAsString());
-                    break;
             }
         }
         repository.save(user);
