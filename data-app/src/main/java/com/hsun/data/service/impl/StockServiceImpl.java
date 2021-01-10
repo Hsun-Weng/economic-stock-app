@@ -1,5 +1,7 @@
 package com.hsun.data.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -44,7 +46,9 @@ public class StockServiceImpl implements StockService {
                 .volume(price.getVolume())
                 .change(price.getChange())
                 .changePercent(Optional.ofNullable(price.getChangePercent())
-                        .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
+                        .map(changePercent->new BigDecimal(changePercent).multiply(BigDecimal.valueOf(100))
+                                .setScale(2, RoundingMode.HALF_UP).floatValue())
+                        .orElse(0f)).build()).collect(Collectors.toList());
     }
 
     @Override
@@ -61,7 +65,9 @@ public class StockServiceImpl implements StockService {
                 .volume(price.getVolume())
                 .change(price.getChange())
                 .changePercent(Optional.ofNullable(price.getChangePercent())
-                        .map(changePercent->changePercent*100).orElse(0f)).build();
+                        .map(changePercent->new BigDecimal(changePercent).multiply(BigDecimal.valueOf(100))
+                                .setScale(2, RoundingMode.HALF_UP).floatValue())
+                        .orElse(0f)).build();
     }
 
     @Override
@@ -82,7 +88,9 @@ public class StockServiceImpl implements StockService {
                 .volume(price.getVolume())
                 .change(price.getChange())
                 .changePercent(Optional.ofNullable(price.getChangePercent())
-                        .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
+                        .map(changePercent->new BigDecimal(changePercent).multiply(BigDecimal.valueOf(100))
+                                .setScale(2, RoundingMode.HALF_UP).floatValue())
+                        .orElse(0f)).build()).collect(Collectors.toList());
     }
 
     @Override
@@ -105,7 +113,8 @@ public class StockServiceImpl implements StockService {
                         .volume(price.getVolume())
                         .change(price.getChange())
                         .changePercent(Optional.ofNullable(price.getChangePercent())
-                                .map(changePercent->changePercent*100)
+                                .map(changePercent->new BigDecimal(changePercent).multiply(BigDecimal.valueOf(100))
+                                        .setScale(2, RoundingMode.HALF_UP).floatValue())
                                 .orElse(0f))
                         .build()).collect(Collectors.toList());
 
