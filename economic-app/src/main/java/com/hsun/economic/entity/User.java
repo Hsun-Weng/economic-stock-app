@@ -1,11 +1,14 @@
 package com.hsun.economic.entity;
 
-import java.io.Serializable;
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
-
-import lombok.Data;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -25,13 +28,32 @@ public class User implements Serializable {
 	@Column(name="password")
     private String password;
 
-	@Column(name="first_name")
-	private String firstName;
+	@Column(name="nick_name")
+	private String nickName;
 
-	@Column(name="last_name")
-	private String lastName;
-
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
 	@JoinColumn(name="user_name")
-	private List<UserPortfolio> userPortfolioList;
+	@ToString.Exclude
+	@Setter(AccessLevel.NONE)
+	private List<UserPortfolio> userPortfolioList = new ArrayList<>();
+
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
+	@JoinColumn(name="user_name")
+	@ToString.Exclude
+	@Setter(AccessLevel.NONE)
+	private List<OauthToken> oauthTokenList = new ArrayList<>();
+
+	public void setUserPortfolioList(List<UserPortfolio> userPortfolioList) {
+		this.userPortfolioList.clear();
+		if(userPortfolioList!=null){
+			this.userPortfolioList.addAll(userPortfolioList);
+		}
+	}
+
+	public void setOauthTokenList(List<OauthToken> oauthTokenList) {
+		this.oauthTokenList.clear();
+		if(oauthTokenList!=null){
+			this.oauthTokenList.addAll(oauthTokenList);
+		}
+	}
 }

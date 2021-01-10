@@ -1,26 +1,30 @@
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import React from 'react';
-import logo from './logo.svg';
+import { useSelector } from 'react-redux';
+import { useRoutes } from 'react-router-dom';
 import './App.css';
+import GlobalStyles from './components/GlobalStyles';
+import Notification from './components/Notification';
+import routes from './Routes';
+import darkTheme from './theme/dark';
+import lightTheme from './theme/light';
+import { SnackbarProvider } from 'notistack';
 
-function App() {
+const getTheme = (isDarkMode) => isDarkMode?createMuiTheme(darkTheme):createMuiTheme(lightTheme);
+
+const App = () => {
+  const routing = useRoutes(routes);
+  const darkMode = useSelector(state=>state.theme.darkMode);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <ThemeProvider theme={getTheme(darkMode)}>
+      <GlobalStyles />
+      <SnackbarProvider>
+        <Notification />
+        {routing}
+      </SnackbarProvider>
+    </ThemeProvider>
+  )
 }
 
 export default App;

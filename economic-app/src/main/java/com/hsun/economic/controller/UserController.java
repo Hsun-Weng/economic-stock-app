@@ -1,64 +1,59 @@
 package com.hsun.economic.controller;
 
-import com.hsun.economic.exception.ApiClientException;
-import com.hsun.economic.exception.ApiServerException;
+import com.google.gson.JsonObject;
+import com.hsun.economic.bean.PasswordBean;
+import com.hsun.economic.bean.UserBean;
+import com.hsun.economic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.entity.User;
-import com.hsun.economic.service.UserService;
-
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class UserController {
     
     @Autowired
     private UserService service;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/user")
-    public ResponseBean getUser(Authentication authentication){
-        ResponseBean responseBean = new ResponseBean();
-        User user = null;
+    public UserBean getUser(Authentication authentication){
+        return service.getUser(authentication.getName());
+    }
 
-        try{
-            user = service.findUserByName(authentication.getName());
-
-            Map<String, Object> dataMap = new HashMap<String, Object>();
-            dataMap.put("userName", user.getUserName());
-            dataMap.put("firstName", user.getFirstName());
-            dataMap.put("lastName", user.getLastName());
-
-            responseBean.setData(dataMap);
-
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    @PatchMapping("/user")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void partialUpdateUser(Authentication authentication, @RequestBody JsonObject body) {
+        service.partialUpdateUser(authentication.getName(), body);
     }
     
-    @PostMapping("/user/signup")
-    public ResponseBean saveUser(@RequestBody User user){
-        ResponseBean responseBean = new ResponseBean();
-        try {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            service.saveUser(user);
-        }catch(DataIntegrityViolationException e){
-            throw new ApiClientException("Duplicate User Name");
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void saveUser(@RequestBody UserBean userBean){
+        service.saveUser(userBean);
+    }
+
+    @PutMapping("/user/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePassword(Authentication authentication, @RequestBody PasswordBean passwordBean) {
+        service.updatePassword(authentication.getName(), passwordBean);
+    }
+
+    @PostMapping("/user/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(HttpServletResponse response){
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+//        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
     }
 }

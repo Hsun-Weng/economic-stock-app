@@ -1,19 +1,17 @@
 package com.hsun.economic.util;
 
-import java.util.Date;
-
-import com.hsun.economic.config.WebSecurity;
-import com.hsun.economic.config.WebSecurityConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.hsun.economic.bean.UserBean;
+import com.hsun.economic.config.WebSecurityConfig;
 import com.hsun.economic.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Date;
 
 @Component
 public class JwtUtil {
@@ -35,9 +33,9 @@ public class JwtUtil {
                 .sign(alg);
     }
     
-    public boolean validateToken(String token, User user) {
+    public boolean validateToken(String token, UserBean userBean) {
         String userName = this.getUsernameFromToken(token);
-        return (userName.equals(user.getUserName())) && ! isTokenExpired(token);
+        return (userName.equals(userBean.getUserName())) && ! isTokenExpired(token);
     }
     
     public boolean isTokenExpired(String token) {

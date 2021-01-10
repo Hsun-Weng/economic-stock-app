@@ -1,19 +1,15 @@
 package com.hsun.economic.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.bean.StockCategoryBean;
+import com.hsun.economic.bean.StockCategoryProportionBean;
+import com.hsun.economic.bean.StockPriceBean;
+import com.hsun.economic.service.StockCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.entity.StockCategory;
-import com.hsun.economic.service.StockCategoryService;
+import java.util.List;
 
 @RestController
 public class StockCategoryController {
@@ -22,48 +18,17 @@ public class StockCategoryController {
     private StockCategoryService service;
     
     @GetMapping("/categories")
-    public ResponseBean getCategories() {
-        ResponseBean responseBean = new ResponseBean();
-        List<StockCategory> categoryList = null;
-        List<Map<String, Object>> dataList = null;
-        try {
-            categoryList = service.getAllCategories();
-            
-            dataList = categoryList.stream().map((category)->{
-                 Map<String, Object> dataMap = new HashMap<String, Object>();
-                 dataMap.put("categoryCode", category.getCategoryCode());
-                 dataMap.put("categoryName", category.getCategoryName());
-                 return dataMap;
-            }).collect(Collectors.toList());
-             
-            responseBean.setData(dataList);
-
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<StockCategoryBean> getCategoryList() {
+        return service.getCategoryList();
     }
     
-    @GetMapping("/category/{categoryCode}/stocks")
-    public ResponseBean getStockByCategory(@PathVariable String categoryCode) {
-        ResponseBean responseBean = new ResponseBean();
-        StockCategory category = null;
-        List<Map<String, Object>> dataList = null;
-        try {
-            category = service.getCategoryByCode(categoryCode);
+    @GetMapping("/category/{categoryCode}/stocks/prices")
+    public List<StockPriceBean> getCategoryStockPriceList(@PathVariable String categoryCode) {
+        return service.getStockPriceList(categoryCode);
+    }
 
-            dataList = category.getStockList().stream().map((stock)->{
-                Map<String, Object> dataMap = new HashMap<String, Object>();
-                dataMap.put("stockCode", stock.getStockCode());
-                dataMap.put("stockName", stock.getStockName());
-                return dataMap;
-            }).collect(Collectors.toList());
-             
-            responseBean.setData(dataList);
-
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    @GetMapping("/categories/proportion")
+    public List<StockCategoryProportionBean> getCategoriesStockProportionRanked() {
+        return service.getCategoriesStockProportionRanked();
     }
 }

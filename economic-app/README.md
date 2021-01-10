@@ -1,18 +1,32 @@
-application.yml
+application.yml template
 ```yml
 spring: 
-  http:
-    converters:
-      preferred-json-mapper: gson
-  gson:
-    date-format: yyyy-MM-dd
   datasource: 
-    url: jdbc:mysql://{host}:{port}/{database}
+    url: jdbc:mariadb://{host}:{port}/{database}
     username: {username}
     password: {password}
-    driverClassName: com.mysql.cj.jdbc.Driver
+    driverClassName: org.mariadb.jdbc.Driver
   jpa: 
-    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: update  
+      ddl-auto: validate  
+retrofit:
+  global-converter-factories:
+    - retrofit2.converter.gson.GsonConverterFactory
+security:
+  key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  expirationTime: 10000000
+  tokenPrefix: {tokenType}
+  authenticationHeader: Authorization
+oauth2:
+  facebook:
+    clientId: {clientId}
+    clientSecret: {clientSecret}
+    redirectUri: {redirectUri}
+    url: {url}
+    fields:
+      - name
+      - email
+service:
+  data:
+    url: {data url}
 ```

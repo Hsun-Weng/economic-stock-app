@@ -1,14 +1,20 @@
 package com.hsun.economic.service.impl;
 
+import com.hsun.economic.bean.*;
+import com.hsun.economic.constants.ProductType;
 import com.hsun.economic.entity.*;
 import com.hsun.economic.exception.ApiClientException;
+import com.hsun.economic.exception.ResourceNotFoundException;
 import com.hsun.economic.repository.*;
+import com.hsun.economic.resource.StockIndexResource;
+import com.hsun.economic.resource.StockResource;
 import com.hsun.economic.service.UserPortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
+import javax.transaction.Transactional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,75 +27,105 @@ public class UserPortfolioServiceImpl implements UserPortfolioService {
     private UserRepository userRepository;
 
     @Autowired
-    private PortfolioProductRepository portfolioProductRepository;
+    private StockResource stockResource;
 
     @Autowired
-    private StockRepository stockRepository;
-
-    @Autowired
-    private StockIndexRepository stockIndexRepository;
+    private StockIndexResource stockIndexResource;
 
     @Override
-    public void addPortfolio(String userName, UserPortfolio userPortfolio) {
-        userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
-        userPortfolio.setUserName(userName);
-        if(StringUtils.isEmpty(userPortfolio.getPortfolioName())){
-            throw new ApiClientException("Portfolio name can't be empty.");
+    public List<PortfolioBean> getPortfolioList(String userName) {
+        return userRepository.findById(userName)
+                .get()
+                .getUserPortfolioList()
+                .stream()
+                .map((userPortfolio ->
+                        new PortfolioBean(userPortfolio.getPortfolioId(), userPortfolio.getPortfolioName())))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public void addPortfolio(String userName, PortfolioBean portfolioBean) {
+        if (StringUtils.isEmpty(portfolioBean.getPortfolioName())) {
+            throw new ApiClientException("名稱不得為空");
         }
+        UserPortfolio userPortfolio = new UserPortfolio();
+        userPortfolio.setUserName(userName);
+        userPortfolio.setPortfolioName(portfolioBean.getPortfolioName());
         repository.save(userPortfolio);
     }
 
+    @Transactional
     @Override
     public void deletePortfolio(String userName, Integer portfolioId) {
-        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
-        UserPortfolio userPortfolio = user.getUserPortfolioList()
-                .stream().filter((data)->data.getPortfolioId() == portfolioId)
-                .findAny().orElseThrow(()->new ApiClientException("Portfolio not found."));
-        repository.deleteById(portfolioId);
+        UserPortfolio userPortfolio = repository.findById(portfolioId)
+                .orElseThrow(() -> new ResourceNotFoundException("投資組合不存在"));
+        if (!userPortfolio.getUserName().equals(userName)) {
+            throw new ResourceNotFoundException("投資組合不存在");
+        }
+        repository.delete(userPortfolio);
     }
 
     @Override
-    public void updatePortfolio(String userName, Integer portfolioId, UserPortfolio userPortfolio) {
-        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
-        user.getUserPortfolioList()
-                .stream().filter((data)->data.getPortfolioId() == portfolioId)
-                .findAny().orElseThrow(()->new ApiClientException("Portfolio not found."));
-        if(StringUtils.isEmpty(userPortfolio.getPortfolioName())){
-            throw new ApiClientException("Portfolio name can't be empty.");
+    public void updatePortfolio(String userName, Integer portfolioId, PortfolioBean portfolioBean) {
+        User user = userRepository.findById(userName).get();
+        UserPortfolio userPortfolio = user.getUserPortfolioList()
+                .stream().filter((data) -> data.getPortfolioId().equals(portfolioId))
+                .findAny().orElseThrow(() -> new ResourceNotFoundException("投資組合不存在"));
+        if (StringUtils.isEmpty(portfolioBean.getPortfolioName())) {
+            throw new ApiClientException("名稱不得為空");
         }
-        userPortfolio.setPortfolioId(portfolioId);
+        userPortfolio.setPortfolioName(portfolioBean.getPortfolioName());
         repository.save(userPortfolio);
     }
 
     @Override
-    public List<PortfolioProduct> findUserPortfolioProductList(String userName, Integer portfolioId) {
-        User user = userRepository.findById(userName).orElseThrow(()->new ApiClientException("User not found."));
-        UserPortfolio userPortfolio = user.getUserPortfolioList()
-                .stream().filter((data)->data.getPortfolioId() == portfolioId)
-                .findAny().orElseThrow(()->new ApiClientException("Portfolio not found."));
+    public List<PortfolioPriceBean> getPortfolioPriceList(String userName) {
+        User user = userRepository.findById(userName).get();
+        List<UserPortfolio> userPortfolioList = user.getUserPortfolioList();
+        Date today = new Date();
+        return userPortfolioList
+                .parallelStream()
+                .map((userPortfolio) -> {
+                    List<PortfolioProduct> portfolioProductList = userPortfolio.getPortfolioProductList();
 
-        return userPortfolio.getPortfolioProductList()
-                .stream().map((portfolioProduct)->{
-                    String productCode = null;
-                    switch(portfolioProduct.getId().getProductType()){
-                        case 0: //index
-                            StockIndex stockIndex = stockIndexRepository.findById(portfolioProduct.getId().getProductCode())
-                                    .orElse(new StockIndex());
-                            portfolioProduct.setProductCode(stockIndex.getIndexCode());
-                            portfolioProduct.setProductName(stockIndex.getIndexName());
-                            break;
-                        case 1: //stock
-                            Stock stock = stockRepository.findById(portfolioProduct.getId().getProductCode())
-                                    .orElse(new Stock());
-                            portfolioProduct.setProductCode(stock.getStockCode());
-                            portfolioProduct.setProductName(stock.getStockName());
-                            break;
-                        case 3: //futures
-                            break;
-                        default:
-                            throw new ApiClientException("Can't add this product.");
+                    List<String> stockCodeList = portfolioProductList
+                            .parallelStream()
+                            .filter((portfolioProduct) -> portfolioProduct.getId().getProductType()
+                                    .equals(ProductType.STOCK.getValue()))
+                            .map((portfolioProduct)->portfolioProduct.getId().getProductCode())
+                            .collect(Collectors.toList());
+                    if(stockCodeList.size()>0){
+                        // batch get prices
+                        List<StockPriceBean> stockLatestPriceList = stockResource.getLatestPriceList(stockCodeList);
+                        // Calculate aggregation
+                        PriceBean priceBean = stockLatestPriceList
+                                .parallelStream()
+                                .map((stockPriceBean)->(PriceBean)stockPriceBean)
+                                .reduce((total, price)->{
+                                    total.setOpen(total.getOpen()+price.getOpen());
+                                    total.setLow(total.getLow()+price.getLow());
+                                    total.setHigh(total.getHigh()+price.getHigh());
+                                    total.setClose(total.getClose()+price.getClose());
+                                    total.setChange(total.getChange()+price.getChange());
+                                    return total;
+                                }).get();
+                        return PortfolioPriceBean.builder()
+                                .portfolioId(userPortfolio.getPortfolioId())
+                                .portfolioName(userPortfolio.getPortfolioName())
+                                .date(today)
+                                .open(priceBean.getOpen())
+                                .low(priceBean.getLow())
+                                .high(priceBean.getHigh())
+                                .close(priceBean.getClose())
+                                .change(priceBean.getChange())
+                                .build();
+                    }else{
+                        return PortfolioPriceBean.builder()
+                                .portfolioId(userPortfolio.getPortfolioId())
+                                .portfolioName(userPortfolio.getPortfolioName())
+                                .build();
                     }
-                    return portfolioProduct;
                 }).collect(Collectors.toList());
     }
 }

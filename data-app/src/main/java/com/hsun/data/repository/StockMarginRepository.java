@@ -10,6 +10,5 @@ import java.util.List;
 
 @Repository
 public interface StockMarginRepository extends MongoRepository<StockMargin, String>{
-    @Query("{ 'stockCode': ?0, 'date': { $gte: ?1, $lte: ?2} }")
     List<StockMargin> findByStockCodeAndDateBetween(String stockCode, Date startDate, Date endDate);
 }

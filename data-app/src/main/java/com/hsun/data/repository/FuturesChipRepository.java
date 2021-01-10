@@ -11,6 +11,5 @@ import com.hsun.data.entity.FuturesChip;
 
 @Repository
 public interface FuturesChipRepository extends MongoRepository<FuturesChip, String>{
-    @Query("{ 'futuresCode': ?0, 'date': { $gte: ?1, $lte: ?2} }")
     List<FuturesChip> findByFuturesCodeAndDateBetween(String futuresCode, Date startDate, Date endDate);
 }

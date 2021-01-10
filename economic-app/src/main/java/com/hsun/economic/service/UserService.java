@@ -1,8 +1,12 @@
 package com.hsun.economic.service;
 
-import com.hsun.economic.entity.User;
+import com.google.gson.JsonObject;
+import com.hsun.economic.bean.PasswordBean;
+import com.hsun.economic.bean.UserBean;
 
 public interface UserService {
-    void saveUser(User user);
-    User findUserByName(String userName);
+    void saveUser(UserBean userBean);
+    void partialUpdateUser(String userName, JsonObject body);
+    void updatePassword(String userName, PasswordBean passwordBean);
+    UserBean getUser(String userName);
 }

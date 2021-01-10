@@ -1,10 +1,13 @@
 package com.hsun.economic.service;
 
+import com.hsun.economic.bean.StockCategoryBean;
+import com.hsun.economic.bean.StockCategoryProportionBean;
+import com.hsun.economic.bean.StockPriceBean;
+
 import java.util.List;
 
-import com.hsun.economic.entity.StockCategory;
-
 public interface StockCategoryService {
-    List<StockCategory> getAllCategories();
-    StockCategory getCategoryByCode(String categoryCode);
+    List<StockCategoryBean> getCategoryList();
+    List<StockPriceBean> getStockPriceList(String categoryCode);
+    List<StockCategoryProportionBean> getCategoriesStockProportionRanked();
 }

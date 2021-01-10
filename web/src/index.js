@@ -1,27 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import * as serviceWorker from './serviceWorker';
-
-import MainLayout from './layouts/MainLayout'
-import {BrowserRouter as Router} from 'react-router-dom'
-
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { applyMiddleware, createStore } from 'redux';
 import thunkMiddleware from 'redux-thunk';
+import App from './App';
+import './index.css';
 import rootReducer from './reducers';
-
-import { SnackbarProvider } from 'notistack';
+import * as serviceWorker from './serviceWorker';
 
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 ReactDOM.render(
   <Provider store={store}>
-    <SnackbarProvider>
-      <Router>
-        <MainLayout />
-      </Router>
-    </SnackbarProvider>
+    <Router>
+      <App />
+    </Router>
   </Provider>,
   document.getElementById('root'));
 

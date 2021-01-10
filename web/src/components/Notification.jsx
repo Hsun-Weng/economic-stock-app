@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IconButton } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import { useSnackbar } from 'notistack';
-import { notificationActions } from '../actions';
+import { notificationAction } from '../actions';
 
 let displayed = [];
 
@@ -36,11 +36,11 @@ const Notification = () => {
                 key,
                 ...options,
                 action: key => (
-                    <IconButton onClick={() => closeSnackbar(key)} color="inherit">
+                    <IconButton onClick={() => closeSnackbar(key)}>
                         <ClearIcon />
                     </IconButton>
                 ),
-                anchorOrigin: {horizontal: 'right', vertical: 'bottom'},
+                anchorOrigin: {horizontal: 'right', vertical: 'top'},
                 onClose: (event, reason, myKey) => {
                     if (options.onClose) {
                         options.onClose(event, reason, myKey);
@@ -48,7 +48,7 @@ const Notification = () => {
                 },
                 onExited: (event, myKey) => {
                     // removen this snackbar from redux store
-                    dispatch(notificationActions.removeNotification(myKey));
+                    dispatch(notificationAction.removeNotification(myKey));
                     removeDisplayed(myKey);
                 },
             });

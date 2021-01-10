@@ -1,10 +1,14 @@
 package com.hsun.economic.service;
 
-import com.hsun.economic.entity.PortfolioProduct;
+import com.hsun.economic.bean.PortfolioProductBean;
+import com.hsun.economic.bean.ProductBean;
+import com.hsun.economic.bean.ProductPriceBean;
 
 import java.util.List;
 
 public interface PortfolioProductService {
-    void addPortfolioProduct(String userName, Integer portfolioId, PortfolioProduct portfolioProduct);
-    void savePortfolioProducts(String userName, Integer portfolioId, List<PortfolioProduct> portfolioProductList);
+    List<ProductBean> getProductList();
+    void addPortfolioProduct(String userName, Integer portfolioId, PortfolioProductBean portfolioProductBean);
+    void savePortfolioProducts(String userName, Integer portfolioId, List<PortfolioProductBean> portfolioProductList);
+    List<ProductPriceBean> getProductPriceList(String userName, Integer portfolioId);
 }

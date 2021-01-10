@@ -11,6 +11,5 @@ import com.hsun.data.entity.StockIndex;
 
 @Repository
 public interface StockIndexRepository extends MongoRepository<StockIndex, String> {
-    @Query("{ 'indexCode': ?0, 'date': { $gte: ?1, $lte: ?2} }")
     List<StockIndex> findByIndexCodeAndDateBetween(String indexCode, Date startDate, Date endDate);
 }

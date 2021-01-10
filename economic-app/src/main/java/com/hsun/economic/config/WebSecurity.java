@@ -1,10 +1,16 @@
 package com.hsun.economic.config;
 
+import com.google.gson.Gson;
+import com.hsun.economic.bean.ErrorMessage;
+import com.hsun.economic.filter.JWTAuthenticationFilter;
+import com.hsun.economic.filter.JWTAuthorizationFilter;
 import com.hsun.economic.service.UserService;
 import com.hsun.economic.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,10 +22,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.hsun.economic.filter.JWTAuthenticationFilter;
-import com.hsun.economic.filter.JWTAuthorizationFilter;
-import com.hsun.economic.handler.JWTAuthenticationFailureHandler;
-
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     
@@ -27,13 +29,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     
     @Autowired
-    private JWTAuthenticationFailureHandler jwtAuthenticationFailureHandler;
-    
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private Gson gson;
 
     @Autowired
     private UserService userService;
@@ -44,15 +46,21 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
-        .antMatchers(HttpMethod.POST, "/user/signup").permitAll()
+        .antMatchers(HttpMethod.POST, "/signup").permitAll()
         .antMatchers("/user/**").authenticated()
         .anyRequest().permitAll()
         .and()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         
         JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter(authenticationManager(), jwtUtil);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/user/login");
-        jwtAuthenticationFilter.setAuthenticationFailureHandler(jwtAuthenticationFailureHandler);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+        jwtAuthenticationFilter.setAuthenticationFailureHandler(((request, response, exception) -> {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(gson.toJson(new ErrorMessage("登入失敗")));
+            response.getWriter().flush();
+        }));
         
         http
         .addFilter(jwtAuthenticationFilter)

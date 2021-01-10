@@ -1,17 +1,17 @@
 package com.hsun.economic.controller;
 
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.entity.StockIndex;
-import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.bean.PriceBean;
+import com.hsun.economic.bean.StockIndexBean;
 import com.hsun.economic.service.StockIndexService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 public class StockIndexController {
@@ -20,25 +20,14 @@ public class StockIndexController {
     private StockIndexService service;
     
     @GetMapping("/indexes")
-    public ResponseBean getAllStockIndexes() {
-        ResponseBean responseBean = new ResponseBean();
-        List<StockIndex> stockIndexList = null;
-        List<Map<String, Object>> dataList = null;
-        try {
-            stockIndexList = service.getAllStockIndexes();
-            
-            dataList = stockIndexList.stream().map((stockIndex)->{
-                 Map<String, Object> stockMap = new HashMap<String, Object>();
-                 stockMap.put("indexCode", stockIndex.getIndexCode());
-                 stockMap.put("indexName", stockIndex.getIndexName());
-                 return stockMap;
-            }).collect(Collectors.toList());
-             
-            responseBean.setData(dataList);
+    public List<StockIndexBean> getStockIndexList() {
+        return service.getStockIndexList();
+    }
 
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    @GetMapping("/stock/index/{indexCode}/prices")
+    public List<PriceBean> getStockPriceList(@PathVariable String indexCode
+            , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate startDate
+            , @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  @RequestParam LocalDate endDate){
+        return service.getPriceList(indexCode, startDate, endDate);
     }
 }

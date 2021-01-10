@@ -1,20 +1,15 @@
 package com.hsun.economic.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.hsun.economic.entity.EconomicData;
-import com.hsun.economic.exception.ApiServerException;
+import com.hsun.economic.bean.CountryBean;
+import com.hsun.economic.bean.EconomicDataBean;
+import com.hsun.economic.bean.EconomicValueBean;
+import com.hsun.economic.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hsun.economic.bean.ResponseBean;
-import com.hsun.economic.entity.Country;
-import com.hsun.economic.service.CountryService;
+import java.util.List;
 
 @RestController
 public class CountryController {
@@ -23,50 +18,17 @@ public class CountryController {
     private CountryService service;
     
     @GetMapping("/countries")
-    public ResponseBean getCountries() {
-        ResponseBean responseBean = new ResponseBean();
-        List<Country> countryList = null;
-        List<Map<String, Object>> dataList = null;
-        try {
-            countryList = service.getAllCountries();
-            
-            dataList = countryList.stream().map((country)->{
-                 Map<String, Object> countryMap = new HashMap<String, Object>();
-                 countryMap.put("countryCode", country.getCountryCode());
-                 countryMap.put("countryName", country.getCountryName());
-                 return countryMap;
-            }).collect(Collectors.toList());
-             
-            responseBean.setData(dataList);
-
-        }catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    public List<CountryBean> getCountries() {
+        return service.getCountryList();
     }
 
     @GetMapping("/economic/{countryCode}/data")
-    public ResponseBean getEconomicDataByCountry(@PathVariable String countryCode){
-        ResponseBean responseBean = new ResponseBean();
-        Country country = null;
-        List<Map<String, Object>> dataList = null;
-        try{
-            country = service.getCountryByCode(countryCode);
+    public List<EconomicDataBean> getEconomicDataByCountry(@PathVariable String countryCode){
+        return service.getEconomicDataList(countryCode);
+    }
 
-            dataList = country.getEconomicDataList().stream().map((data)->{
-                Map<String, Object> dataMap = new HashMap<String, Object>();
-
-                dataMap.put("dataCode", data.getDataCode());
-                dataMap.put("dataName", data.getDataName());
-
-                return dataMap;
-            }).collect(Collectors.toList());
-
-            responseBean.setData(dataList);
-
-        } catch(Exception e) {
-            throw new ApiServerException();
-        }
-        return responseBean;
+    @GetMapping("/economic/{countryCode}/{dataCode}/values")
+    public List<EconomicValueBean> getEconomicValue(@PathVariable String countryCode, @PathVariable String dataCode){
+        return service.getEconomicValueList(countryCode, dataCode);
     }
 }

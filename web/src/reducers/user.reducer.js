@@ -1,9 +1,12 @@
 import userConstants from '../constants/user.constants';
 
 const userInitState = {
-  error: null,
   loading: false,
-  data: null
+  isLoggedIn: false,
+  info: {
+    email: '',
+    nickName: ''
+  }
 };
 
 export const user = (state=userInitState, action) =>{
@@ -11,76 +14,35 @@ export const user = (state=userInitState, action) =>{
     case userConstants.GET_USER_REQUEST:
       return {...state,
         loading: true,
-        data: null 
+        isLoggedIn: false,
+        info: {
+          email: '',
+          nickName: ''
+        }
       };
     case userConstants.GET_USER_SUCCESS:
       return {...state,
-        loading: true, 
-        data: action.user
+        loading: false, 
+        isLoggedIn: true,
+        info: action.user,
       }
     case userConstants.GET_USER_FAILURE:
       return {...state,
-        error: action.error,
-        data: null
+        loading: false,
+        isLoggedIn: false,
+        info: {
+          email: '',
+          nickName: ''
+        }
       };
-    case userConstants.LOGOUT:
-      return {...state,
-        data: null
-      };
-    default:
-      return state;
-  }
-}
-
-const loginInitState = {
-  error: null,
-  loading: false
-}
-
-export const login = (state=loginInitState, action) => {
-  switch (action.type) {
-    case userConstants.LOGIN_REQUEST:
-      return {...state,
-        loading: true,
-      };
-    case userConstants.LOGIN_SUCCESS:
+    case userConstants.REMOVE_USER:
       return {...state,
         loading: false,
-        error: null
-      };
-    case userConstants.LOGIN_FAILURE:
-      return {...state,
-        loading: false,
-        error: action.error
-      };
-    default:
-      return state;
-  }
-}
-
-const signUpInitState = {
-  error: null,
-  loading: false,
-  result: false
-}
-
-export const signUp = (state=signUpInitState, action) => {
-  switch (action.type) {
-    case userConstants.SIGNUP_REQUEST:
-      return {...state,
-        loading: true
-      };
-    case userConstants.SIGNUP_SUCCESS:
-      return {...state,
-        loading: false,
-        result: true,
-        error: null
-      };
-    case userConstants.SIGNUP_FAILURE:
-      return {...state,
-        result: false,
-        loading: false,
-        error: action.error
+        isLoggedIn: false,
+        info: {
+          email: '',
+          nickName: ''
+        }
       };
     default:
       return state;

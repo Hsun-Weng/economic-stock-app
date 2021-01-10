@@ -1,9 +1,13 @@
 package com.hsun.economic.entity;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +32,15 @@ public class UserPortfolio implements Serializable {
     @Column(name="user_name")
     private String userName;
 
-    @OneToMany(cascade=CascadeType.REMOVE)
-    @JoinColumn(name="portfolio_id")
-    private List<PortfolioProduct> portfolioProductList;
+    @OneToMany(mappedBy = "userPortfolio",cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @ToString.Exclude
+    @Setter(AccessLevel.NONE)
+    private List<PortfolioProduct> portfolioProductList = new ArrayList<>();
+
+    public void setPortfolioProductList(List<PortfolioProduct> portfolioProductList) {
+        this.portfolioProductList.clear();
+        if(portfolioProductList!=null) {
+            this.portfolioProductList.addAll(portfolioProductList);
+        }
+    }
 }

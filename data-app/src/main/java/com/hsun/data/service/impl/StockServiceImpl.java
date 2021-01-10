@@ -1,21 +1,23 @@
 package com.hsun.data.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import com.hsun.data.bean.PageInfoBean;
+import com.hsun.data.bean.StockPriceBean;
+import com.hsun.data.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.hsun.data.entity.Stock;
 import com.hsun.data.repository.StockRepository;
 import com.hsun.data.service.StockService;
+import org.springframework.util.ObjectUtils;
 
 @Service
 public class StockServiceImpl implements StockService {
@@ -27,68 +29,91 @@ public class StockServiceImpl implements StockService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<Stock> getStockByCodeAndDateBetween(String stockCode, Date startDate, Date endDate) {
-        LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryStartDate = Date.from(localStartDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-        LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date queryEndDate = Date.from(localEndDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
-        return repository.findByStockCodeAndDateBetween(stockCode, queryStartDate, queryEndDate);
+    public List<StockPriceBean> getStockPriceList(String stockCode, LocalDate startDate, LocalDate endDate) {
+        Date queryStartDate = Date.from(startDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(endDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+        return repository.findByStockCodeAndDateBetween(stockCode, queryStartDate, queryEndDate)
+                .stream()
+                .map((price)->StockPriceBean.builder()
+                .date(price.getDate())
+                .stockCode(price.getStockCode())
+                .open(price.getOpen())
+                .low(price.getLow())
+                .high(price.getHigh())
+                .close(price.getClose())
+                .volume(price.getVolume())
+                .change(price.getChange())
+                .changePercent(Optional.ofNullable(price.getChangePercent())
+                        .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
     }
 
     @Override
-    public List<Map<String, Object>> getBatchLatestPriceList(List<String> stockCodeList) {
-        List<Map<String, Object>> batchLatestPriceList = new ArrayList<Map<String, Object>>(stockCodeList.size());
-
-        Query query = null;
-
-        for(String stockCode : stockCodeList){
-            query = new Query(Criteria.where("stock_code").is(stockCode))
-                    .with(Sort.by(Sort.Order.desc("date"))).limit(2);
-            List<Stock> priceList = mongoTemplate.find(query, Stock.class);
-
-            if(priceList.size() > 0) {
-                batchLatestPriceList.add(convertStockListToMap(priceList));
-            }
-        }
-
-        return batchLatestPriceList;
-    }
-    
-    private Map<String, Object> convertStockListToMap(List<Stock> priceList) {
-        Map<String, Object> priceMap = new HashMap<String, Object>();
-        Stock latestPrice = priceList.get(0);
-        Stock previousPrice = null;
-
-        final BigDecimal percentage = new BigDecimal(100);
-
-        BigDecimal change;
-        BigDecimal changePercent;
-        BigDecimal previousPriceBigDecimal = null;
-        BigDecimal latestPriceBigDecimal = null;
-        switch (priceList.size()) {
-            case 1:
-                previousPriceBigDecimal = new BigDecimal(latestPrice.getOpen().toString());
-                latestPriceBigDecimal = new BigDecimal(latestPrice.getClose().toString());
-                break;
-            case 2:
-                previousPrice = priceList.get(1);
-                previousPriceBigDecimal = new BigDecimal(previousPrice.getClose().toString());
-                latestPriceBigDecimal = new BigDecimal(latestPrice.getClose().toString());
-                break;
-        }
-        change = latestPriceBigDecimal.subtract(previousPriceBigDecimal);
-        changePercent = change.divide(previousPriceBigDecimal,4, RoundingMode.HALF_UP).multiply(percentage);
-        priceMap.put("stockCode", latestPrice.getStockCode());
-        priceMap.put("date", latestPrice.getDate());
-        priceMap.put("open", latestPrice.getOpen());
-        priceMap.put("low", latestPrice.getLow());
-        priceMap.put("high", latestPrice.getHigh());
-        priceMap.put("close", latestPrice.getClose());
-        priceMap.put("volume", latestPrice.getVolume());
-        priceMap.put("change", change);
-        priceMap.put("changePercent", changePercent);
-        return priceMap;
+    public StockPriceBean getStockLatestPrice(String stockCode) {
+        Stock price = repository.findFirstByStockCodeOrderByDateDesc(stockCode)
+                .orElseThrow(()->new ResourceNotFoundException("Not found"));
+        return StockPriceBean.builder()
+                .date(price.getDate())
+                .stockCode(price.getStockCode())
+                .open(price.getOpen())
+                .low(price.getLow())
+                .high(price.getHigh())
+                .close(price.getClose())
+                .volume(price.getVolume())
+                .change(price.getChange())
+                .changePercent(Optional.ofNullable(price.getChangePercent())
+                        .map(changePercent->changePercent*100).orElse(0f)).build();
     }
 
+    @Override
+    public List<StockPriceBean> getBatchStockLatestPriceList(List<String> stockCodeList) {
+        Stock latestStock = repository.findFirstByOrderByDateDesc().orElseThrow(()->new ResourceNotFoundException("Not found"));
+        LocalDate localLatestDate = latestStock.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Date queryStartDate = Date.from(localLatestDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(localLatestDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+        return repository.findByStockCodeInAndDateBetween(stockCodeList, queryStartDate, queryEndDate)
+                .stream()
+                .map((price)->StockPriceBean.builder()
+                .date(price.getDate())
+                .stockCode(price.getStockCode())
+                .open(price.getOpen())
+                .low(price.getLow())
+                .high(price.getHigh())
+                .close(price.getClose())
+                .volume(price.getVolume())
+                .change(price.getChange())
+                .changePercent(Optional.ofNullable(price.getChangePercent())
+                        .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
+    }
 
+    @Override
+    public PageInfoBean<StockPriceBean> getStockSortedPage(PageRequest pageRequest) {
+        Stock latestStock = repository.findFirstByOrderByDateDesc().orElseThrow(()->new ResourceNotFoundException("Not found"));
+        LocalDate localLatestDate = latestStock.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Date queryStartDate = Date.from(localLatestDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date queryEndDate = Date.from(localLatestDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+
+        Page<Stock> stockPricePage = repository.findByDateBetweenAndVolumeGreaterThan(queryStartDate, queryEndDate, 0, pageRequest);
+        List<StockPriceBean> stockPriceList = stockPricePage.getContent()
+                .parallelStream()
+                .map((price)->StockPriceBean.builder()
+                        .date(price.getDate())
+                        .stockCode(price.getStockCode())
+                        .open(price.getOpen())
+                        .low(price.getLow())
+                        .high(price.getHigh())
+                        .close(price.getClose())
+                        .volume(price.getVolume())
+                        .change(price.getChange())
+                        .changePercent(Optional.ofNullable(price.getChangePercent())
+                                .map(changePercent->changePercent*100)
+                                .orElse(0f))
+                        .build()).collect(Collectors.toList());
+
+        return PageInfoBean.<StockPriceBean>builder()
+                .totalPage(stockPricePage.getTotalPages())
+                .page(stockPricePage.getPageable().getPageNumber())
+                .size(stockPricePage.getSize())
+                .content(stockPriceList)
+                .build();
+    }
 }
