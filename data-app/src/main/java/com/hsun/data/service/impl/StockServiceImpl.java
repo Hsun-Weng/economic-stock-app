@@ -5,6 +5,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAccumulator;
 import java.util.stream.Collectors;
 
 import com.hsun.data.bean.PageInfoBean;
@@ -100,10 +102,13 @@ public class StockServiceImpl implements StockService {
         Date queryStartDate = Date.from(localLatestDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
         Date queryEndDate = Date.from(localLatestDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
 
+        AtomicInteger sortIndex = new AtomicInteger(0);
+
         Page<Stock> stockPricePage = repository.findByDateBetweenAndVolumeGreaterThan(queryStartDate, queryEndDate, 0, pageRequest);
         List<StockPriceBean> stockPriceList = stockPricePage.getContent()
-                .parallelStream()
+                .stream()
                 .map((price)->StockPriceBean.builder()
+                        .sort(sortIndex.incrementAndGet())
                         .date(price.getDate())
                         .stockCode(price.getStockCode())
                         .open(price.getOpen())

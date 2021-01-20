@@ -8,6 +8,7 @@ import java.util.Date;
 @Builder
 @Data
 public class StockPriceBean {
+    private Integer sort;
     private Date date;
     private String stockCode;
     private Double open;

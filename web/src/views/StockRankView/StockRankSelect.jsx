@@ -14,7 +14,7 @@ const SortColumnSelect = ({ sortColumn, onSortColumnChange }) => (
             value={sortColumn}
             onChange={onSortColumnChange}>
             <MenuItem value={"volume"}>成交量</MenuItem>
-            <MenuItem value={"chg"}>價格變化</MenuItem>
+            <MenuItem value={"change_percent"}>價格變化</MenuItem>
         </Select>
     </FormControl>
 )
