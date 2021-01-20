@@ -1,4 +1,4 @@
-package com.hsun.data.bean;
+package com.hsun.chat.bean;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +8,6 @@ import java.util.Date;
 @Builder
 @Data
 public class StockPriceBean {
-    private Integer sort;
     private Date date;
     private String stockCode;
     private Double open;

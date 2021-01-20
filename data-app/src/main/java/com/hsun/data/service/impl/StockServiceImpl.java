@@ -1,8 +1,12 @@
 package com.hsun.data.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAccumulator;
 import java.util.stream.Collectors;
 
 import com.hsun.data.bean.PageInfoBean;
@@ -44,7 +48,9 @@ public class StockServiceImpl implements StockService {
                 .volume(price.getVolume())
                 .change(price.getChange())
                 .changePercent(Optional.ofNullable(price.getChangePercent())
-                        .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
+                        .map(changePercent->new BigDecimal(changePercent).multiply(BigDecimal.valueOf(100))
+                                .setScale(2, RoundingMode.HALF_UP).floatValue())
+                        .orElse(0f)).build()).collect(Collectors.toList());
     }
 
     @Override
@@ -61,7 +67,9 @@ public class StockServiceImpl implements StockService {
                 .volume(price.getVolume())
                 .change(price.getChange())
                 .changePercent(Optional.ofNullable(price.getChangePercent())
-                        .map(changePercent->changePercent*100).orElse(0f)).build();
+                        .map(changePercent->new BigDecimal(changePercent).multiply(BigDecimal.valueOf(100))
+                                .setScale(2, RoundingMode.HALF_UP).floatValue())
+                        .orElse(0f)).build();
     }
 
     @Override
@@ -82,7 +90,9 @@ public class StockServiceImpl implements StockService {
                 .volume(price.getVolume())
                 .change(price.getChange())
                 .changePercent(Optional.ofNullable(price.getChangePercent())
-                        .map(changePercent->changePercent*100).orElse(0f)).build()).collect(Collectors.toList());
+                        .map(changePercent->new BigDecimal(changePercent).multiply(BigDecimal.valueOf(100))
+                                .setScale(2, RoundingMode.HALF_UP).floatValue())
+                        .orElse(0f)).build()).collect(Collectors.toList());
     }
 
     @Override
@@ -92,10 +102,13 @@ public class StockServiceImpl implements StockService {
         Date queryStartDate = Date.from(localLatestDate.atTime(0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
         Date queryEndDate = Date.from(localLatestDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
 
+        AtomicInteger sortIndex = new AtomicInteger(0);
+
         Page<Stock> stockPricePage = repository.findByDateBetweenAndVolumeGreaterThan(queryStartDate, queryEndDate, 0, pageRequest);
         List<StockPriceBean> stockPriceList = stockPricePage.getContent()
-                .parallelStream()
+                .stream()
                 .map((price)->StockPriceBean.builder()
+                        .sort(sortIndex.incrementAndGet())
                         .date(price.getDate())
                         .stockCode(price.getStockCode())
                         .open(price.getOpen())
@@ -105,7 +118,8 @@ public class StockServiceImpl implements StockService {
                         .volume(price.getVolume())
                         .change(price.getChange())
                         .changePercent(Optional.ofNullable(price.getChangePercent())
-                                .map(changePercent->changePercent*100)
+                                .map(changePercent->new BigDecimal(changePercent).multiply(BigDecimal.valueOf(100))
+                                        .setScale(2, RoundingMode.HALF_UP).floatValue())
                                 .orElse(0f))
                         .build()).collect(Collectors.toList());
 

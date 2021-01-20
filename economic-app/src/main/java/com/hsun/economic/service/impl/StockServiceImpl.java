@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,8 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public PageInfoBean<StockPriceBean> getStockSortedPage(String sortColumn, Integer page, Integer size, String direction) {
+    public PageInfoBean<StockPriceBean> getStockSortedPage(String sortColumn, Integer page
+            , Integer size, String direction) {
         PageInfoBean<StockPriceBean> sortedStockPage = stockResource.getStockSortedPage(sortColumn, page, size, direction);
         List<StockPriceBean> sortedStockList = sortedStockPage.getContent()
                 .parallelStream()
@@ -39,7 +41,9 @@ public class StockServiceImpl implements StockService {
                     repository.findById(stockPriceBean.getStockCode())
                         .ifPresent((stock)->stockPriceBean.setStockName(stock.getStockName()));
                     return stockPriceBean;
-                })).collect(Collectors.toList());
+                }))
+                .sorted(Comparator.comparing(StockPriceBean::getSort))
+                .collect(Collectors.toList());
 
         sortedStockPage.setContent(sortedStockList);
 
