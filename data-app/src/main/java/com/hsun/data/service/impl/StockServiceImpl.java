@@ -15,7 +15,6 @@ import com.hsun.data.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import com.hsun.data.entity.Stock;
@@ -28,9 +27,6 @@ public class StockServiceImpl implements StockService {
     
     @Autowired
     private StockRepository repository;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     @Override
     public List<StockPriceBean> getStockPriceList(String stockCode, LocalDate startDate, LocalDate endDate) {

@@ -29,4 +29,8 @@ public class StockIndex {
     private Double close;
     @Field("volume")
     private Long volume;
+    @Field("change")
+    private Float change;
+    @Field("change_percent")
+    private Float changePercent;
 }
