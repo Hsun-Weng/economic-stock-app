@@ -3,6 +3,10 @@ import db_params
 from mysql.connector import Error
 import csv
 from datetime import datetime
+from multiprocessing.pool import ThreadPool
+
+## 抓取證交所收盤行情
+stock_collection = db_params.get_mongo_db()['stock']
 
 def run_get_data(date):
     url = 'http://www.twse.com.tw/exchangeReport/STOCK_DAY_ALL?response=open_data'
@@ -14,12 +18,18 @@ def run_get_data(date):
 
 # 轉換response
 def parse_response_text(date, text_content):
-    mongo_data_list = []
-    for stock_raw_data in csv.reader(text_content.splitlines()[1:]): # 跳過第一行標題
-        mongo_data_list.append(format_stock_data(date, stock_raw_data))
+    pool = ThreadPool(4)
 
+    task_list = []
+    for stock_raw_data in csv.reader(text_content.splitlines()[1:]): # 跳過第一行標題
+        task_list.append(pool.apply_async(format_stock_data, args=(date, stock_raw_data)))
+
+    pool.close()
+    pool.join()
+
+    mongo_data_list = [task.get() for task in task_list]
     if(len(mongo_data_list) > 0):
-        insert_stock_data(mongo_data_list)
+        stock_collection.insert_many(mongo_data_list)
         
 # 轉換價格資料型態至float
 def convert_price_text(price_text):
@@ -49,40 +59,44 @@ def convert_volume_value(volume_text):
 
 # 格式化原始資料
 def format_stock_data(date, stock_raw_data):
-    format_stock_data = {}
+    stock_data = {}
     datetime_str = date + ' 14:30:00' # Hard code 收盤時間(含零股)
-    format_stock_data['date'] = datetime.strptime(datetime_str, '%Y/%m/%d %H:%M:%S')
-    format_stock_data['stock_code'] = stock_raw_data[0]
-    format_stock_data['volume'] = convert_volume_value(stock_raw_data[2])
-    format_stock_data['close'] = convert_price_text(stock_raw_data[7])
+    stock_data['date'] = datetime.strptime(datetime_str, '%Y/%m/%d %H:%M:%S')
+    stock_data['stock_code'] = stock_raw_data[0]
+    stock_data['volume'] = convert_volume_value(stock_raw_data[2])
+    stock_data['close'] = convert_price_text(stock_raw_data[7])
 
-    if format_stock_data['volume'] > 0: # 成交量為0價格全填null
-        format_stock_data['open'] = convert_price_text(stock_raw_data[4])
-        format_stock_data['high'] = convert_price_text(stock_raw_data[5])
-        format_stock_data['low'] = convert_price_text(stock_raw_data[6])
+    if stock_data['volume'] > 0: # 成交量為0價格全填null
+        stock_data['open'] = convert_price_text(stock_raw_data[4])
+        stock_data['high'] = convert_price_text(stock_raw_data[5])
+        stock_data['low'] = convert_price_text(stock_raw_data[6])
 
-        format_stock_data['change'] = convert_change_text(stock_raw_data[8])
-        ## 前一天收盤價
-        previous_close = format_stock_data['close'] - format_stock_data['change']
+        stock_data['change'] = convert_change_text(stock_raw_data[8])
+        ## 前一日收盤價
         try:
-            format_stock_data['change_percent'] = round(format_stock_data['change'] / previous_close, 4)
-        except ZeroDivisionError:
-            format_stock_data['change_percent'] = 0
+            previous_close = get_previous_close(stock_data['stock_code'], stock_data['date'])
+            stock_data['change'] = round(stock_data['close'] - previous_close, 2)
+            stock_data['change_percent'] = round(stock_data['change'] / previous_close, 4)
+        except:
+            stock_data['change'] = None
+            stock_data['change_percent'] = None
     else: 
-        format_stock_data['open'] = None
-        format_stock_data['high'] = None
-        format_stock_data['low'] = None
-        format_stock_data['close'] = None
-        format_stock_data['change'] = None
-        format_stock_data['change_percent'] = None
+        stock_data['open'] = None
+        stock_data['high'] = None
+        stock_data['low'] = None
+        stock_data['close'] = None
+        stock_data['change'] = None
+        stock_data['change_percent'] = None
 
-    return format_stock_data
+    return stock_data
 
-def insert_stock_data(data):
-    mongo_client = db_params.get_mongo_client()
-    db = mongo_client['economic']
-    stock_index_collection = db['stock']
-    stock_index_collection.insert_many(data)
+def get_previous_close(stock_code, date):
+    close_list = list(stock_collection.find({'stock_code': stock_code, 'date': {'$lt': date}, 'close': {'$ne': None}}, {'close': 1})
+        .sort([('date', -1)])
+        .limit(1))
+    if len(close_list) > 0:
+        return close_list[0]['close']
+    return None
 
 if __name__ == "__main__":
     current_time = datetime.now()
