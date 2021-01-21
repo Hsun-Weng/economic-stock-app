@@ -18,6 +18,10 @@ repositories {
 	mavenCentral()
 }
 
+bootJar {
+	exclude('application.yml')
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.telegram:telegrambots-spring-boot-starter:4.9.2'
