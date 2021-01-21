@@ -7,6 +7,7 @@ import mysql.connector
 mongo_url = "mongodb://{host}:{port}/"
 mongo_username = "{username}"
 mongo_password = "{password}"
+mongo_db_name = "{database}"
 
 mariadb_host = "{host}"
 mariadb_port = "{port}"
@@ -16,6 +17,9 @@ mariadb_password = "{password}"
 
 def get_mongo_client():
     return pymongo.MongoClient(mongo_url, username=mongo_username, password=mongo_password)
+
+def get_mongo_db():
+    return get_mongo_client()[mongo_db_name]
 
 def get_mariadb_connection():
     connection = mysql.connector.connect(host=mariadb_host,port=mariadb_port,
