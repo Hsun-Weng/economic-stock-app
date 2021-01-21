@@ -23,6 +23,10 @@ ext {
 	set('snippetsDir', file("build/generated-snippets"))
 }
 
+bootJar {
+	exclude('application.yml')
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
