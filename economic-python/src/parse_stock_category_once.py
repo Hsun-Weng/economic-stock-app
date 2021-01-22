@@ -5,7 +5,7 @@ import csv
 from datetime import datetime
 
 def run_parse_data():
-    data = './data/category.csv'
+    data = '../data/category.csv'
 
     csv_file = open(data, "r")
     parse_text(csv_file.read())
