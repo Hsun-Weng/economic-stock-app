@@ -5,7 +5,7 @@ import csv
 from datetime import datetime
 
 def run_parse_data():
-    data = './data/etf.csv'
+    data = '../data/tdr.csv'
 
     csv_file = open(data, "r")
     parse_text(csv_file.read())
@@ -28,7 +28,7 @@ def format_category_stock_data(stock_data, category_raw_data):
     stock_list = list(filter(lambda data: data['stock_code'] == stock_code, stock_data))
     if len(stock_list) > 0:
         format_category_stock_data = {}
-        format_category_stock_data['category_id'] = 31
+        format_category_stock_data['category_id'] = 32
         format_category_stock_data['stock_id'] = stock_list[0]['stock_id']
         return format_category_stock_data    
     return None    

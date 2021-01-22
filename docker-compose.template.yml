@@ -1,0 +1,54 @@
+version: "3.3"
+services:
+  mariadb:
+    image: mariadb:10.4-bionic
+    container_name: mariadb
+    volumes:
+      - {MOUNT_FOLDER}:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD={USERNAME}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=false
+  mongodb:
+    image: mongo:4.0-xenial
+    container_name: mongodb
+    volumes:
+      - {MOUNT_FOLDER}:/data/db
+      - {MOUNT_FOLDER}:/data/configdb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME={USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD={PASSWORD}
+  economic-python:
+    container_name: economic-python
+    image: {IMAGE} # Image from private registry/local
+    volumes:
+      - {DB_PARAMS_CONFIG}:/src/db_params.py:ro # Mount read only db_params.py to workdir
+    depends_on:
+      - mariadb
+      - mongodb
+  economic-app:
+    container_name: economic-app
+    image: {IMAGE} # Image from private registry/local
+    volumes:
+      - {APPLICATION_YML_CONFIG}:/application.yml:ro # Mount read only application.yml
+    entrypoint: ["java", "-jar", "-Dspring.config.location=/application.yml", "/app.jar"]
+    depends_on:
+      - mariadb
+  data-app:
+    container_name: data-app
+    image: {IMAGE} # Image from private registry/local
+    volumes:
+      - {APPLICATION_YML_CONFIG}:/application.yml:ro # Mount read only application.yml
+    entrypoint: ["java", "-jar", "-Dspring.config.location=/application.yml", "/app.jar"]
+    depends_on:
+      - mongodb
+  web:
+    container_name: economic-web
+    image: {IMAGE} # Image from private registry/local
+    ports:
+      - "80:80"
+  chat-bot:
+    container_name: chat-bot
+    image: {IMAGE} # Image from private registry/local
+    volumes:
+      - {APPLICATION_YML_CONFIG}:/application.yml:ro # Mount read only application.yml to workdir
+    entrypoint: ["java", "-jar", "-Dspring.config.location=/application.yml", "/app.jar"]

@@ -42,7 +42,6 @@ def parse_response_text(text_content, futures_code):
         futures_data_list.append(format_futures_data(futures_raw_data, futures_code))
     
     futures_data_list = list(filter(lambda futures_data: not futures_data is None, futures_data_list))
-    print(futures_data_list)
     if(len(futures_data_list) > 0):
         futures_collection.insert_many(futures_data_list)
 
