@@ -2,6 +2,7 @@ import { Box, Button, Typography } from '@material-ui/core';
 import React from 'react';
 import { User as UserIcon, Briefcase as BriefcaseIcon } from 'react-feather';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import NavItem from './NavItem';
 
 const items = [{
@@ -35,13 +36,11 @@ const Avatar = () => {
                 display="flex"
                 justifyContent="center"
                 mt={2}>
-                <Button
-                    color="primary"
-                    component="a"
-                    href="/login"
-                    variant="contained">
-                    登入
-                </Button>
+                    <Link to="/login">
+                        <Button color="primary" variant="contained">
+                            登入
+                        </Button>
+                    </Link>
                 </Box>
             </Box>
         );
