@@ -5,14 +5,18 @@ import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.message.FlexMessage;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.flex.container.Carousel;
+import com.linecorp.bot.model.message.flex.container.FlexContainer;
 import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Collections;
@@ -31,17 +35,22 @@ public class LineController {
     @EventMapping
     public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
         TextMessageContent message = event.getMessage();
-        replyText(event.getReplyToken(), service.handleTextMessage(message.getText()));
+        Object replyObject = service.handleTextMessage(message.getText());
+        if(!ObjectUtils.isEmpty(replyObject)){
+            if(replyObject instanceof String) {
+                replyText(event.getReplyToken(), (String)service.handleTextMessage(message.getText()));
+            }else if(replyObject instanceof FlexContainer){
+                replyFlex(event.getReplyToken(), (FlexContainer) replyObject);
+            }
+        }
     }
 
     private void replyText(@NonNull String replyToken, String message){
-        if(!StringUtils.isEmpty(replyToken)&&!StringUtils.isEmpty(message)){
-            reply(replyToken, Collections.singletonList(new TextMessage(message)), false);
-        }
+        lineMessagingClient.replyMessage(new ReplyMessage(replyToken,  Collections.singletonList(new TextMessage(message)), false));
     }
-    private void reply(@NonNull String replyToken, @NonNull List<Message> messageList, Boolean notificationDisabled){
-        lineMessagingClient.replyMessage(new ReplyMessage(replyToken, messageList, notificationDisabled));
+    private void replyFlex(@NonNull String replyToken, @NonNull FlexContainer message){
+        lineMessagingClient.replyMessage(new ReplyMessage(replyToken, new FlexMessage("Message", message)
+                , false));
     }
-
 
 }
