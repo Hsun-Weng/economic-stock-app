@@ -204,6 +204,9 @@ public class LineServiceImpl implements LineService {
         }catch(Exception e){
             e.printStackTrace();
         }
+        bubbleList = bubbleList.stream()
+                .filter((bubble)->!ObjectUtils.isEmpty(bubble))
+                .collect(Collectors.toList());
         if(bubbleList.size()==0){
             return null;
         }
