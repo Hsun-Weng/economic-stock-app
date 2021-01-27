@@ -4,6 +4,7 @@ import com.hsun.chat.service.LineService;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.PostbackEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.FlexMessage;
 import com.linecorp.bot.model.message.Message;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -38,7 +41,24 @@ public class LineController {
         Object replyObject = service.handleTextMessage(message.getText());
         if(!ObjectUtils.isEmpty(replyObject)){
             if(replyObject instanceof String) {
-                replyText(event.getReplyToken(), (String)service.handleTextMessage(message.getText()));
+                replyText(event.getReplyToken(), (String) replyObject);
+            }else if(replyObject instanceof FlexContainer){
+                replyFlex(event.getReplyToken(), (FlexContainer) replyObject);
+            }
+        }
+    }
+
+    @EventMapping
+    public void handlePostbackEvent(PostbackEvent event){
+        String message = event.getPostbackContent().getData();
+        String dateStr = event.getPostbackContent().getParams().getOrDefault("date", "");
+        if(!StringUtils.isEmpty(dateStr)){
+            message = String.format("%s %s", dateStr, message);
+        }
+        Object replyObject = service.handleTextMessage(message);
+        if(!ObjectUtils.isEmpty(replyObject)){
+            if(replyObject instanceof String) {
+                replyText(event.getReplyToken(), (String) replyObject);
             }else if(replyObject instanceof FlexContainer){
                 replyFlex(event.getReplyToken(), (FlexContainer) replyObject);
             }

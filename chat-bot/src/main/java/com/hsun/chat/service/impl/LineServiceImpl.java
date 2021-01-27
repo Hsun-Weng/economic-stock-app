@@ -4,8 +4,12 @@ import com.hsun.chat.bean.*;
 import com.hsun.chat.resource.FuturesResource;
 import com.hsun.chat.resource.StockResource;
 import com.hsun.chat.service.LineService;
+import com.linecorp.bot.model.action.Action;
+import com.linecorp.bot.model.action.DatetimePickerAction;
+import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.message.FlexMessage;
 import com.linecorp.bot.model.message.flex.component.Box;
+import com.linecorp.bot.model.message.flex.component.Button;
 import com.linecorp.bot.model.message.flex.component.FlexComponent;
 import com.linecorp.bot.model.message.flex.component.Text;
 import com.linecorp.bot.model.message.flex.container.Bubble;
@@ -18,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.swing.text.TextAction;
 import javax.swing.text.html.Option;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.chrono.ChronoLocalDateTime;
@@ -48,8 +54,8 @@ public class LineServiceImpl implements LineService {
         List<String> messageList = Arrays.asList(message.trim()
                 .split(" ", 2));
         try {
-            if(message.equals("操作說明")){
-                return getHelp();
+            if(message.equals("MENU")){
+                return getMenu();
             }
             LocalDate queryDate = LocalDate.parse(messageList.get(0), DateTimeFormatter.ISO_DATE);
             if (messageList.size() > 1) {
@@ -75,7 +81,15 @@ public class LineServiceImpl implements LineService {
         return null;
     }
 
-    private Bubble getHelp(){
+    private Carousel getMenu(){
+        return Carousel.builder().contents(Arrays.asList(getFuturesChipHelpBubble(), getStockHelpBubble()))
+                .build();
+    }
+
+    private Bubble getFuturesChipHelpBubble(){
+        final LocalDate today = ZonedDateTime.now(ZoneId.of("Asia/Taipei")).toLocalDate();
+        final List<String> futuresChipFunctionList = Arrays.asList("大台期貨籌碼", "小台期貨籌碼", "電子期貨籌碼"
+                , "金融期貨籌碼", "非金電期貨籌碼");
         return Bubble.builder()
                 .size(Bubble.BubbleSize.KILO)
                 .direction(FlexDirection.LTR)
@@ -83,27 +97,45 @@ public class LineServiceImpl implements LineService {
                         .layout(FlexLayout.VERTICAL)
                         .backgroundColor(BACKGROUND_HEX_COLOR)
                         .contents(getHeaderText().toBuilder()
-                                        .text("訊息格式")
-                                        .build()
+                                .text("期貨未平倉籌碼")
+                                .build()
                         ).build())
                 .body(Box.builder()
                         .layout(FlexLayout.VERTICAL)
                         .backgroundColor(BACKGROUND_HEX_COLOR)
-                        .contents(getContentText().toBuilder()
-                                        .text("2020-01-11 大台期貨籌碼")
-                                        .build(),
-                                getContentText().toBuilder()
-                                        .text("2020-01-11 小台期貨籌碼")
-                                        .build(),
-                                getContentText().toBuilder()
-                                        .text("2020-01-11 金融期貨籌碼")
-                                        .build(),
-                                getContentText().toBuilder()
-                                        .text("2020-01-11 電子期貨籌碼")
-                                        .build(),
-                                getContentText().toBuilder()
-                                        .text("2020-01-11 {股票代號}")
-                                        .build())
+                        .contents(futuresChipFunctionList.stream().map((functionName)->
+                                getContentButton().toBuilder()
+                                        .action(DatetimePickerAction.OfLocalDate
+                                                .builder()
+                                                .initial(today)
+                                                .label(functionName)
+                                                .data(functionName)
+                                                .min(today.minus(Period.ofMonths(1)))//最多回溯一個月前
+                                                .max(today)
+                                                .build())
+                                        .build()).collect(Collectors.toList()))
+                        .build())
+                .build();
+    }
+
+    private Bubble getStockHelpBubble(){
+        final LocalDate today = ZonedDateTime.now(ZoneId.of("Asia/Taipei")).toLocalDate();
+        return Bubble.builder()
+                .size(Bubble.BubbleSize.KILO)
+                .direction(FlexDirection.LTR)
+                .header(Box.builder()
+                        .layout(FlexLayout.VERTICAL)
+                        .backgroundColor(BACKGROUND_HEX_COLOR)
+                        .contents(getHeaderText().toBuilder()
+                                .text("查詢個股資訊")
+                                .build()
+                        ).build())
+                .body(Box.builder()
+                        .layout(FlexLayout.VERTICAL)
+                        .backgroundColor(BACKGROUND_HEX_COLOR)
+                        .contents(getContentButton().toBuilder()
+                                    .action(new MessageAction("範例：2330", String.format("%s 2330"
+                                            , today.format(DateTimeFormatter.ISO_DATE)))).build())
                         .build())
                 .build();
     }
@@ -147,7 +179,7 @@ public class LineServiceImpl implements LineService {
                 break;
         }
         return Bubble.builder()
-                .size(Bubble.BubbleSize.MICRO)
+                .size(Bubble.BubbleSize.NANO)
                 .direction(FlexDirection.LTR)
                 .header(Box.builder()
                         .layout(FlexLayout.VERTICAL)
@@ -460,6 +492,31 @@ public class LineServiceImpl implements LineService {
                 .size(FlexFontSize.SM)
                 .align(FlexAlign.CENTER)
                 .build();
+    }
+
+    /**
+     * 取得內容按鈕樣式模板
+     * @return
+     */
+    private Button getContentButton(){
+        return Button.builder()
+                .style(Button.ButtonStyle.PRIMARY)
+                .build();
+    }
+
+    /**
+     * 取得內容日期選取
+     * @return
+     */
+    private DatetimePickerAction.OfLocalDate getDatePicker(){
+        final LocalDate today = ZonedDateTime.now(ZoneId.of("Asia/Taipei")).toLocalDate();
+        return DatetimePickerAction.OfLocalDate
+                .builder()
+                .initial(today)
+                .min(today.minus(Period.ofMonths(1)))//最多回溯一個月前
+                .max(today)
+                .build();
+
     }
 
 }
