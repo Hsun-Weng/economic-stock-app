@@ -50,12 +50,7 @@ public class LineController {
 
     @EventMapping
     public void handlePostbackEvent(PostbackEvent event){
-        String message = event.getPostbackContent().getData();
-        String dateStr = event.getPostbackContent().getParams().getOrDefault("date", "");
-        if(!StringUtils.isEmpty(dateStr)){
-            message = String.format("%s %s", dateStr, message);
-        }
-        Object replyObject = service.handleTextMessage(message);
+        Object replyObject = service.handlePostback(event.getPostbackContent());
         if(!ObjectUtils.isEmpty(replyObject)){
             if(replyObject instanceof String) {
                 replyText(event.getReplyToken(), (String) replyObject);
