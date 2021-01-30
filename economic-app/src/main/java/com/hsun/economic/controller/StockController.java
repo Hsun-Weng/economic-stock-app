@@ -23,6 +23,11 @@ public class StockController {
         return service.getStockList();
     }
 
+    @GetMapping("/stock/{stockCode}")
+    public StockBean getStock(@PathVariable String stockCode){
+        return service.getStock(stockCode);
+    }
+
     @GetMapping("/stocks/rank/latest")
     public PageInfoBean<StockPriceBean> getStockSortedPage(@RequestParam String sortColumn, @RequestParam Integer page,
                                                            @RequestParam Integer size, @RequestParam String direction) {

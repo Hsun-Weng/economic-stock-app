@@ -1,6 +1,7 @@
 package com.hsun.economic.service.impl;
 
 import com.hsun.economic.bean.*;
+import com.hsun.economic.exception.ResourceNotFoundException;
 import com.hsun.economic.repository.StockRepository;
 import com.hsun.economic.resource.StockResource;
 import com.hsun.economic.service.StockService;
@@ -29,6 +30,13 @@ public class StockServiceImpl implements StockService {
                 .map((stock)->
                         new StockBean(stock.getStockCode(), stock.getStockName()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public StockBean getStock(String stockCode) {
+        return repository.findById(stockCode).map((stock)->
+                new StockBean(stock.getStockCode(), stock.getStockName()))
+                .orElseThrow(()->new ResourceNotFoundException("找不到此股票"));
     }
 
     @Override
