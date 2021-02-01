@@ -16,6 +16,8 @@ retrofit:
   global-converter-factories:
     - retrofit2.converter.gson.GsonConverterFactory
 service:
+  economic:
+    url: {economicUrl}
   data:
     url: {dataUrl}
 ```
