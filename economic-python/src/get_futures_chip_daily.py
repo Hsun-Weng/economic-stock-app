@@ -50,8 +50,7 @@ def parse_response_text(text_content, futures_code):
     if(len(investor_chip) > 0):
         mongo_data_dict['date'] = date
         mongo_data_dict['investor_chip'] = investor_chip
-        print(mongo_data_dict)
-        # futures_chip_collection.insert_one(mongo_data_dict)
+        futures_chip_collection.insert_one(mongo_data_dict)
         
 # 格式化原始資料
 def format_futures_chip_data(futures_chip_raw_data):
