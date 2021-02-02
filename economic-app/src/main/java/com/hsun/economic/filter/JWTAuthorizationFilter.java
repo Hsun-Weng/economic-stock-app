@@ -1,5 +1,6 @@
 package com.hsun.economic.filter;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.hsun.economic.bean.UserBean;
 import com.hsun.economic.config.WebSecurityConfig;
 import com.hsun.economic.service.UserService;
@@ -62,14 +63,24 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         String token = tokenCookie.getValue();
-        String userName =  jwtUtil.getUsernameFromToken(token);
-        if(!StringUtils.isEmpty(userName) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserBean userBean = userService.getUser(userName);
-            if(jwtUtil.validateToken(token, userBean)) {
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userBean.getUserName(), null, new ArrayList<>());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            String userName = jwtUtil.getUsernameFromToken(token);
+            if (!StringUtils.isEmpty(userName) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserBean userBean = userService.getUser(userName);
+                if (jwtUtil.validateToken(token, userBean)) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userBean.getUserName(), null, new ArrayList<>());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
+        } catch(TokenExpiredException e) {
+            Cookie cookie = new Cookie("token", null);
+            cookie.setMaxAge(0);
+//            cookie.setSecure(true);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
         }
         chain.doFilter(request, response);
     }
