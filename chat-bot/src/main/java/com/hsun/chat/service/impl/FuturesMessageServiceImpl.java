@@ -15,6 +15,7 @@ import com.linecorp.bot.model.message.flex.container.Bubble;
 import com.linecorp.bot.model.message.flex.container.Carousel;
 import com.linecorp.bot.model.message.flex.unit.FlexDirection;
 import com.linecorp.bot.model.message.flex.unit.FlexLayout;
+import com.linecorp.bot.model.message.flex.unit.FlexMarginSize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -70,6 +71,7 @@ public class FuturesMessageServiceImpl implements FuturesMessageService {
                         ).build())
                 .body(Box.builder()
                         .layout(FlexLayout.VERTICAL)
+                        .spacing(FlexMarginSize.MD)
                         .backgroundColor(flexUtil.getBackgroundColor())
                         .contents(futuresList.stream().map((futures)->
                                 flexUtil.getContentButton().toBuilder()

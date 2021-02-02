@@ -15,6 +15,7 @@ import com.linecorp.bot.model.message.flex.container.Bubble;
 import com.linecorp.bot.model.message.flex.container.Carousel;
 import com.linecorp.bot.model.message.flex.unit.FlexDirection;
 import com.linecorp.bot.model.message.flex.unit.FlexLayout;
+import com.linecorp.bot.model.message.flex.unit.FlexMarginSize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -58,6 +59,7 @@ public class StockMessageServiceImpl implements StockMessageService {
                         ).build())
                 .body(Box.builder()
                         .layout(FlexLayout.VERTICAL)
+                        .spacing(FlexMarginSize.MD)
                         .backgroundColor(flexUtil.getBackgroundColor())
                         .contents(flexUtil.getContentButton().toBuilder()
                                 .action(new MessageAction("範例：2330", "查詢個股 2330"))
