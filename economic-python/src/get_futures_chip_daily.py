@@ -44,8 +44,13 @@ def parse_response_text(text_content, futures_code):
         futures_chip_data = format_futures_chip_data(futures_chip_raw_data)
         date = futures_chip_data.pop('date') # 取得日期刪除子物件key: date
         investor_chip.append(futures_chip_data) # 加入list
+
+    total_open_interest_lot = get_total_open_interest_lot(futures_code, date) # 取得市場未平倉口數
     ## 計算散戶資料
-    investor_chip.append(calculate_retail_investor_data(futures_code, date, investor_chip))
+    investor_chip.append(calculate_retail_investor_data(total_open_interest_lot, investor_chip))
+
+    ## 計算佔比
+    investor_chip = list(map(lambda chip_data: calculate_lot_percent(total_open_interest_lot, chip_data), investor_chip))
 
     if(len(investor_chip) > 0):
         mongo_data_dict['date'] = date
@@ -70,13 +75,11 @@ def format_futures_chip_data(futures_chip_raw_data):
 
 
 #  補上散戶資料
-def calculate_retail_investor_data(futures_code, date, corporation_chip_data):
+def calculate_retail_investor_data(total_open_interest_lot, corporation_chip_data):
     # 法人多單
     corporation_long_lot = sum(map(lambda futures: futures['open_interest_long_lot'], corporation_chip_data))
     # 法人空單
     corporation_short_lot = sum(map(lambda futures: futures['open_interest_short_lot'], corporation_chip_data))
-
-    total_open_interest_lot = get_total_open_interest_lot(futures_code, date)
 
     retail_investor_chip_data = {}
     retail_investor_chip_data['investor_code'] = 'RI'
@@ -93,7 +96,13 @@ def get_total_open_interest_lot(futures_code, date):
     if len(futures_list) > 0:
         return sum(map(lambda futures: futures['open_interest_lot'], futures_list))
     return 0
-    
+
+## 計算未平倉口數佔比
+def calculate_lot_percent(total_open_interest_lot, chip_data):
+    open_interest_net_lot = chip_data['open_interest_long_lot'] - chip_data['open_interest_short_lot']
+    chip_data['percent'] = round(open_interest_net_lot / total_open_interest_lot, 4)
+    return chip_data
+
 if __name__ == "__main__":
     current_time = datetime.now()
     # 當日
