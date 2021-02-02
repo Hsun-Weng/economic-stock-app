@@ -67,29 +67,6 @@ public class FuturesChipServiceImpl implements FuturesChipService {
                             .build())
                     .collect(Collectors.toList());
 
-            // 三大法人未平倉
-            Integer corporationLongLot = investorFuturesChipList.stream()
-                    .mapToInt(InvestorFuturesChipBean::getOpenInterestLongLot).sum();
-            Integer corporationShortLot = investorFuturesChipList.stream()
-                    .mapToInt(InvestorFuturesChipBean::getOpenInterestShortLot).sum();
-            
-            // 未平倉總量 - 三大法人多空未平倉 = 散戶未平倉
-            Integer retailOpenInterestLongLot = openInterestLot - corporationLongLot;
-            Integer retailOpenInterestShortLot = openInterestLot - corporationShortLot;
-
-            // 加入計算後的散戶多空口數及淨額
-            investorFuturesChipList.add(InvestorFuturesChipBean
-                    .builder()
-                    .investorCode("RI")
-                    .openInterestLongLot(retailOpenInterestLongLot)
-                    .openInterestShortLot(retailOpenInterestShortLot)
-                    .openInterestNetLot(retailOpenInterestLongLot - retailOpenInterestShortLot)
-                    .percent(new BigDecimal(((retailOpenInterestLongLot - retailOpenInterestShortLot)))
-                            .divide(new BigDecimal(openInterestLot), 4, RoundingMode.HALF_UP)
-                            .multiply(new BigDecimal(100))
-                            .floatValue())
-                    .build());
-
             return new FuturesChipBean(futuresChip.getDate(), futuresChip.getFuturesCode(), openInterestLot
                     , investorFuturesChipList);
         }).sorted((c1, c2)->c2.getDate().compareTo(c1.getDate())).collect(Collectors.toList());
