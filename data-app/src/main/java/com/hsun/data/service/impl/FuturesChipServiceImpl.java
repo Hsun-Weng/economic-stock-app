@@ -59,10 +59,9 @@ public class FuturesChipServiceImpl implements FuturesChipService {
                             .openInterestShortLot(investorChip.getOpenInterestShortLot())
                             .openInterestNetLot(investorChip.getOpenInterestLongLot()
                                     - investorChip.getOpenInterestShortLot())
-                            .percent(new BigDecimal(((investorChip.getOpenInterestLongLot()
-                                    - investorChip.getOpenInterestShortLot())))
-                                    .divide(new BigDecimal(openInterestLot), 4, RoundingMode.HALF_UP)
+                            .percent(new BigDecimal(investorChip.getPercent())
                                     .multiply(new BigDecimal(100))
+                                    .setScale(2, RoundingMode.HALF_UP)
                                     .floatValue())
                             .build())
                     .collect(Collectors.toList());

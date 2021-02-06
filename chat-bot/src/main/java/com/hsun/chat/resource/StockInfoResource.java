@@ -7,6 +7,6 @@ import retrofit2.http.Path;
 
 @RetrofitClient(baseUrl = "${service.economic.url}")
 public interface StockInfoResource {
-    @GET("/stock/{stockCode}")
+    @GET("stock/{stockCode}")
     StockBean getStock(@Path("stockCode") String stockCode);
 }
