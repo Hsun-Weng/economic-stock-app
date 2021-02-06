@@ -38,18 +38,9 @@ public class FuturesChipServiceImpl implements FuturesChipService {
         Date queryEndDate = Date.from(endDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
         List<FuturesChip> futuresChipList = repository.findByFuturesCodeAndDateBetween(futuresCode, queryStartDate, queryEndDate);
        
-        // 查詢全部未平倉量
-        List<Futures> futuresList = futuresRepository.findByFuturesCodeAndDateBetween(futuresCode, queryStartDate, queryEndDate);
-        Map<Date, Integer> openInterestLotMap =
-                futuresList.stream()
-                        .collect(Collectors.groupingBy(Futures::getDate, Collectors.summingInt(Futures::getOpenInterestLot)));
-
         List<FuturesChipBean> futuresChipBeanList = futuresChipList
                 .parallelStream()
                 .map((futuresChip)->{
-            // 未平倉總量
-            Integer openInterestLot = openInterestLotMap.get(futuresChip.getDate());
-
             List<InvestorFuturesChipBean> investorFuturesChipList = futuresChip.getInvestorFuturesChip()
                     .stream()
                     .map((investorChip)->InvestorFuturesChipBean
@@ -66,7 +57,7 @@ public class FuturesChipServiceImpl implements FuturesChipService {
                             .build())
                     .collect(Collectors.toList());
 
-            return new FuturesChipBean(futuresChip.getDate(), futuresChip.getFuturesCode(), openInterestLot
+            return new FuturesChipBean(futuresChip.getDate(), futuresChip.getFuturesCode()
                     , investorFuturesChipList);
         }).sorted((c1, c2)->c2.getDate().compareTo(c1.getDate())).collect(Collectors.toList());
         

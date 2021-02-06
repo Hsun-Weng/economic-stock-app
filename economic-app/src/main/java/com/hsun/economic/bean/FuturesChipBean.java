@@ -12,7 +12,6 @@ import java.util.List;
 public class FuturesChipBean {
     private Date date;
     private String futuresCode;
-    private Integer openInterestLot;
     private List<InvestorFuturesChipBean> investorChip;
     @Expose(deserialize = false)
     private Double close;
