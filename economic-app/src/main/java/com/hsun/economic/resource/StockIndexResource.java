@@ -9,11 +9,11 @@ import java.util.List;
 
 @RetrofitClient(baseUrl = "${service.data.url}")
 public interface StockIndexResource {
-    @GET("stock/index/{indexCode}/price/latest")
+    @GET("index/{indexCode}/price/latest")
     StockIndexPriceBean getLatestPrice(@Path("indexCode") String indexCode);
-    @GET("stock/index/{indexCode}/prices")
+    @GET("index/{indexCode}/prices")
     List<PriceBean> getPriceList(@Path("indexCode") String indexCode, @Query("startDate") String startDate
             , @Query("endDate") String endDate);
-    @POST("stock/indexes/price/latest")
+    @POST("indexes/price/latest")
     List<StockIndexPriceBean> getLatestPriceList(@Body List<String> indexCodeList);
 }

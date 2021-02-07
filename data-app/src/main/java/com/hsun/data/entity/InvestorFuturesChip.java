@@ -26,4 +26,6 @@ public class InvestorFuturesChip {
     private Integer openInterestShortLot;
     @Field("open_interest_short_amount")
     private Long openInterestShortAmount;
+    @Field("percent")
+    private Float percent;
 }
